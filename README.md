@@ -1,2 +1,2 @@
 # Datastructure
-Datastructure and algorithm
+Datastructure and algorithm in C++
