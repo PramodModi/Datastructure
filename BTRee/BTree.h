@@ -180,24 +180,16 @@ BTNode* insert(BTNode* root, int c, int key)
 	while (t2->leaf == false)
 	{
 		if (t2->n == SIZE)
-		{
 			split(t1, c);
-			i = t1->n;
-			while (i > 0 and key < t1->key[i-1])
-				i--;
-			
-			t2 = t1->cp[i];
-		}
-
 		else
-		{
 			t1 = t2;
-			i = t1->n;
-			while (i > 0 and key < t1->key[i-1])
-				i--;
 
-			t2 = t1->cp[i];
-		}
+		//find the right child, where key has to be inserted
+		i = t1->n;
+		while (i > 0 and key < t1->key[i - 1])
+			i--;
+
+		t2 = t1->cp[i];
 	}
 	//When t2 is not a leaf node then
 	//	if t2 is full, then split it and find the right child, where key has to be inserted
