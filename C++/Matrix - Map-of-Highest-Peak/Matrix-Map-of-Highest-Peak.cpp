@@ -60,17 +60,15 @@ vector<vector<int>> heighestPeak(vector<vector<int>> & matrix){
     }
 
     while(!temp.empty()){
-        auto it = temp.front();
+        auto [r,c] = temp.front();
         temp.pop();
-        int r = it.first;
-        int c = it.second;
+        
         int h = matrix[r][c];
 
         auto neighbours = getNeighbours(r,c,matrix);
 
-        for (auto nbr : neighbours){
-            int row = nbr.first;
-            int col = nbr.second;
+        for (auto [row, col] : neighbours){
+            
             if(matrix[row][col] == -1){
                 matrix[row][col] = h+1;
                 temp.push({row, col});
