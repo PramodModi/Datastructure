@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Structure Solutions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 20px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        .folder {
+            margin-bottom: 30px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .file-list {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        .file-list li {
+            margin: 10px 0;
+            padding: 8px;
+            background-color: #fff;
+            border-left: 3px solid #2ecc71;
+            transition: all 0.3s ease;
+        }
+        .file-list li:hover {
+            background-color: #f1f1f1;
+            transform: translateX(5px);
+        }
+        a {
+            text-decoration: none;
+            color: #2980b9;
+            display: block;
+            padding: 5px;
+        }
+        a:hover {
+            color: #3498db;
+            text-decoration: underline;
+        }
+        .timestamp {
+            text-align: center;
+            font-size: 0.8em;
+            color: #7f8c8d;
+            margin-top: 40px;
+        }
+        .loading {
+            text-align: center;
+            font-style: italic;
+            color: #7f8c8d;
+            padding: 20px;
+        }
+        .error-message {
+            color: #e74c3c;
+            padding: 10px;
+            background-color: #fadbd8;
+            border-left: 4px solid #e74c3c;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Structure Solutions</h1>
+    
+    <div id="content-container">
+        <p class="loading">Loading folders and files...</p>
+    </div>
+
+    <p class="timestamp" id="timestamp">Last updated: Fetching...</p>
+
+    <script>
+        // Configuration - Update these values with your GitHub repository information
+        const config = {
+            username: 'PramodModi', // Your GitHub username
+            repository: 'Datastructure', // Your repository name
+            branch: 'main', // The branch name (usually 'main' or 'master')
+            path: 'DS_html' // The path to your DS_html folder in the repository
+        };
+
+        // Function to format the file name for display
+        function formatFileName(fileName) {
+            // Remove file extension
+            let name = fileName.replace(/\.[^/.]+$/, "");
+            // Replace underscores with spaces
+            name = name.replace(/_/g, " ");
+            return name;
+        }
+
+        // Function to check if a file is HTML
+        function isHtmlFile(fileName) {
+            return fileName.toLowerCase().endsWith('.html');
+        }
+
+        // Function to sort items (folders first, then files)
+        function sortItems(a, b) {
+            if (a.type === 'dir' && b.type !== 'dir') return -1;
+            if (a.type !== 'dir' && b.type === 'dir') return 1;
+            return a.name.localeCompare(b.name);
+        }
+
+        // Function to create folder HTML structure
+        function createFolderHTML(folderName, files) {
+            const htmlFiles = files.filter(file => isHtmlFile(file.name));
+            
+            if (htmlFiles.length === 0) return '';
+            
+            let html = `
+                <div class="folder">
+                    <h2>${folderName}</h2>
+                    <ul class="file-list">
+            `;
+            
+            htmlFiles.forEach(file => {
+                const displayName = formatFileName(file.name);
+                const filePath = file.path.replace('DS_html/', ''); // Remove the base path
+                html += `<li><a href="${filePath}" target="_blank">${displayName}</a></li>`;
+            });
+            
+            html += `
+                    </ul>
+                </div>
+            `;
+            
+            return html;
+        }
+
+        // Function to get GitHub repository contents
+        async function fetchRepoContents() {
+            try {
+                const contentContainer = document.getElementById('content-container');
+                const baseApiUrl = `https://api.github.com/repos/${config.username}/${config.repository}/contents/${config.path}`;
+                
+                // Fetch the root contents
+                const response = await fetch(baseApiUrl + '?ref=' + config.branch);
+                
+                if (!response.ok) {
+                    throw new Error(`GitHub API request failed: ${response.status}`);
+                }
+                
+                const contents = await response.json();
+                const folders = contents.filter(item => item.type === 'dir').sort((a, b) => a.name.localeCompare(b.name));
+                
+                if (folders.length === 0) {
+                    contentContainer.innerHTML = '<p>No folders found containing HTML files.</p>';
+                    return;
+                }
+                
+                // Clear loading message
+                contentContainer.innerHTML = '';
+                
+                // Process each folder
+                for (const folder of folders) {
+                    const folderResponse = await fetch(folder.url);
+                    
+                    if (folderResponse.ok) {
+                        const folderContents = await folderResponse.json();
+                        const folderHtml = createFolderHTML(folder.name, folderContents);
+                        
+                        if (folderHtml) {
+                            contentContainer.innerHTML += folderHtml;
+                        }
+                    }
+                }
+                
+                // If after processing all folders, there's no content
+                if (contentContainer.innerHTML === '') {
+                    contentContainer.innerHTML = '<p>No HTML files found in any folders.</p>';
+                }
+                
+                // Update timestamp
+                const now = new Date();
+                document.getElementById('timestamp').textContent = `Last updated: ${now.toLocaleString()}`;
+            } catch (error) {
+                console.error('Error fetching repository contents:', error);
+                document.getElementById('content-container').innerHTML = `
+                    <div class="error-message">
+                        <p>Error loading repository contents: ${error.message}</p>
+                        <p>Please check your GitHub repository configuration.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Load content when the page loads
+        window.addEventListener('DOMContentLoaded', fetchRepoContents);
+    </script>
+</body>
+</html>
