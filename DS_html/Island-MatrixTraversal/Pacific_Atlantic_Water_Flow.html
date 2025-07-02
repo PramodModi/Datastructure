@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pacific Atlantic Water Flow - Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 20px;
+        }
+        h3 {
+            color: #2980b9;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 15px 0;
+        }
+        .comment {
+            color: #75715e;
+        }
+        .example {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 10px 20px;
+            margin: 20px 0;
+        }
+        .visualization {
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .pacific {
+            background-color: #3498db;
+            color: white;
+        }
+        .atlantic {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .both {
+            background-color: #9b59b6;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Pacific Atlantic Water Flow</h1>
+
+<p>Problem URL: <a href="https://leetcode.com/problems/pacific-atlantic-water-flow/" target="_blank">LeetCode - Pacific Atlantic Water Flow</a></p>
+
+<h2>Problem Statement</h2>
+
+<p>There is an <code>m x n</code> rectangular island that borders both the Pacific Ocean and Atlantic Ocean. The Pacific Ocean touches the island's left and top edges, and the Atlantic Ocean touches the island's right and bottom edges.</p>
+
+<p>The island is partitioned into a grid of square cells. You are given an <code>m x n</code> integer matrix <code>heights</code> where <code>heights[r][c]</code> represents the height above sea level of the cell at coordinate <code>(r, c)</code>.</p>
+
+<p>The island receives a lot of rain, and the rain water can flow to neighboring cells directly north, south, east, and west if the neighboring cell's height is less than or equal to the current cell's height. Water can flow from any cell adjacent to an ocean into the ocean.</p>
+
+<p>Return a 2D list of grid coordinates <code>result</code> where <code>result[i] = [ri, ci]</code> denotes that rain water can flow from cell <code>(ri, ci)</code> to both the Pacific and Atlantic oceans.</p>
+
+<h2>Understanding the Problem</h2>
+
+<ul>
+    <li>We have a grid of heights representing an island.</li>
+    <li>Pacific Ocean is at the top and left edges.</li>
+    <li>Atlantic Ocean is at the bottom and right edges.</li>
+    <li>Water flows from higher or equal height to lower height (or into the ocean).</li>
+    <li>We need to find all cells from which water can flow to both oceans.</li>
+</ul>
+
+<h2>Approach</h2>
+
+<p>Instead of checking if water can flow from each cell to both oceans, we approach this problem from the opposite direction:</p>
+
+<ol>
+    <li>Start from cells adjacent to each ocean (Pacific and Atlantic).</li>
+    <li>Use DFS to mark cells from which water can flow to each ocean.</li>
+    <li>The cells that are marked for both oceans are our answer.</li>
+</ol>
+
+<p><strong>Key Insight:</strong> If water can flow from cell A to cell B, then water can also flow from cell B to cell A in the reverse direction (since water flows from higher to lower heights).</p>
+
+<h2>Algorithm</h2>
+
+<ol>
+    <li>Create two boolean matrices to mark cells that can reach the Pacific and Atlantic oceans.</li>
+    <li>Perform DFS from the edges connected to the Pacific Ocean (top and left).</li>
+    <li>Perform DFS from the edges connected to the Atlantic Ocean (bottom and right).</li>
+    <li>During DFS, only visit cells that have a height greater than or equal to the current cell's height.</li>
+    <li>Find cells that are marked as reachable from both oceans and add them to the result.</li>
+</ol>
+
+<h3>Visualization</h3>
+
+<p>Consider the following matrix:</p>
+
+<div class="visualization">
+    <table>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>2</td>
+            <td>3</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>4</td>
+            <td>5</td>
+            <td>3</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>7</td>
+            <td>1</td>
+            <td>4</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>1</td>
+            <td>1</td>
+            <td>2</td>
+            <td>4</td>
+        </tr>
+    </table>
+</div>
+
+<p>Cells from which water can flow to the Pacific Ocean:</p>
+
+<div class="visualization">
+    <table>
+        <tr>
+            <td class="pacific">1</td>
+            <td class="pacific">2</td>
+            <td class="pacific">2</td>
+            <td class="pacific">3</td>
+            <td class="pacific">5</td>
+        </tr>
+        <tr>
+            <td class="pacific">3</td>
+            <td class="pacific">2</td>
+            <td class="pacific">3</td>
+            <td class="pacific">4</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td class="pacific">2</td>
+            <td class="pacific">4</td>
+            <td class="pacific">5</td>
+            <td>3</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td class="pacific">6</td>
+            <td class="pacific">7</td>
+            <td>1</td>
+            <td>4</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td class="pacific">5</td>
+            <td>1</td>
+            <td>1</td>
+            <td>2</td>
+            <td>4</td>
+        </tr>
+    </table>
+</div>
+
+<p>Cells from which water can flow to the Atlantic Ocean:</p>
+
+<div class="visualization">
+    <table>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>2</td>
+            <td class="atlantic">3</td>
+            <td class="atlantic">5</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>2</td>
+            <td class="atlantic">3</td>
+            <td class="atlantic">4</td>
+            <td class="atlantic">4</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>4</td>
+            <td class="atlantic">5</td>
+            <td class="atlantic">3</td>
+            <td class="atlantic">1</td>
+        </tr>
+        <tr>
+            <td class="atlantic">6</td>
+            <td class="atlantic">7</td>
+            <td class="atlantic">1</td>
+            <td class="atlantic">4</td>
+            <td class="atlantic">5</td>
+        </tr>
+        <tr>
+            <td class="atlantic">5</td>
+            <td class="atlantic">1</td>
+            <td class="atlantic">1</td>
+            <td class="atlantic">2</td>
+            <td class="atlantic">4</td>
+        </tr>
+    </table>
+</div>
+
+<p>Cells from which water can flow to both oceans:</p>
+
+<div class="visualization">
+    <table>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>2</td>
+            <td class="both">3</td>
+            <td class="both">5</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>2</td>
+            <td class="both">3</td>
+            <td class="both">4</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td class="both">4</td>
+            <td class="both">5</td>
+            <td>3</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td class="both">6</td>
+            <td class="both">7</td>
+            <td>1</td>
+            <td>4</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td class="both">5</td>
+            <td>1</td>
+            <td>1</td>
+            <td>2</td>
+            <td>4</td>
+        </tr>
+    </table>
+</div>
+
+<p>Therefore, the cells from which water can flow to both oceans are: [[0,4], [1,3], [1,4], [2,2], [3,0], [3,1], [4,0]]</p>
+
+<h2>Python Implementation</h2>
+
+<pre class="code-block">
+def pacificAtlantic(heights):
+    
+    # Get dimensions of the matrix
+    m = len(heights)
+    n = len(heights[0])
+    
+    # Create matrices to track cells that can reach Pacific and Atlantic oceans
+    pacific_reachable = [[False for _ in range(n)] for _ in range(m)]
+    atlantic_reachable = [[False for _ in range(n)] for _ in range(m)]
+
+    # DFS function to mark cells that can reach an ocean
+    def dfs(row, col, reachable, prev_height):
+        # If out of bounds or already visited or height is less than previous height
+        if (row < 0 or row >= m or col < 0 or col >= n or 
+            reachable[row][col] or heights[row][col] < prev_height):
+            return
+        
+        # Mark the current cell as reachable
+        reachable[row][col] = True
+        
+        # Check all four directions
+        dfs(row+1, col, reachable, heights[row][col])
+        dfs(row-1, col, reachable, heights[row][col])
+        dfs(row, col+1, reachable, heights[row][col])
+        dfs(row, col-1, reachable, heights[row][col])
+
+    # Start DFS from Pacific edges (top and left)
+    for i in range(m):
+        dfs(i, 0, pacific_reachable, heights[i][0])  # Left edge
+    for i in range(n):
+        dfs(0, i, pacific_reachable, heights[0][i])  # Top edge
+    
+    # Start DFS from Atlantic edges (bottom and right)
+    for i in range(m):
+        dfs(i, n-1, atlantic_reachable, heights[i][n-1])  # Right edge
+    for i in range(n):
+        dfs(m-1, i, atlantic_reachable, heights[m-1][i])  # Bottom edge
+
+    # Find cells that can reach both oceans
+    result = []
+    for i in range(m):
+        for j in range(n):
+            if pacific_reachable[i][j] and atlantic_reachable[i][j]:
+                result.append([i, j])
+    
+    return result
+</pre>
+
+<h2>Time and Space Complexity</h2>
+
+<h3>Time Complexity</h3>
+<p><strong>O(m × n)</strong> where m is the number of rows and n is the number of columns in the matrix. We perform two DFS traversals, each potentially visiting every cell in the matrix.</p>
+
+<h3>Space Complexity</h3>
+<p><strong>O(m × n)</strong> for the two boolean matrices and the recursion stack.</p>
+
+<h2>Examples</h2>
+
+<h3>Example 1:</h3>
+<pre class="code-block">
+heights = [
+    [1,2,2,3,5],
+    [3,2,3,4,4],
+    [2,4,5,3,1],
+    [6,7,1,4,5],
+    [5,1,1,2,4]
+]
+Result: [[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]
+</pre>
+
+<h3>Example 2:</h3>
+<pre class="code-block">
+heights = [[2,1],[1,2]]
+Result: [[0,0],[0,1],[1,0],[1,1]]
+</pre>
+<p>In Example 2, all cells can reach both oceans, which makes sense for a 2×2 matrix.</p>
+
+<h2>Key Insights</h2>
+
+<ul>
+    <li><strong>Reverse Thinking:</strong> Instead of starting from each cell and checking if it can reach both oceans, we start from the oceans and identify all cells that can reach each ocean.</li>
+    <li><strong>DFS from Boundaries:</strong> By starting DFS from the edges, we efficiently identify all cells that can reach each ocean.</li>
+    <li><strong>Reverse Flow Property:</strong> If water can flow from cell A to cell B, then in our DFS, we can go from cell B to cell A if cell A's height is greater than or equal to cell B's height.</li>
+</ul>
+
+</body>
+</html>

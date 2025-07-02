@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect Cycles in 2D Grid Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table.grid {
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        table.grid td {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .cycle-cell {
+            background-color: #ffcdd2;
+        }
+        .visited {
+            background-color: #c8e6c9;
+        }
+        .current {
+            background-color: #bbdefb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Detect Cycles in 2D Grid Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Detect Cycles in 2D Grid</strong></p>
+        <p><a href="https://leetcode.com/problems/detect-cycles-in-2d-grid/" target="_blank">https://leetcode.com/problems/detect-cycles-in-2d-grid/</a></p>
+        <p>
+            Given a 2D array of characters <code>grid</code> of size m x n, you need to find if there exists any cycle consisting of the same value in grid.
+        </p>
+        <p>
+            A cycle is a path of length 4 or more in the grid that starts and ends at the same cell. From a given cell, you can move to one of the cells adjacent to it - in one of the four directions (up, down, left, or right), if it has the same value as the current cell.
+        </p>
+        <p>
+            Also, you cannot move to the cell that you visited in your last move. For example, the cycle (1, 1) -> (1, 2) -> (1, 1) is invalid because from (1, 2) we visited (1, 1) which was the last visited cell.
+        </p>
+        <p>
+            Return true if any cycle of the same value exists in grid, otherwise, return false.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre>
+[['a', 'a', 'a', 'a'],
+ ['a', 'b', 'b', 'a'],
+ ['a', 'b', 'b', 'a'],
+ ['a', 'a', 'a', 'a']]</pre>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong> There are two valid cycles shown in different colors in the image: the 'a' cells form one cycle, and the 'b' cells form another cycle.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre>
+[['c', 'c', 'c', 'a'],
+ ['c', 'd', 'c', 'c'],
+ ['c', 'c', 'e', 'c'],
+ ['f', 'c', 'c', 'c']]</pre>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong> There is one valid cycle highlighted by the 'c' cells.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre>
+[['a', 'b', 'b'],
+ ['b', 'z', 'b'],
+ ['b', 'b', 'a']]</pre>
+            <p><strong>Output:</strong> false</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>m == grid.length</li>
+            <li>n == grid[i].length</li>
+            <li>1 <= m, n <= 500</li>
+            <li>grid consists only of lowercase English letters.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to detect if there's any cycle in a 2D grid of characters where all cells in the cycle have the same value. Let's break down what makes a valid cycle:
+        </p>
+        <ol>
+            <li>A cycle must consist of at least 4 cells (a path of length 4 or more).</li>
+            <li>All cells in the cycle must have the same value.</li>
+            <li>Each cell in the cycle must be adjacent to the next cell in the cycle (up, down, left, or right).</li>
+            <li>The cycle must start and end at the same cell.</li>
+            <li>You cannot immediately go back to the cell you just came from (i.e., you can't move from (1,1) to (1,2) and then back to (1,1) in the next move).</li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> This problem is essentially about detecting cycles in a graph, where each cell is a node, and there is an edge between cells if they are adjacent and have the same value. The challenge is to handle the special case where we cannot immediately go back to the previous cell.</p>
+        </div>
+        
+        <p>
+            For example, in the first example, we have a grid where 'a' cells form a cycle along the outside of the grid, and 'b' cells form a 2x2 cycle in the middle of the grid. Both of these are valid cycles because they meet all of the above criteria.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We can use a depth-first search (DFS) or breadth-first search (BFS) approach to detect cycles in the grid. The key idea is to keep track of visited cells and detect if we revisit a cell that was already visited (but is not the parent of the current cell).
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> To avoid falsely detecting a cycle when we simply go back to the parent cell, we need to keep track of the parent of each cell when we perform our search.</p>
+        </div>
+        
+        <p>Here's our approach:</p>
+        <ol>
+            <li>Iterate through each cell in the grid.</li>
+            <li>For each unvisited cell, start a DFS traversal.</li>
+            <li>During the DFS traversal, mark each visited cell and keep track of its parent.</li>
+            <li>If we encounter a cell that has already been visited and is not the parent of the current cell, then we have found a cycle.</li>
+            <li>If we complete the DFS without finding a cycle, continue to the next unvisited cell.</li>
+        </ol>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(m * n) where m is the number of rows and n is the number of columns in the grid. In the worst case, we might have to visit all cells.</li>
+            <li><strong>Space Complexity:</strong> O(m * n) for the visited array and the recursion stack in the worst case.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize a visited array:</strong> Create a 2D boolean array of the same size as the grid to keep track of visited cells.
+            </li>
+            <li>
+                <strong>Iterate through the grid:</strong>
+                <ul>
+                    <li>For each unvisited cell, start a DFS traversal.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>DFS traversal:</strong>
+                <ul>
+                    <li>Mark the current cell as visited.</li>
+                    <li>For each adjacent cell (up, down, left, right):</li>
+                    <ul>
+                        <li>If the adjacent cell has the same value as the current cell and is not the parent of the current cell:</li>
+                        <ul>
+                            <li>If the adjacent cell has already been visited, we have found a cycle. Return true.</li>
+                            <li>Otherwise, recursively perform DFS on the adjacent cell, passing the current cell as the parent.</li>
+                        </ul>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return false</strong> if no cycle is found after checking all cells.
+            </li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the DFS traversal:</strong></p>
+            <p>Let's visualize the DFS traversal for Example 1, starting from cell (0,0) with value 'a':</p>
+            
+            <p>Initial grid:</p>
+            <table class="grid">
+                <tr>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>a</td>
+                    <td>b</td>
+                    <td>b</td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>a</td>
+                    <td>b</td>
+                    <td>b</td>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                    <td>a</td>
+                </tr>
+            </table>
+            
+            <p>Step 1: Start DFS at (0,0) with value 'a'.</p>
+            <p>Mark (0,0) as visited.</p>
+            
+            <p>Step 2: Explore neighbors of (0,0):</p>
+            <ul>
+                <li>(0,1): Value is 'a' and not visited yet. Continue DFS from here.</li>
+            </ul>
+            
+            <p>Step 3: Mark (0,1) as visited. Explore neighbors of (0,1):</p>
+            <ul>
+                <li>(0,0): Value is 'a' but this is the parent, so skip.</li>
+                <li>(0,2): Value is 'a' and not visited yet. Continue DFS from here.</li>
+            </ul>
+            
+            <p>Step 4: Mark (0,2) as visited. Explore neighbors of (0,2)...</p>
+            
+            <p>... continue this process, marking cells as visited and exploring neighbors.</p>
+            
+            <p>Eventually, we'll reach a cell that has a neighbor which has already been visited and is not the parent. This indicates a cycle.</p>
+            
+            <p>For example, when we reach cell (3,0) and check its neighbor (3,1), we'll find that (3,1) has already been visited and is not the parent of (3,0). This means we have detected a cycle, and the function would return true.</p>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def containsCycle(grid):
+    <span class="comment"># Get dimensions of the grid</span>
+    n = len(grid)
+    m = len(grid[0])
+    
+    <span class="comment"># Initialize visited array</span>
+    visited = [[False] * m for _ in range(n)]
+    
+    <span class="comment"># Iterate through each cell in the grid</span>
+    for i in range(n):
+        for j in range(m):
+            <span class="comment"># If the cell is not visited, start DFS</span>
+            if not visited[i][j]:
+                <span class="comment"># If DFS returns True, a cycle was found</span>
+                if explore(i, j, grid, visited, -1, -1):  # -1, -1 indicates no parent initially</span>
+                    return True
+    
+    <span class="comment"># No cycle was found</span>
+    return False
+
+def explore(row, col, grid, visited, pr, pc):
+    <span class="comment"># Get the value of the current cell</span>
+    value = grid[row][col]
+    
+    <span class="comment"># Mark the current cell as visited</span>
+    visited[row][col] = True
+    
+    <span class="comment"># Get all neighboring cells</span>
+    nbrs = getNeighbours(row, col, grid)
+    
+    <span class="comment"># Check each neighbor</span>
+    for nr, nc in nbrs:
+        <span class="comment"># Skip if the neighbor has a different value or is the parent</span>
+        if grid[nr][nc] != value or (nr == pr and nc == pc):
+            continue
+        
+        <span class="comment"># If the neighbor is already visited, we found a cycle</span>
+        if visited[nr][nc]:
+            return True
+        
+        <span class="comment"># Recursively explore the neighbor</span>
+        if explore(nr, nc, grid, visited, row, col):
+            return True
+    
+    <span class="comment"># No cycle found in this path</span>
+    return False
+
+def getNeighbours(row, col, grid):
+    <span class="comment"># Initialize list for neighbors</span>
+    nrs = []
+    
+    <span class="comment"># Check up</span>
+    if row > 0:
+        nrs.append((row-1, col))
+    
+    <span class="comment"># Check down</span>
+    if row < len(grid)-1:
+        nrs.append((row+1, col))
+    
+    <span class="comment"># Check left</span>
+    if col > 0:
+        nrs.append((row, col-1))
+    
+    <span class="comment"># Check right</span>
+    if col < len(grid[row]) - 1:
+        nrs.append((row, col+1))
+    
+    return nrs</pre>
+        
+        <div class="key-insight">
+            <p><strong>Code Explanation:</strong></p>
+            <p>The code follows a standard DFS approach with a few key adaptations for this specific problem:</p>
+            <ol>
+                <li><strong>Parent Tracking:</strong> We pass the coordinates of the parent cell (pr, pc) to the DFS function to avoid detecting false cycles when we simply visit the parent again.</li>
+                <li><strong>Value Check:</strong> We only consider neighbors that have the same value as the current cell, as cycles must consist of cells with the same value.</li>
+                <li><strong>Visited Check:</strong> If we encounter a cell that has already been visited and is not the parent, we have found a cycle.</li>
+            </ol>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command">
+grid = [['a', 'a', 'a', 'a'],
+        ['a', 'b', 'b', 'a'],
+        ['a', 'b', 'b', 'a'],
+        ['a', 'a', 'a', 'a']]
+
+result = containsCycle(grid)
+print(result)  # Output: True</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">True</pre>
+        </div>
+        
+        <h3>Alternative Implementation (BFS):</h3>
+        <pre>
+from collections import deque
+
+def containsCycle(grid):
+    <span class="comment"># Get dimensions of the grid</span>
+    n = len(grid)
+    m = len(grid[0])
+    
+    <span class="comment"># Initialize visited array</span>
+    visited = [[False] * m for _ in range(n)]
+    
+    <span class="comment"># Directions for adjacent cells: up, right, down, left</span>
+    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    
+    <span class="comment"># Iterate through each cell in the grid</span>
+    for i in range(n):
+        for j in range(m):
+            <span class="comment"># If the cell is not visited, start BFS</span>
+            if not visited[i][j]:
+                <span class="comment"># Get the value of the current cell</span>
+                value = grid[i][j]
+                
+                <span class="comment"># Initialize queue for BFS and parent map</span>
+                queue = deque([(i, j, -1, -1)])  # (row, col, parent_row, parent_col)
+                visited[i][j] = True
+                
+                while queue:
+                    row, col, pr, pc = queue.popleft()
+                    
+                    <span class="comment"># Check all four directions</span>
+                    for dr, dc in directions:
+                        nr, nc = row + dr, col + dc
+                        
+                        <span class="comment"># Skip if out of bounds or different value</span>
+                        if nr < 0 or nr >= n or nc < 0 or nc >= m or grid[nr][nc] != value:
+                            continue
+                        
+                        <span class="comment"># Skip if this is the parent cell</span>
+                        if nr == pr and nc == pc:
+                            continue
+                        
+                        <span class="comment"># If already visited, we found a cycle</span>
+                        if visited[nr][nc]:
+                            return True
+                        
+                        <span class="comment"># Mark as visited and add to queue</span>
+                        visited[nr][nc] = True
+                        queue.append((nr, nc, row, col))
+    
+    <span class="comment"># No cycle found</span>
+    return False</pre>
+        
+        <div class="key-insight">
+            <p><strong>BFS vs. DFS:</strong> Both approaches work well for this problem. The DFS approach is more concise and easier to implement with recursion, while the BFS approach might be more efficient for certain grid structures. The core logic of tracking parents to avoid false cycle detection remains the same in both approaches.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biggest Island Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .grid {
+            font-family: monospace;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .grid td {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .land {
+            background-color: #8bc34a;
+            color: white;
+        }
+        .water {
+            background-color: #03a9f4;
+            color: white;
+        }
+        .biggest-island {
+            background-color: #ff9800;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Biggest Island Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Biggest Island (Maximum Area of Island)</strong></p>
+        <p>
+            Given a 2D grid map where '1' represents land and '0' represents water, find the biggest island in the grid. An island is a connected group of 1's (land cells) connected horizontally or vertically (not diagonally). The area of an island is the number of cells with a value 1 in the island.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre>
+[
+  [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+  [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
+  [0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
+]</pre>
+            <p><strong>Output:</strong> 6</p>
+            <p><strong>Explanation:</strong> The biggest island has an area of 6 cells (the group of 1's in the bottom right).</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre>
+[
+  [0, 0, 0, 0, 0, 0, 0, 0]
+]</pre>
+            <p><strong>Output:</strong> 0</p>
+            <p><strong>Explanation:</strong> There's no island in the grid, so the biggest island has an area of 0.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The grid's length and width don't exceed 50.</li>
+            <li>The grid contains only 0's and 1's.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find the largest area of an island in a given grid. Here, an island is defined as a group of connected 1's (land cells) that are adjacent horizontally or vertically (not diagonally). The area of an island is simply the number of land cells in that island.
+        </p>
+        <p>
+            For example, in a grid like this:
+        </p>
+        <pre>
+[1, 1, 0]
+[0, 1, 0]
+[0, 0, 1]</pre>
+        <p>
+            There are two islands:
+        </p>
+        <ul>
+            <li>The first island has 3 land cells connected together in an L-shape at the top-left corner.</li>
+            <li>The second island has 1 land cell at the bottom-right corner.</li>
+        </ul>
+        <p>
+            The biggest island has an area of 3.
+        </p>
+        <p>
+            The key challenge is to identify all distinct islands, calculate their areas, and return the size of the largest one. If there are no islands at all, the answer would be 0.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            To solve this problem, we can use a graph traversal algorithm like Depth-First Search (DFS) or Breadth-First Search (BFS) to explore each island and calculate its area. The general approach is as follows:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We'll use DFS or BFS to explore each land cell (1) and its connected land cells, calculating the area of the island. We'll keep track of the maximum area encountered.</p>
+        </div>
+        
+        <ol>
+            <li>Iterate through each cell in the grid.</li>
+            <li>If the cell is land (1) and hasn't been visited yet, start a DFS/BFS from this cell.</li>
+            <li>During the traversal, mark cells as visited (to avoid revisiting them) and count the number of land cells in the current island.</li>
+            <li>Update the maximum area found so far.</li>
+            <li>Return the maximum area as the result.</li>
+        </ol>
+        
+        <p>We'll use a simple way to mark cells as visited: we'll modify the original grid by changing visited land cells from 1 to 2 (or some other marker). This avoids using additional space for a visited array.</p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(rows × columns) where rows and columns are the dimensions of the grid. We visit each cell at most once.</li>
+            <li><strong>Space Complexity:</strong> O(rows × columns) in the worst case for the recursion stack if the entire grid is filled with land.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize</strong> a variable <code>maxArea</code> to keep track of the largest island area found so far. Set it to 0 initially.
+            </li>
+            <li>
+                <strong>Iterate</strong> through each cell in the grid:
+                <ul>
+                    <li>If the current cell is land (1), start a DFS/BFS from this cell.</li>
+                    <li>Calculate the area of the island starting from this cell.</li>
+                    <li>Update <code>maxArea</code> if the current island's area is larger.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>DFS function:</strong>
+                <ul>
+                    <li>If the current cell is out of bounds or is not land (1), return 0.</li>
+                    <li>Mark the current cell as visited (change its value to 2).</li>
+                    <li>Recursively explore the four adjacent cells (up, down, left, right).</li>
+                    <li>Return 1 (for the current cell) plus the sum of areas from the four recursive calls.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return</strong> <code>maxArea</code> as the answer.
+            </li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of DFS traversal for Example 1:</strong></p>
+            <p>Consider this part of the grid:</p>
+            <pre>
+[0, 1, 1, 0]
+[0, 1, 1, 0]
+[0, 0, 0, 0]</pre>
+            <p>Step 1: Start at (0, 1) which is land.</p>
+            <pre>
+[0, <b>2</b>, 1, 0]  <-- Mark (0, 1) as visited (2) and count area = 1
+[0, 1, 1, 0]
+[0, 0, 0, 0]</pre>
+            <p>Step 2: Explore adjacent cells of (0, 1). We find (0, 2) and (1, 1) are land.</p>
+            <pre>
+[0, 2, <b>2</b>, 0]  <-- Mark (0, 2) as visited, area = 2
+[0, 1, 1, 0]
+[0, 0, 0, 0]</pre>
+            <p>Step 3: Continue with adjacent cells of (0, 2). We find (1, 2) is land.</p>
+            <pre>
+[0, 2, 2, 0]
+[0, <b>2</b>, 1, 0]  <-- Mark (1, 1) as visited, area = 3
+[0, 0, 0, 0]</pre>
+            <p>Step 4: Explore adjacent cells of (1, 1). We find (1, 2) is land.</p>
+            <pre>
+[0, 2, 2, 0]
+[0, 2, <b>2</b>, 0]  <-- Mark (1, 2) as visited, area = 4
+[0, 0, 0, 0]</pre>
+            <p>Step 5: All adjacent cells are either water or visited. We conclude that the area of this island is 4.</p>
+            <p>We continue this process for all unvisited land cells in the grid, keeping track of the maximum area found.</p>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def maxAreaOfIsland(grid):
+    <span class="comment"># If the grid is empty, return 0</span>
+    if not grid or not grid[0]:
+        return 0
+    
+    rows, cols = len(grid), len(grid[0])
+    max_area = 0
+    
+    <span class="comment"># Helper function to perform DFS and calculate area</span>
+    def dfs(r, c):
+        <span class="comment"># Check if the current cell is out of bounds or not land</span>
+        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] != 1:
+            return 0
+        
+        <span class="comment"># Mark the current cell as visited</span>
+        grid[r][c] = 2
+        
+        <span class="comment"># Explore the four adjacent cells and sum up the areas</span>
+        return 1 + dfs(r+1, c) + dfs(r-1, c) + dfs(r, c+1) + dfs(r, c-1)
+    
+    <span class="comment"># Iterate through each cell in the grid</span>
+    for r in range(rows):
+        for c in range(cols):
+            <span class="comment"># If the current cell is land, calculate the area</span>
+            if grid[r][c] == 1:
+                area = dfs(r, c)
+                max_area = max(max_area, area)
+    
+    return max_area</pre>
+        
+        <div class="key-insight">
+            <p><strong>Note:</strong> The DFS function modifies the original grid to mark visited cells. If you need to preserve the original grid, you should make a copy of it before calling the function or use a separate visited set/array.</p>
+        </div>
+        
+        <h3>Alternative Implementation (BFS):</h3>
+        <pre>
+from collections import deque
+
+def maxAreaOfIsland(grid):
+    <span class="comment"># If the grid is empty, return 0</span>
+    if not grid or not grid[0]:
+        return 0
+    
+    rows, cols = len(grid), len(grid[0])
+    max_area = 0
+    
+    <span class="comment"># Directions for adjacent cells: right, left, down, up</span>
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+    
+    <span class="comment"># Iterate through each cell in the grid</span>
+    for r in range(rows):
+        for c in range(cols):
+            <span class="comment"># If the current cell is land, calculate the area using BFS</span>
+            if grid[r][c] == 1:
+                area = 0
+                queue = deque([(r, c)])
+                grid[r][c] = 2  <span class="comment"># Mark as visited</span>
+                
+                while queue:
+                    curr_r, curr_c = queue.popleft()
+                    area += 1
+                    
+                    <span class="comment"># Explore all four directions</span>
+                    for dr, dc in directions:
+                        new_r, new_c = curr_r + dr, curr_c + dc
+                        
+                        <span class="comment"># Check bounds and if it's unvisited land</span>
+                        if 0 <= new_r < rows and 0 <= new_c < cols and grid[new_r][new_c] == 1:
+                            queue.append((new_r, new_c))
+                            grid[new_r][new_c] = 2  <span class="comment"># Mark as visited</span>
+                
+                max_area = max(max_area, area)
+    
+    return max_area</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command">
+grid = [
+  [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+  [0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
+  [0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
+]
+
+result = maxAreaOfIsland(grid)
+print(result)  # Output: 6</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">6</pre>
+        </div>
+        
+        <h3>Step-by-step Explanation of the DFS Solution:</h3>
+        <p>
+            The DFS solution works by exploring each land cell and all its connected land cells recursively, calculating the area as it goes. Here's a more detailed explanation:
+        </p>
+        <ol>
+            <li>We initialize <code>max_area</code> to 0 to keep track of the largest island encountered.</li>
+            <li>We iterate through each cell in the grid.</li>
+            <li>When we find a land cell (value 1), we start a DFS from that cell to explore the entire island it belongs to.</li>
+            <li>In the DFS function:
+                <ul>
+                    <li>We first check if the current cell is valid (within bounds) and is land (value 1). If not, we return 0.</li>
+                    <li>We mark the current cell as visited by changing its value to 2.</li>
+                    <li>We then recursively explore the four adjacent cells (up, down, left, right).</li>
+                    <li>The area of the current island is 1 (for the current cell) plus the sum of the areas from the four recursive calls.</li>
+                </ul>
+            </li>
+            <li>After calculating the area of the current island, we update <code>max_area</code> if necessary.</li>
+            <li>Finally, we return <code>max_area</code> as the answer.</li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>DFS vs. BFS:</strong> Both approaches have the same time and space complexity for this problem. DFS is typically simpler to implement with recursion, while BFS often uses a queue. The choice between them doesn't significantly impact the solution's efficiency for this particular problem.</p>
+        </div>
+    </div>
+</body>
+</html>

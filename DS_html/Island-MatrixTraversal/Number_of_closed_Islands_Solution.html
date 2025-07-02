@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Closed Islands Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .grid {
+            font-family: monospace;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .grid td {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .land {
+            background-color: #8bc34a;
+            color: white;
+        }
+        .water {
+            background-color: #03a9f4;
+            color: white;
+        }
+        .closed-island {
+            background-color: #ff9800;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Number of Closed Islands Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Number of Closed Islands (LeetCode #1254)</strong></p>
+        <p><a href="https://leetcode.com/problems/number-of-closed-islands/description/" target="_blank">https://leetcode.com/problems/number-of-closed-islands/description/</a></p>
+        <p>
+            Given a 2D grid consists of <strong>0s (land)</strong> and <strong>1s (water)</strong>. An island is a maximal 4-directionally connected group of 0s and a closed island is an island totally (all left, top, right, bottom) surrounded by 1s.
+        </p>
+        <p>Return the number of closed islands.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong></p>
+            <pre>[
+  [1,1,1,1,1,1,1,0],
+  [1,0,0,0,0,1,1,0],
+  [1,0,1,0,1,1,1,0],
+  [1,0,0,0,0,1,0,1],
+  [1,1,1,1,1,1,1,0]
+]</pre>
+            <p><strong>Output:</strong> 2</p>
+            <p><strong>Explanation:</strong> Islands in gray are closed because they are completely surrounded by water (group of 1s).</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong></p>
+            <pre>[
+  [0,0,1,0,0],
+  [0,1,0,1,0],
+  [0,1,1,1,0]
+]</pre>
+            <p><strong>Output:</strong> 1</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong></p>
+            <pre>[
+  [1,1,1,1,1,1,1],
+  [1,0,0,0,0,0,1],
+  [1,0,1,1,1,0,1],
+  [1,0,1,0,1,0,1],
+  [1,0,1,1,1,0,1],
+  [1,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1]
+]</pre>
+            <p><strong>Output:</strong> 2</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= grid.length, grid[0].length <= 100</li>
+            <li>0 <= grid[i][j] <= 1</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to count the number of <strong>closed islands</strong> in a 2D grid. Let's clarify the key concepts:
+        </p>
+        <ul>
+            <li><strong>Land:</strong> Represented by 0s in the grid.</li>
+            <li><strong>Water:</strong> Represented by 1s in the grid.</li>
+            <li><strong>Island:</strong> A group of land cells (0s) that are connected horizontally or vertically (4-directionally).</li>
+            <li><strong>Closed Island:</strong> An island that is completely surrounded by water (1s) on all sides. This means the island doesn't touch the boundary of the grid.</li>
+        </ul>
+        <p>
+            An important point to note is that islands that touch the boundary of the grid cannot be closed islands since they are not completely surrounded by water. Our task is to count only the closed islands.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> A closed island is an island that doesn't have any land cells on the boundary of the grid. If any cell of an island is at the grid's boundary, that island is not closed.</p>
+        </div>
+        
+        <p>
+            In Example 1, there are two closed islands. One is a 4-cell island in the center, and the other is a 1-cell island near it. All other land cells that touch the boundary are not considered closed islands.
+        </p>
+        
+        <p>
+            In Example 3, there are two closed islands inside a larger border of water (1s). The shape is like a donut with two holes, and each hole is a closed island.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We can solve this problem using a Depth-First Search (DFS) or Breadth-First Search (BFS) approach. The key insight is to identify islands and check if they are closed.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Strategy:</strong> We'll use DFS to explore each unvisited land cell, checking if the island it belongs to touches the boundary of the grid. If the island doesn't touch any boundary, it's a closed island.</p>
+        </div>
+        
+        <p>Here's the approach:</p>
+        <ol>
+            <li>Iterate through each cell in the grid.</li>
+            <li>If the cell is land (0) and hasn't been visited yet, start DFS from this cell.</li>
+            <li>During DFS, mark visited cells to avoid revisiting them.</li>
+            <li>While exploring the island, check if any land cell is on the boundary of the grid. If so, this island is not a closed island.</li>
+            <li>If after exploring the entire island, we find that none of its cells touch the boundary, increment our count of closed islands.</li>
+        </ol>
+        
+        <p>However, there's an optimization we can make:</p>
+        
+        <div class="key-insight">
+            <p><strong>Optimization:</strong> Instead of checking each cell to see if it's on the boundary, we can iterate only through interior cells (i.e., skip the boundary cells) to start our DFS. Then, during DFS, if we encounter a boundary cell, we know the island is not closed.</p>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n*m) where n is the number of rows and m is the number of columns in the grid. We visit each cell at most once.</li>
+            <li><strong>Space Complexity:</strong> O(n*m) for the recursion stack in the worst case if all cells are land and form a snake-like pattern.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize a counter</strong> for closed islands to 0.
+            </li>
+            <li>
+                <strong>Iterate through interior cells</strong> (i.e., cells that are not on the boundary):
+                <ul>
+                    <li>For each cell (i, j) where 1 < i < rows-1 and 1 < j < cols-1:</li>
+                    <ul>
+                        <li>If the cell is land (0) and hasn't been visited, start DFS from this cell.</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>DFS function:</strong>
+                <ul>
+                    <li>Mark the current cell as visited (change its value to 2).</li>
+                    <li>Check if the current cell is on the boundary of the grid. If so, flag that the island is not closed.</li>
+                    <li>Recursively call DFS on all adjacent land cells (up, down, left, right).</li>
+                    <li>Return whether the island is closed or not.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>After DFS</strong>, if the island is closed, increment the counter.
+            </li>
+            <li>
+                <strong>Return the counter</strong> as the number of closed islands.
+            </li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization for Example 1:</strong></p>
+            <pre>
+Grid: 
+[1, 1, 1, 1, 1, 1, 1, 0]
+[1, 0, 0, 0, 0, 1, 1, 0]
+[1, 0, 1, 0, 1, 1, 1, 0]
+[1, 0, 0, 0, 0, 1, 0, 1]
+[1, 1, 1, 1, 1, 1, 1, 0]
+
+Start iterating through interior cells (row 1 to 3, col 1 to 6):
+
+At (1, 1), found land cell. Start DFS.
+Explore island and mark cells as visited (value 2).
+This island doesn't touch boundary, so it's a closed island.
+Increment counter to 1.
+
+At (2, 3), found land cell. Start DFS.
+Explore island and mark cells as visited.
+This island doesn't touch boundary, so it's a closed island.
+Increment counter to 2.
+
+All other interior land cells are already visited.
+
+Final count: 2 closed islands.</pre>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def closedIsland(grid):
+    <span class="comment"># Initialize counter for closed islands</span>
+    count = 0
+    
+    <span class="comment"># Iterate through interior cells only (skipping the boundary)</span>
+    for i in range(1, len(grid)-1):
+        for j in range(1, len(grid[i])-1):
+            <span class="comment"># If the cell is land and hasn't been visited yet</span>
+            if grid[i][j] == 0:
+                <span class="comment"># Start DFS and increment count if the island is closed</span>
+                count += explore(i, j, grid)
+    
+    return count
+
+def explore(row, col, grid):
+    <span class="comment"># Check if current cell is on the boundary</span>
+    if row == 0 or col == 0 or row == len(grid)-1 or col == len(grid[row])-1:
+        return 0  <span class="comment"># Not a closed island</span>
+    
+    <span class="comment"># Initialize as closed island</span>
+    ans = 1
+    
+    <span class="comment"># Mark cell as visited</span>
+    grid[row][col] = 2
+    
+    <span class="comment"># Get all adjacent cells</span>
+    nbrs = getNeighbors(row, col, grid)
+    
+    <span class="comment"># Explore all adjacent land cells</span>
+    for nr, nc in nbrs:
+        if grid[nr][nc] == 0:
+            <span class="comment"># If any connected component touches the boundary, island is not closed</span>
+            if explore(nr, nc, grid) == 0:
+                ans = 0
+    
+    return ans
+
+def getNeighbors(row, col, grid):
+    <span class="comment"># Return all adjacent cells</span>
+    nbrs = []
+    
+    <span class="comment"># Up</span>
+    if row > 0:
+        nbrs.append((row-1, col))
+    
+    <span class="comment"># Left</span>
+    if col > 0:
+        nbrs.append((row, col-1))
+    
+    <span class="comment"># Down</span>
+    if row < len(grid)-1:
+        nbrs.append((row+1, col))
+    
+    <span class="comment"># Right</span>
+    if col < len(grid[row])-1:
+        nbrs.append((row, col+1))
+    
+    return nbrs</pre>
+        
+        <div class="key-insight">
+            <p><strong>Note on the DFS Logic:</strong> The DFS function returns 0 if the island is not closed (touches the boundary) and 1 if it is closed. If any part of the island touches the boundary, the entire island is not closed. This information is propagated up through the recursion.</p>
+        </div>
+        
+        <h3>Alternative BFS Implementation:</h3>
+        <pre>
+from collections import deque
+
+def closedIsland(grid):
+    rows, cols = len(grid), len(grid[0])
+    count = 0
+    
+    <span class="comment"># Iterate through interior cells only</span>
+    for i in range(1, rows-1):
+        for j in range(1, cols-1):
+            <span class="comment"># If cell is land and not visited</span>
+            if grid[i][j] == 0:
+                <span class="comment"># Check if it's a closed island using BFS</span>
+                if isClosed(grid, i, j):
+                    count += 1
+    
+    return count
+
+def isClosed(grid, startRow, startCol):
+    rows, cols = len(grid), len(grid[0])
+    queue = deque([(startRow, startCol)])
+    grid[startRow][startCol] = 2  <span class="comment"># Mark as visited</span>
+    isClosed = True
+    
+    <span class="comment"># Directions: up, down, left, right</span>
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    
+    while queue:
+        row, col = queue.popleft()
+        
+        <span class="comment"># Check if cell is on boundary</span>
+        if row == 0 or col == 0 or row == rows-1 or col == cols-1:
+            isClosed = False
+        
+        <span class="comment"># Check all four directions</span>
+        for dr, dc in directions:
+            newRow, newCol = row + dr, col + dc
+            
+            <span class="comment"># If valid cell and land and not visited</span>
+            if 0 <= newRow < rows and 0 <= newCol < cols and grid[newRow][newCol] == 0:
+                grid[newRow][newCol] = 2  <span class="comment"># Mark as visited</span>
+                queue.append((newRow, newCol))
+    
+    return isClosed</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command">
+grid = [
+    [1,1,1,1,1,1,1,0],
+    [1,0,0,0,0,1,1,0],
+    [1,0,1,0,1,1,1,0],
+    [1,0,0,0,0,1,0,1],
+    [1,1,1,1,1,1,1,0]
+]
+
+result = closedIsland(grid)
+print(result)  # Output: 2</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">2</pre>
+        </div>
+        
+        <h3>Detailed Explanation of the DFS Logic:</h3>
+        <p>
+            The key to this problem is how we determine if an island is closed. An island is closed if none of its cells touch the boundary of the grid. In our DFS function:
+        </p>
+        <ol>
+            <li>We check if the current cell is on the boundary. If it is, we immediately return 0, indicating this is not a closed island.</li>
+            <li>We mark the current cell as visited (value 2) and explore all its neighbors.</li>
+            <li>If any of the connected cells lead to a path that touches the boundary, we propagate this information back by setting ans = 0.</li>
+            <li>If none of the connected cells touch the boundary, we return 1, indicating this is a closed island.</li>
+        </ol>
+        <p>
+            This approach ensures that an island is only counted as closed if all of its cells are completely surrounded by water (1s).
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Optimization:</strong> Notice that we only start our DFS from interior cells (not on the boundary). This is because any island that includes a boundary cell is automatically not closed. This saves us from having to check boundary cells as starting points.</p>
+        </div>
+    </div>
+</body>
+</html>

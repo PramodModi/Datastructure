@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Distinct Islands Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table.grid {
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        table.grid td {
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .land {
+            background-color: #8bc34a;
+            color: white;
+        }
+        .water {
+            background-color: #03a9f4;
+            color: white;
+        }
+        .visited {
+            background-color: #ffeb3b;
+            color: #333;
+        }
+        .distinct-1 {
+            background-color: #f44336;
+            color: white;
+        }
+        .distinct-2 {
+            background-color: #9c27b0;
+            color: white;
+        }
+        .distinct-3 {
+            background-color: #ff9800;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Number of Distinct Islands Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Number of Distinct Islands</strong></p>
+        <p><a href="https://takeuforward.org/data-structure/number-of-distinct-islands/" target="_blank">https://takeuforward.org/data-structure/number-of-distinct-islands/</a></p>
+        <p>
+            Given a boolean 2D matrix grid of size N x M. You have to find the number of distinct islands where a group of connected 1s (horizontally or vertically) forms an island. Two islands are considered to be distinct if and only if one island is equal to another (not rotated or reflected).
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre>
+Input: grid = 
+[
+    [1, 1, 0, 0, 0], 
+    [1, 1, 0, 0, 0], 
+    [0, 0, 0, 1, 1], 
+    [0, 0, 0, 1, 1]
+]
+Output: 1
+Explanation: Island at the top left corner is the same as the island at the bottom right corner.</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre>
+Input: grid = 
+[
+    [1, 1, 0, 1, 1], 
+    [1, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 1], 
+    [1, 1, 0, 1, 1]
+]
+Output: 3
+Explanation: There are 3 distinct islands. The top left, top right, and bottom right islands are all distinct in shape.</pre>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem is an extension of the standard "Number of Islands" problem. However, instead of just counting the total number of islands, we need to count the number of <em>distinct</em> islands based on their shapes.
+        </p>
+        <p>
+            To understand what makes islands distinct, consider the following:
+        </p>
+        <ul>
+            <li>Islands are groups of connected 1's (horizontally or vertically).</li>
+            <li>Two islands are considered the same (not distinct) if they have the same shape, regardless of their position in the grid.</li>
+            <li>Rotations and reflections are not considered when determining if two islands are the same.</li>
+        </ul>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> To determine if two islands have the same shape, we need a way to represent the shape of an island in a position-independent manner.</p>
+        </div>
+        
+        <p>
+            For example, in Example 1, there are two islands: one in the top-left corner and one in the bottom-right corner. Both islands are 2×2 squares, so they have the same shape, and therefore we count them as 1 distinct island.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            The key challenge in this problem is finding a way to represent the shape of an island in a manner that can be compared with other islands. One effective approach is to use relative coordinates:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Strategy:</strong> For each island, we'll perform a DFS traversal and record the relative coordinates of each cell with respect to the first cell of the island. This gives us a unique "signature" for each island shape.</p>
+        </div>
+        
+        <p>Here's the high-level approach:</p>
+        <ol>
+            <li>Iterate through each cell in the grid.</li>
+            <li>When we find a land cell (value 1), start a DFS to explore the island.</li>
+            <li>During the DFS, record the relative coordinates of each cell with respect to the starting cell.</li>
+            <li>Convert these coordinates into a string representation and add it to a set.</li>
+            <li>The number of elements in the set at the end will be the number of distinct islands.</li>
+        </ol>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(N × M) where N is the number of rows and M is the number of columns in the grid. We visit each cell at most once.</li>
+            <li><strong>Space Complexity:</strong> O(N × M) in the worst case for the recursion stack if all cells are part of one island, plus the space needed to store the distinct island shapes.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize</strong> an empty set to store the unique shapes of islands.
+            </li>
+            <li>
+                <strong>Iterate</strong> through each cell in the grid:
+                <ul>
+                    <li>If the cell is land (1), start a DFS from this cell.</li>
+                    <li>During the DFS, collect the relative coordinates of each cell with respect to the starting cell.</li>
+                    <li>Convert these coordinates into a string representation and add it to the set.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return</strong> the size of the set, which represents the number of distinct islands.
+            </li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization:</strong></p>
+            <p>Let's consider Example 1:</p>
+            <table class="grid">
+                <tr>
+                    <td class="land">1</td>
+                    <td class="land">1</td>
+                    <td class="water">0</td>
+                    <td class="water">0</td>
+                    <td class="water">0</td>
+                </tr>
+                <tr>
+                    <td class="land">1</td>
+                    <td class="land">1</td>
+                    <td class="water">0</td>
+                    <td class="water">0</td>
+                    <td class="water">0</td>
+                </tr>
+                <tr>
+                    <td class="water">0</td>
+                    <td class="water">0</td>
+                    <td class="water">0</td>
+                    <td class="land">1</td>
+                    <td class="land">1</td>
+                </tr>
+                <tr>
+                    <td class="water">0</td>
+                    <td class="water">0</td>
+                    <td class="water">0</td>
+                    <td class="land">1</td>
+                    <td class="land">1</td>
+                </tr>
+            </table>
+            
+            <p>For the first island starting at (0, 0):</p>
+            <ul>
+                <li>Start at (0, 0), relative coordinate is (0, 0)</li>
+                <li>Visit (0, 1), relative coordinate is (0, 1)</li>
+                <li>Visit (1, 0), relative coordinate is (1, 0)</li>
+                <li>Visit (1, 1), relative coordinate is (1, 1)</li>
+            </ul>
+            <p>Island shape signature: "(0, 0)(0, 1)(1, 0)(1, 1)"</p>
+            
+            <p>For the second island starting at (2, 3):</p>
+            <ul>
+                <li>Start at (2, 3), relative coordinate is (0, 0)</li>
+                <li>Visit (2, 4), relative coordinate is (0, 1)</li>
+                <li>Visit (3, 3), relative coordinate is (1, 0)</li>
+                <li>Visit (3, 4), relative coordinate is (1, 1)</li>
+            </ul>
+            <p>Island shape signature: "(0, 0)(0, 1)(1, 0)(1, 1)"</p>
+            
+            <p>Since both islands have the same signature, we count them as 1 distinct island.</p>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def countOfDistinctIslands(grid):
+    <span class="comment"># Create a set to store unique island shapes</span>
+    s = set()
+    
+    <span class="comment"># Iterate through each cell in the grid</span>
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            <span class="comment"># If the cell is land, start DFS</span>
+            if grid[i][j] == 1:
+                coordinates = []
+                getIsland(i, j, grid, coordinates)
+                <span class="comment"># Add the island shape to the set</span>
+                s.add("".join(coordinates))
+                
+    <span class="comment"># Return the number of distinct islands</span>
+    return len(s)
+
+def getIsland(row, col, grid, coordinates):
+    <span class="comment"># Mark the current cell as visited</span>
+    grid[row][col] = 2
+    
+    <span class="comment"># Add the current cell's relative coordinates (starting cell is (0,0))</span>
+    coordinates.append(str((0, 0)))
+    
+    <span class="comment"># Get all adjacent cells</span>
+    nbrs = getNeighbours(row, col, grid)
+    
+    <span class="comment"># Explore each adjacent cell</span>
+    for nr, nc in nbrs:
+        <span class="comment"># If the adjacent cell is land, record its relative coordinates and continue DFS</span>
+        if grid[nr][nc] == 1:
+            coordinates.append(str((nr - row, nc - col)))
+            getIsland(nr, nc, grid, coordinates)
+
+def getNeighbours(row, col, grid):
+    <span class="comment"># Initialize list to store neighbors</span>
+    nrs = []
+    
+    <span class="comment"># Check up</span>
+    if row > 0:
+        nrs.append((row - 1, col))
+    
+    <span class="comment"># Check down</span>
+    if row < len(grid) - 1:
+        nrs.append((row + 1, col))
+    
+    <span class="comment"># Check left</span>
+    if col > 0:
+        nrs.append((row, col - 1))
+    
+    <span class="comment"># Check right</span>
+    if col < len(grid[row]) - 1:
+        nrs.append((row, col + 1))
+    
+    return nrs</pre>
+        
+        <div class="key-insight">
+            <p><strong>Code Explanation:</strong></p>
+            <ol>
+                <li><strong>Main Function:</strong> <code>countOfDistinctIslands</code> iterates through the grid, finds islands, and collects their shape signatures.</li>
+                <li><strong>DFS Function:</strong> <code>getIsland</code> performs DFS to explore each island and collects relative coordinates of its cells.</li>
+                <li><strong>Helper Function:</strong> <code>getNeighbours</code> returns all valid adjacent cells (up, down, left, right).</li>
+                <li><strong>Shape Representation:</strong> We use a string representation of the relative coordinates to uniquely identify an island's shape.</li>
+            </ol>
+        </div>
+        
+        <h3>Alternative Implementation:</h3>
+        <pre>
+def countOfDistinctIslands1(grid):
+    <span class="comment"># Create a set to store unique island shapes</span>
+    s = set()
+    
+    <span class="comment"># Iterate through each cell in the grid</span>
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            <span class="comment"># If the cell is land, start DFS</span>
+            if grid[i][j] == 1:
+                coordinates = []
+                getIsland1(i, j, grid, coordinates)
+                <span class="comment"># Add the island shape to the set</span>
+                s.add("".join(coordinates))
+                
+    <span class="comment"># Return the number of distinct islands</span>
+    return len(s)
+
+def getIsland1(row, col, grid, coordinates):
+    <span class="comment"># Mark the current cell as visited</span>
+    grid[row][col] = 2
+    
+    <span class="comment"># Add the current cell's relative coordinates (starting cell is (0,0))</span>
+    coordinates.append(str((0, 0)))
+    
+    <span class="comment"># Define directions: down, up, right, left</span>
+    nbrs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    
+    <span class="comment"># Explore each direction</span>
+    for x, y in nbrs:
+        nr = row + x
+        nc = col + y
+        
+        <span class="comment"># Check if the new position is valid and is land</span>
+        if nr >= 0 and nr < len(grid) and nc >= 0 and nc < len(grid[0]) and grid[nr][nc] == 1:
+            <span class="comment"># Add the direction we moved in to the signature</span>
+            coordinates.append(str((x, y)))
+            getIsland1(nr, nc, grid, coordinates)</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command">
+grid = [
+    [1, 1, 0, 0, 0],
+    [1, 1, 0, 0, 0],
+    [0, 0, 0, 1, 1],
+    [0, 0, 0, 1, 1]
+]
+
+result = countOfDistinctIslands(grid)
+print(result)  # Output: 1</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">1</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example Run 2:</strong></p>
+            <pre class="command">
+grid = [
+    [1, 1, 0, 1, 1], 
+    [1, 0, 0, 0, 0], 
+    [0, 0, 0, 0, 1], 
+    [1, 1, 0, 1, 1]
+]
+
+result = countOfDistinctIslands(grid)
+print(result)  # Output: 3</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">3</pre>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Key Insights</h2>
+        <p>
+            The central insight in this problem is how to encode the shape of an island in a way that is position-independent. By using relative coordinates from the starting cell of each island, we create a "signature" for each island shape.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Why relative coordinates work:</strong></p>
+            <ul>
+                <li>Islands with the same shape will have the same set of relative coordinates, regardless of where they are located in the grid.</li>
+                <li>The order in which we visit cells during DFS matters, but we follow a consistent rule (e.g., check up, down, left, right in that order).</li>
+                <li>The string representation of these coordinates serves as a unique identifier for each distinct shape.</li>
+            </ul>
+        </div>
+        
+        <p>
+            Another important aspect is how we mark visited cells. Instead of using a separate visited array, we modify the grid by changing the value from 1 to 2, which ensures we don't revisit cells and simplifies the implementation.
+        </p>
+        
+        <p>
+            In the alternative implementation, we use directional offsets to simplify the neighbor calculation, which is a common pattern in grid traversal problems.
+        </p>
+    </div>
+</body>
+</html>
