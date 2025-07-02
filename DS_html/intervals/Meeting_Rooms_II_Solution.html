@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Rooms II Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .alternative {
+            background-color: #f6ffed;
+            border-left: 5px solid #52c41a;
+            padding: 10px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Meeting Rooms II Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Meeting Rooms II</strong></p>
+        <p><a href="https://leetcode.com/problems/meeting-rooms-ii/" target="_blank">https://leetcode.com/problems/meeting-rooms-ii/</a></p>
+        <p>
+            Given an array of meeting time intervals consisting of start and end times [[s1,e1],[s2,e2],…] (si < ei), find the minimum number of conference rooms required.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example:</strong></p>
+            <p><strong>Input:</strong> [[0, 30],[5, 10],[15, 20]]</p>
+            <p><strong>Output:</strong> 2</p>
+            <p><strong>Explanation:</strong> We need one room for the meeting from [0,30], and another room for the meetings [5,10] and [15,20] (which can use the same room since they don't overlap).</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> [[7,10],[2,4]]</p>
+            <p><strong>Output:</strong> 1</p>
+            <p><strong>Explanation:</strong> The meetings don't overlap, so only one room is needed.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>0 <= intervals.length</li>
+            <li>intervals[i].length == 2</li>
+            <li>0 <= start_i < end_i</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find the minimum number of conference rooms required to accommodate all the meetings. Unlike the Meeting Rooms I problem where we simply needed to determine if a person could attend all meetings, here we need to count how many parallel meetings can occur at the same time.
+        </p>
+        <p>
+            Key insights to understand this problem:
+        </p>
+        <ul>
+            <li>If meetings overlap, they must be scheduled in different rooms.</li>
+            <li>If a meeting ends before another one starts, the same room can be reused.</li>
+            <li>The minimum number of rooms required is equal to the maximum number of concurrent meetings at any point in time.</li>
+        </ul>
+        <p>
+            For example, with intervals [[0, 30],[5, 10],[15, 20]]:
+            <ul>
+                <li>At time 0, meeting [0,30] starts, requiring 1 room.</li>
+                <li>At time 5, meeting [5,10] starts, requiring a second room because [0,30] is still ongoing.</li>
+                <li>At time 10, meeting [5,10] ends, freeing up one room.</li>
+                <li>At time 15, meeting [15,20] starts and can use the freed-up room.</li>
+                <li>At no point do we need more than 2 rooms, so the answer is 2.</li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            There are two main approaches to solve this problem:
+        </p>
+        
+        <h3>Approach 1: Min Heap (Priority Queue)</h3>
+        <p>
+            This approach simulates the allocation and freeing of rooms:
+        </p>
+        <ol>
+            <li>Sort all meetings by their start time.</li>
+            <li>Use a min heap (priority queue) to track the end times of meetings in progress.</li>
+            <li>Iterate through each meeting. For each meeting:</li>
+            <ul>
+                <li>Check if any previous meeting has ended (top of heap ≤ current meeting start).</li>
+                <li>If yes, remove it from the heap (room is freed).</li>
+                <li>Add the current meeting's end time to the heap (allocate a room).</li>
+            </ul>
+            <li>The size of the heap at the end represents the minimum number of rooms required.</li>
+        </ol>
+        
+        <h3>Approach 2: End Time Sorting</h3>
+        <p>
+            An alternative approach is to track rooms using end time sorting:
+        </p>
+        <ol>
+            <li>Sort meetings by their end times.</li>
+            <li>Process each meeting in end time order.</li>
+            <li>If a meeting overlaps with the tracked meeting, we need another room.</li>
+            <li>Otherwise, we can reuse the same room.</li>
+        </ol>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            For Approach 1, we use a min heap (priority queue) because:
+        </p>
+        <ul>
+            <li>It efficiently keeps track of the earliest ending meeting (which is the first one we want to check for reuse).</li>
+            <li>Operations like extracting the minimum and inserting new elements are O(log n).</li>
+            <li>This is more efficient than repeatedly sorting or searching through a list.</li>
+        </ul>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n log n) where n is the number of meetings. The sorting step takes O(n log n) time, and each heap operation takes O(log n) time, which we do n times.</li>
+            <li><strong>Space Complexity:</strong> O(n) for storing the heap, which in the worst case might contain all meetings simultaneously.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <h3>Priority Queue (Min Heap) Approach:</h3>
+        <ol>
+            <li>
+                <strong>Handle edge cases:</strong> If there are no meetings, return 0.
+            </li>
+            <li>
+                <strong>Sort meetings</strong> by their start times to process them in chronological order.
+            </li>
+            <li>
+                <strong>Initialize a min heap</strong> with the end time of the first meeting.
+            </li>
+            <li>
+                <strong>Iterate through remaining meetings:</strong>
+                <ul>
+                    <li>Check if the earliest ending meeting (top of heap) has ended by the time the current meeting starts.</li>
+                    <li>If yes, remove that meeting's end time from the heap (freeing up a room).</li>
+                    <li>Add the current meeting's end time to the heap (allocating a room).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the size of the heap</strong> as the minimum number of rooms required.
+            </li>
+        </ol>
+        
+        <div class="alternative">
+            <h3>Alternative Implementation (End Time Sorting):</h3>
+            <p>This approach sorts meetings by their end times and keeps track of which room is currently occupied:</p>
+            <ol>
+                <li>Sort meetings by their end times.</li>
+                <li>Initialize with the first meeting and one room.</li>
+                <li>For each subsequent meeting, check if it overlaps with the current tracked meeting.</li>
+                <li>If it overlaps, increment the room count.</li>
+                <li>Otherwise, update the current tracked meeting.</li>
+            </ol>
+            <p>This alternative approach is also shown in the code section.</p>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        
+        <h3>Priority Queue Implementation</h3>
+        <pre>
+import heapq as hq
+
+def minMeetingRoom(intervals):
+    <span class="comment"># Handle edge case: no meetings</span>
+    if len(intervals) == 0:
+        return 0
+        
+    <span class="comment"># Sort intervals by start time</span>
+    intervals.sort()
+    
+    <span class="comment"># Initialize a min heap with the end time of first meeting</span>
+    rooms = []
+    interval = intervals[0]
+    hq.heappush(rooms, interval[1])
+    
+    <span class="comment"># Process remaining meetings</span>
+    for i in range(1, len(intervals)):
+        interval = intervals[i]
+        
+        <span class="comment"># If the earliest ending meeting has finished by the time current meeting starts</span>
+        if rooms[0] <= interval[0]:
+            <span class="comment"># Remove the earliest ending meeting (free up a room)</span>
+            hq.heappop(rooms)
+            
+        <span class="comment"># Add current meeting's end time (allocate a room)</span>
+        hq.heappush(rooms, interval[1])
+    
+    <span class="comment"># The size of heap is the minimum rooms needed</span>
+    return len(rooms)</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+intervals = [[0, 30],[5, 10],[15, 20]]
+
+<span class="comment"># Call our function</span>
+minMeetingRoom(intervals)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">2</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Code Execution:</strong>
+        </p>
+        <ol>
+            <li>Input intervals: [[0, 30],[5, 10],[15, 20]]</li>
+            <li>After sorting: [[0, 30],[5, 10],[15, 20]] (already sorted by start time)</li>
+            <li>Initialize heap with end time of first meeting: [30]</li>
+            <li>Process [5,10]: Since 5 < 30, we need another room. Heap becomes [10, 30]</li>
+            <li>Process [15,20]: Since 15 > 10, the meeting [5,10] has ended, so we can reuse that room. Pop 10 from heap and push 20. Heap becomes [20, 30]</li>
+            <li>Final heap size is 2, so we need 2 rooms</li>
+        </ol>
+        
+        <h3>Alternative Implementation (End Time Sorting)</h3>
+        <pre>
+def minMeetingRoom1(intervals):
+    <span class="comment"># Sort intervals based on end times</span>
+    intervals.sort(key = lambda x: x[1])
+    
+    <span class="comment"># Initialize with first meeting</span>
+    temp = intervals[0]
+    count = 1
+    
+    <span class="comment"># Process remaining meetings</span>
+    for i in range(1, len(intervals)):
+        interval = intervals[i]
+        
+        <span class="comment"># Check if current meeting overlaps with tracked meeting</span>
+        if temp[1] > interval[0]:
+            <span class="comment"># Overlap found, need another room</span>
+            count += 1
+        else:
+            <span class="comment"># No overlap, can reuse the room</span>
+            temp = interval
+            
+    return count</pre>
+        
+        <div class="example">
+            <p><strong>Example Run with Alternative Implementation:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+intervals = [[0, 30],[5, 10],[15, 20]]
+
+<span class="comment"># Call our alternative function</span>
+minMeetingRoom1(intervals)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">2</pre>
+        </div>
+        
+        <p>
+            <strong>Note on the Alternative Implementation:</strong> The second implementation gives the correct result for some test cases but may not work correctly for all scenarios. The heap-based approach is more reliable and is the recommended solution for this problem.
+        </p>
+    </div>
+
+</body>
+</html>

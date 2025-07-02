@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert Interval Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Insert Interval Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Insert Interval (LeetCode #57)</strong></p>
+        <p><a href="https://leetcode.com/problems/insert-interval/" target="_blank">https://leetcode.com/problems/insert-interval/</a></p>
+        <p>
+            You are given an array of non-overlapping intervals where intervals[i] = [starti, endi] represent the start and the end of the ith interval and intervals is sorted in ascending order by starti. You are also given an interval newInterval = [start, end] that represents the start and end of another interval.
+        </p>
+        <p>
+            Insert newInterval into intervals such that intervals is still sorted in ascending order by starti and intervals still does not have any overlapping intervals (merge overlapping intervals if necessary).
+        </p>
+        <p>
+            Return intervals after the insertion.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> intervals = [[1,3],[6,9]], newInterval = [2,5]</p>
+            <p><strong>Output:</strong> [[1,5],[6,9]]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [4,8]</p>
+            <p><strong>Output:</strong> [[1,2],[3,10],[12,16]]</p>
+            <p><strong>Explanation:</strong> Because the new interval [4,8] overlaps with [3,5],[6,7],[8,10].</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>0 <= intervals.length <= 10<sup>4</sup></li>
+            <li>intervals[i].length == 2</li>
+            <li>0 <= start<sub>i</sub> <= end<sub>i</sub> <= 10<sup>5</sup></li>
+            <li>intervals is sorted by start<sub>i</sub> in ascending order.</li>
+            <li>newInterval.length == 2</li>
+            <li>0 <= start <= end <= 10<sup>5</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem is about handling intervals in a sorted collection. We need to perform two main operations:
+        </p>
+        <ol>
+            <li><strong>Insert a new interval</strong> while maintaining the sorted order based on start times.</li>
+            <li><strong>Merge any overlapping intervals</strong> to ensure the final collection doesn't have any overlaps.</li>
+        </ol>
+        <p>
+            The challenge lies in correctly identifying where to place the new interval and how to efficiently merge overlaps. The input intervals are already sorted and non-overlapping, which provides a helpful starting point.
+        </p>
+        <p>
+            An interval [a, b] overlaps with another interval [c, d] if and only if b >= c and d >= a. When intervals overlap, they should be merged into a single interval with the start being the minimum of both starts and the end being the maximum of both ends.
+        </p>
+        <p>
+            We need to handle various scenarios like inserting at the beginning, middle, or end of the array, as well as potential multiple overlaps with the new interval.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            The solution uses a straightforward approach consisting of two main steps:
+        </p>
+        <ol>
+            <li><strong>Insert the new interval</strong> into the correct position based on its start value.</li>
+            <li><strong>Merge overlapping intervals</strong> to maintain the non-overlapping property.</li>
+        </ol>
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We use lists to represent the intervals since they allow for easy insertion operations and provide constant-time access to elements by index. The intervals themselves are represented as pairs [start, end], which is a natural representation for intervals.
+        </p>
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the number of intervals. We need to iterate through the array at most twice - once to insert the new interval and once to merge overlapping intervals.</li>
+            <li><strong>Space Complexity:</strong> O(n) for storing the result array.</li>
+        </ul>
+        <p>
+            <strong>Why This Approach Works Well:</strong>
+        </p>
+        <p>
+            This approach leverages the given property that the intervals are already sorted by start times. By inserting the new interval in the correct position first, we maintain this sorted property, which makes the subsequent merging step simpler. The merging step then only needs to compare adjacent intervals to identify overlaps.
+        </p>
+        <p>
+            This is more efficient than alternatives like inserting the new interval and then resorting the entire array, which would have a time complexity of O(n log n).
+        </p>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Insert the new interval in the correct position:</strong>
+                <ul>
+                    <li>Handle the edge case where the array is empty or the first interval's start is greater than or equal to the new interval's start. In this case, insert at the beginning.</li>
+                    <li>Otherwise, iterate through the array to find the correct position where the new interval's start is less than the next interval's start.</li>
+                    <li>If we reach the end without inserting, append the new interval at the end.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Merge overlapping intervals:</strong>
+                <ul>
+                    <li>Start with the first interval as our current interval.</li>
+                    <li>For each subsequent interval, check if it overlaps with the current interval (current.end >= next.start).</li>
+                    <li>If there's an overlap, merge them by taking the minimum of starts and maximum of ends.</li>
+                    <li>If there's no overlap, add the current interval to the result and update the current interval.</li>
+                    <li>After processing all intervals, add the last current interval to the result.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>
+            This approach handles all edge cases efficiently including empty arrays, inserting at the beginning/end, and multiple overlapping intervals.
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def insert(intervals, newInterval):
+    <span class="comment"># PART 1: Insert new interval in the correct position based on start time</span>
+    
+    <span class="comment"># Case 1: Empty array or new interval should be at the beginning</span>
+    if len(intervals) == 0 or intervals[0][0] >= newInterval[0]:
+        intervals.insert(0, newInterval)
+    else:
+        <span class="comment"># Case 2: Find the correct position to insert</span>
+        inserted = False
+        for i in range(1, len(intervals)):
+            interval = intervals[i]
+            <span class="comment"># Insert when we find an interval with start time > new interval's start time</span>
+            if interval[0] > newInterval[0]:
+                intervals.insert(i, newInterval)
+                inserted = True
+                break    
+        <span class="comment"># Case 3: New interval needs to be inserted at the end</span>
+        if not inserted:
+            intervals.append(newInterval)
+            
+    <span class="comment"># PART 2: Merge overlapping intervals</span>
+    result = []  <span class="comment"># To store final result with no overlaps</span>
+    temp = intervals[0]  <span class="comment"># Current interval to compare with others</span>
+    
+    for i in range(1, len(intervals)):
+        <span class="comment"># Check for overlap: current end >= next start</span>
+        if temp[1] >= intervals[i][0]:
+            <span class="comment"># Merge by keeping min start and max end</span>
+            temp = [temp[0], max(temp[1], intervals[i][1])]
+        else:
+            <span class="comment"># No overlap, add current interval to result and move to next</span>
+            result.append(temp)
+            temp = intervals[i]
+    
+    <span class="comment"># Don't forget to add the last interval</span>
+    result.append(temp)
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]]
+newInterval = [4,8]
+
+<span class="comment"># Call our function</span>
+insert(intervals, newInterval)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[[1, 2], [3, 10], [12, 16]]</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Code Execution:</strong>
+        </p>
+        <ol>
+            <li>The new interval [4,8] is inserted between [3,5] and [6,7] because 4 > 3 and 4 < 6.</li>
+            <li>After insertion, the intervals array becomes: [[1,2], [3,5], [4,8], [6,7], [8,10], [12,16]].</li>
+            <li>We start merging with temp = [1,2].</li>
+            <li>Since 2 < 3, there's no overlap, so we add [1,2] to result and set temp = [3,5].</li>
+            <li>Since 5 >= 4, [3,5] and [4,8] overlap, so temp becomes [3,8].</li>
+            <li>Since 8 >= 6, [3,8] and [6,7] overlap, so temp remains [3,8] (max end is still 8).</li>
+            <li>Since 8 >= 8, [3,8] and [8,10] overlap, so temp becomes [3,10].</li>
+            <li>Since 10 < 12, there's no overlap, so we add [3,10] to result and set temp = [12,16].</li>
+            <li>Finally, we add [12,16] to result, giving the final answer: [[1,2], [3,10], [12,16]].</li>
+        </ol>
+    </div>
+
+</body>
+</html>

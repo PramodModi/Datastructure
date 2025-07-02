@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Matching Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .algorithm-step {
+            background-color: #f6f6f6;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calendar Matching Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Calendar Matching</strong></p>
+        <p>
+            Imagine that you want to schedule a meeting of a certain duration with a co-worker. You have access to
+            your calendar and your co-worker's calendar (both of which contain your respective meetings for the
+            day, in the form of [startTime, endTime]), as well as both of your daily bounds (i.e., the earliest
+            and latest times at which you're available for meetings every day, in the form of
+            [earliestTime, latestTime]).
+        </p>
+        <p>
+            Write a function that takes in your calendar, your daily bounds, your co-worker's calendar, your co-worker's daily bounds, and the duration of the meeting that you want to schedule, and that returns a
+            list of all the time blocks (in the form of [startTime, endTime]) during which you could schedule
+            the meeting, ordered from earliest time block to latest.
+        </p>
+        <p>
+            Note that times will be given and should be returned in military time. For example: 8:30, 9:01, and
+            23:56.
+        </p>
+        <p>
+            Also note that the given calendar times will be sorted by start time in ascending order, as you would
+            expect them to appear in a calendar application like Google Calendar.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example:</strong></p>
+            <p><strong>calendar1</strong> = [['9:00', '10:30'], ['12:00', '13:00'], ['16:00', '18:00']]</p>
+            <p><strong>dailyBounds1</strong> = ['9:00', '20:00']</p>
+            <p><strong>calendar2</strong> = [['10:00', '11:30'], ['12:30', '14:30'], ['14:30', '15:00'], ['16:00', '17:00']]</p>
+            <p><strong>dailyBounds2</strong> = ['10:00', '18:30']</p>
+            <p><strong>meetingDuration</strong> = 30</p>
+            <p><strong>Output:</strong> [['11:30', '12:00'], ['15:00', '16:00'], ['18:00', '18:30']]</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find all possible time slots for scheduling a meeting between two people, given their existing calendars and availability bounds. To solve this, we need to understand several key concepts:
+        </p>
+        <ul>
+            <li><strong>Calendars</strong>: Each person has a list of existing meetings in their calendar for the day.</li>
+            <li><strong>Daily Bounds</strong>: Each person has a time range within which they are available for meetings.</li>
+            <li><strong>Meeting Duration</strong>: The new meeting requires a specific amount of time.</li>
+            <li><strong>Available Time Slots</strong>: We need to find all time periods where both people are free and the slot is at least as long as the required meeting duration.</li>
+        </ul>
+        <p>
+            To find these available slots, we need to:
+        </p>
+        <ol>
+            <li>Consider both calendars and both people's daily bounds.</li>
+            <li>Find all times where both people are free.</li>
+            <li>Filter for slots that are long enough for the meeting.</li>
+        </ol>
+        <p>
+            This is essentially an interval merging and gap finding problem. We need to merge all the busy times (meetings) from both calendars, then find the gaps between these busy times that are within both people's availability bounds and long enough for our meeting.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a systematic approach to solve this problem:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> By combining and flattening both calendars, we can identify all time periods where at least one person is busy, and then find the gaps between these periods to determine when both people are free.</p>
+        </div>
+        
+        <p>The algorithm works in these major steps:</p>
+        <ol>
+            <li><strong>Update Calendars with Daily Bounds</strong>: Add the unavailable periods before and after daily bounds to each calendar.</li>
+            <li><strong>Convert Times to Minutes</strong>: For easier comparison and calculation.</li>
+            <li><strong>Merge Both Calendars</strong>: Combine meetings from both calendars while maintaining order.</li>
+            <li><strong>Flatten the Merged Calendar</strong>: Merge overlapping meetings into single blocks.</li>
+            <li><strong>Find Available Time Slots</strong>: Identify gaps between meetings that are long enough.</li>
+            <li><strong>Convert Back to Time Format</strong>: Convert the results from minutes back to time format.</li>
+        </ol>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We use lists to represent time intervals and work with them directly. This is appropriate because:
+        </p>
+        <ul>
+            <li>The problem naturally represents time as intervals [start, end].</li>
+            <li>The operations we need (merging, checking overlaps) are straightforward with this representation.</li>
+            <li>Converting between time strings and minutes (our internal representation) is clean and efficient.</li>
+        </ul>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(c1 + c2) where c1 and c2 are the lengths of the two calendars. Merging and flattening the calendars takes linear time.</li>
+            <li><strong>Space Complexity:</strong> O(c1 + c2) for storing the merged and flattened calendars.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <div class="algorithm-step">
+                    <strong>Update calendars with daily bounds:</strong>
+                    <ul>
+                        <li>Add a meeting from 00:00 to the person's start time</li>
+                        <li>Add a meeting from the person's end time to 23:59</li>
+                        <li>This effectively marks times outside daily bounds as unavailable</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="algorithm-step">
+                    <strong>Convert times to minutes:</strong>
+                    <ul>
+                        <li>Transform all time strings (like "9:00") to minutes since midnight</li>
+                        <li>This makes comparison and duration calculation easier</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="algorithm-step">
+                    <strong>Merge both calendars:</strong>
+                    <ul>
+                        <li>Combine both calendars into a single sorted list</li>
+                        <li>Use a merge approach similar to merge sort</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="algorithm-step">
+                    <strong>Flatten the merged calendar:</strong>
+                    <ul>
+                        <li>Iterate through the merged calendar</li>
+                        <li>Merge any overlapping meetings into single continuous blocks</li>
+                        <li>This creates a list where no meetings overlap</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="algorithm-step">
+                    <strong>Find available time slots:</strong>
+                    <ul>
+                        <li>Iterate through the flattened calendar</li>
+                        <li>For each pair of adjacent meetings, check the gap between them</li>
+                        <li>If the gap is at least as long as the meeting duration, it's a valid slot</li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="algorithm-step">
+                    <strong>Convert back to time format:</strong>
+                    <ul>
+                        <li>Convert the start and end times of each available slot from minutes back to time strings</li>
+                        <li>Return the list of available slots</li>
+                    </ul>
+                </div>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def calendarMatching(calendar1, dailyBounds1, calendar2, dailyBounds2, meetingDuration):
+    <span class="comment"># Update each calendar with daily bounds and convert times to minutes</span>
+    UpdatedCalendar1 = upDateCalendar(calendar1, dailyBounds1)
+    UpdatedCalendar2 = upDateCalendar(calendar2, dailyBounds2)
+    
+    <span class="comment"># Merge both calendars into a single sorted list</span>
+    mergedCalendar = mergeCalendar(UpdatedCalendar1, UpdatedCalendar2)
+    
+    <span class="comment"># Flatten the calendar by merging overlapping meetings</span>
+    flattenedCalendar = flattenCalendar(mergedCalendar)
+    
+    <span class="comment"># Find available slots that meet the duration requirement</span>
+    return getMatchingAvailabilities(flattenedCalendar, meetingDuration)
+
+<span class="comment"># Add meetings before and after daily bounds to mark these times as unavailable</span>
+def upDateCalendar(calendar, dailyBounds):
+    updatedCalendar = calendar[:]
+    updatedCalendar.insert(0, ["0:00", dailyBounds[0]])  <span class="comment"># Add meeting from midnight to start of day</span>
+    updatedCalendar.append([dailyBounds[1], "23:59"])    <span class="comment"># Add meeting from end of day to midnight</span>
+    
+    <span class="comment"># Convert all times from string format to minutes</span>
+    return list(map(lambda m: [timeToMinutes(m[0]), timeToMinutes(m[1])], updatedCalendar))
+
+<span class="comment"># Merge two calendars into one sorted list</span>
+def mergeCalendar(calendar1, calendar2):
+    merged = []
+    i, j = 0, 0
+    
+    <span class="comment"># Standard merge operation from merge sort</span>
+    while i < len(calendar1) and j < len(calendar2):
+        meeting1, meeting2 = calendar1[i], calendar2[j]
+        if meeting1[0] < meeting2[0]:  <span class="comment"># If meeting1 starts earlier</span>
+            merged.append(meeting1)
+            i += 1
+        else:  <span class="comment"># If meeting2 starts earlier or at the same time</span>
+            merged.append(meeting2)
+            j += 1
+            
+    <span class="comment"># Add any remaining meetings from calendar1</span>
+    while i < len(calendar1):
+        merged.append(calendar1[i])
+        i += 1
+        
+    <span class="comment"># Add any remaining meetings from calendar2</span>
+    while j < len(calendar2):
+        merged.append(calendar2[j])
+        j += 1
+        
+    return merged
+
+<span class="comment"># Merge overlapping meetings to create a flattened calendar</span>
+def flattenCalendar(calendar):
+    flattened = []
+    prevMeeting = calendar[0]
+
+    <span class="comment"># Iterate through meetings and merge overlapping ones</span>
+    for i in range(1, len(calendar)):
+        meeting = calendar[i]
+        
+        <span class="comment"># If current meeting overlaps with previous one</span>
+        if prevMeeting[1] >= meeting[0]:
+            <span class="comment"># Merge them by taking the earlier start and later end</span>
+            prevMeeting = [prevMeeting[0], max(prevMeeting[1], meeting[1])]
+        else:
+            <span class="comment"># No overlap, add previous meeting to flattened list</span>
+            flattened.append(prevMeeting)
+            prevMeeting = meeting
+            
+    <span class="comment"># Don't forget to add the last meeting</span>
+    flattened.append(prevMeeting)
+    return flattened
+
+<span class="comment"># Find available slots long enough for the meeting</span>
+def getMatchingAvailabilities(calendar, meetingDuration):
+    matchingAvailabilities = []
+    
+    <span class="comment"># Check each gap between meetings</span>
+    for i in range(1, len(calendar)):
+        prevEnd = calendar[i-1][1]    <span class="comment"># End time of previous meeting</span>
+        nextStart = calendar[i][0]    <span class="comment"># Start time of next meeting</span>
+        availabilityDuration = nextStart - prevEnd  <span class="comment"># Gap duration</span>
+        
+        <span class="comment"># If gap is long enough for the meeting</span>
+        if availabilityDuration >= meetingDuration:
+            matchingAvailabilities.append([prevEnd, nextStart])
+            
+    <span class="comment"># Convert from minutes back to time format</span>
+    return list(map(lambda m: [minutesToTime(m[0]), minutesToTime(m[1])], matchingAvailabilities))
+    
+<span class="comment"># Helper: Convert time string to minutes since midnight</span>
+def timeToMinutes(time):
+    hours, minutes = list(map(int, time.split(":")))
+    return hours * 60 + minutes
+
+<span class="comment"># Helper: Convert minutes since midnight to time string</span>
+def minutesToTime(minutes):
+    hours = minutes // 60
+    mins = minutes % 60
+    hoursString = str(hours)
+    minutesString = "0" + str(mins) if mins < 10 else str(mins)
+    return hoursString + ":" + minutesString</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+calendar1 = [['9:00', '10:30'], ['12:00', '13:00'], ['16:00', '18:00']]
+dailyBounds1 = ['9:00', '20:00']
+calendar2 = [['10:00', '11:30'], ['12:30', '14:30'], ['14:30', '15:00'], ['16:00', '17:00']]
+dailyBounds2 = ['10:00', '18:30']
+meetingDuration = 30
+
+<span class="comment"># Call our function</span>
+calendarMatching(calendar1, dailyBounds1, calendar2, dailyBounds2, meetingDuration)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[['11:30', '12:00'], ['15:00', '16:00'], ['18:00', '18:30']]</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Execution for the Example:</strong>
+        </p>
+        <ol>
+            <li>
+                <strong>Update calendars with daily bounds:</strong>
+                <ul>
+                    <li>calendar1: [['0:00', '9:00'], ['9:00', '10:30'], ['12:00', '13:00'], ['16:00', '18:00'], ['20:00', '23:59']]</li>
+                    <li>calendar2: [['0:00', '10:00'], ['10:00', '11:30'], ['12:30', '14:30'], ['14:30', '15:00'], ['16:00', '17:00'], ['18:30', '23:59']]</li>
+                    <li>Both are converted to minutes</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Merge calendars:</strong>
+                <ul>
+                    <li>Merged result includes all meetings from both calendars in chronological order</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Flatten calendar:</strong>
+                <ul>
+                    <li>Overlapping meetings are combined</li>
+                    <li>For example, calendar1's ['9:00', '10:30'] and calendar2's ['10:00', '11:30'] become a single block from 9:00 to 11:30</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Find available slots:</strong>
+                <ul>
+                    <li>Gap from 11:30 to 12:00 is 30 minutes (exactly meetingDuration)</li>
+                    <li>Gap from 15:00 to 16:00 is 60 minutes (longer than meetingDuration)</li>
+                    <li>Gap from 18:00 to 18:30 is 30 minutes (exactly meetingDuration)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Result:</strong> [['11:30', '12:00'], ['15:00', '16:00'], ['18:00', '18:30']]</li>
+        </ol>
+    </div>
+
+</body>
+</html>

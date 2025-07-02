@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Calendar I Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .bug-fix {
+            background-color: #fff1f0;
+            border-left: 5px solid #ff4d4f;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Calendar I Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: My Calendar I (LeetCode #729)</strong></p>
+        <p><a href="https://leetcode.com/problems/my-calendar-i/" target="_blank">https://leetcode.com/problems/my-calendar-i/</a></p>
+        <p>
+            You are implementing a program to use as your calendar. We can add a new event if adding the event will not cause a double booking.
+        </p>
+        <p>
+            A double booking happens when two events have some non-empty intersection (i.e., some moment is common to both events.).
+        </p>
+        <p>
+            The event can be represented as a pair of integers start and end that represents a booking on the half-open interval [start, end), the range of real numbers x such that start <= x < end.
+        </p>
+        <p>
+            Implement the MyCalendar class:
+        </p>
+        <ul>
+            <li><code>MyCalendar()</code> Initializes the calendar object.</li>
+            <li><code>boolean book(int start, int end)</code> Returns true if the event can be added to the calendar successfully without causing a double booking. Otherwise, return false and do not add the event to the calendar.</li>
+        </ul>
+        
+        <div class="example">
+            <p><strong>Example:</strong></p>
+            <p><strong>Input:</strong> ["MyCalendar", "book", "book", "book"], [[], [10, 20], [15, 25], [20, 30]]</p>
+            <p><strong>Output:</strong> [null, true, false, true]</p>
+            <p><strong>Explanation:</strong></p>
+            <pre>
+MyCalendar myCalendar = new MyCalendar();
+myCalendar.book(10, 20); // return True
+myCalendar.book(15, 25); // return False, It can not be booked because time 15 is already booked by another event.
+myCalendar.book(20, 30); // return True, The event can be booked, as the first event takes every time less than 20, but not including 20.</pre>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>0 <= start < end <= 10<sup>9</sup></li>
+            <li>At most 1000 calls will be made to book.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to implement a calendar system where we can book new events only if they don't overlap with existing events. The key concepts to understand are:
+        </p>
+        <ul>
+            <li><strong>Half-Open Intervals</strong>: Events are represented as intervals [start, end) where the end time is exclusive. This means an event from 10 to 20 includes all times t where 10 ≤ t < 20.</li>
+            <li><strong>Double Booking</strong>: Two events overlap if they share any moment in time. For half-open intervals [a,b) and [c,d), they overlap if and only if a < d AND c < b.</li>
+            <li><strong>Calendar Management</strong>: We need to track all booked events and efficiently check for overlaps when booking a new event.</li>
+        </ul>
+        <p>
+            For example, if we have an event booked from 10 to 20:
+        </p>
+        <ul>
+            <li>An event from 5 to 10 does not overlap (since 10 is included in the new event but excluded from the existing one).</li>
+            <li>An event from 20 to 30 does not overlap (since 20 is excluded from the existing event).</li>
+            <li>An event from 15 to 25 overlaps (since the time range 15-20 is common to both events).</li>
+            <li>An event from 5 to 15 overlaps (since the time range 10-15 is common to both events).</li>
+        </ul>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            There are several ways to approach this problem. The implementation shown uses a binary search approach to efficiently find the correct position for a new event and check for overlaps:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We maintain a sorted list of events. For each new event, we use binary search to efficiently find where it would be inserted and check if it would overlap with adjacent events.</p>
+        </div>
+        
+        <p>
+            The binary search approach works as follows:
+        </p>
+        <ol>
+            <li>We maintain a sorted list of events (sorted by start time).</li>
+            <li>When booking a new event, we use binary search to find its position in the sorted list.</li>
+            <li>During the binary search, we check if the new event overlaps with the event at the middle position.</li>
+            <li>If there's an overlap, we return false; otherwise, we continue the search.</li>
+            <li>After the search concludes, we insert the new event at the correct position.</li>
+        </ol>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We use a simple list (array) to store the events. While a tree-based data structure like a balanced binary search tree would provide better theoretical time complexity for insertions, a list is sufficient for the given constraints (at most 1000 calls) and easier to implement.
+        </p>
+        <p>
+            The events are kept sorted by start time, which allows us to use binary search to efficiently find where a new event should be inserted and to check for overlaps.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong>
+                <ul>
+                    <li>Binary search takes O(log n) time, where n is the number of events.</li>
+                    <li>Insertion into an array takes O(n) time in the worst case due to shifting elements.</li>
+                    <li>Overall, the book operation takes O(n) time.</li>
+                </ul>
+            </li>
+            <li><strong>Space Complexity:</strong> O(n) to store n events.</li>
+        </ul>
+        
+        <p>
+            <strong>Alternative Approaches:</strong>
+        </p>
+        <ul>
+            <li><strong>Brute Force</strong>: Check every existing event for overlap (O(n) time per booking).</li>
+            <li><strong>Tree-based solution</strong>: Use a self-balancing binary search tree for O(log n) insertion and search.</li>
+            <li><strong>Segment tree or interval tree</strong>: More complex data structures specifically designed for interval queries.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize the calendar:</strong>
+                <ul>
+                    <li>Create an empty list to store booked events.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>When booking a new event [start, end):</strong>
+                <ul>
+                    <li>If the calendar is empty, add the event and return true.</li>
+                    <li>Use binary search to find where the new event should be inserted in the sorted list.</li>
+                    <li>During the search, check for overlaps with existing events.</li>
+                    <li>If an overlap is found, return false.</li>
+                    <li>Otherwise, insert the event at the correct position and return true.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Checking for overlap:</strong>
+                <ul>
+                    <li>Two events [a,b) and [c,d) overlap if a < d AND c < b.</li>
+                    <li>If either condition is not met, the events don't overlap.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        
+
+        <pre>
+class MyCalendar(object):
+    def __init__(self):
+        <span class="comment"># Initialize an empty list to store booked events</span>
+        self.intervals = []
+        
+    def book(self, start, end):
+        <span class="comment"># Handle the case when calendar is empty</span>
+        if not self.intervals:
+            self.intervals.append([start, end])
+            return True
+        
+        <span class="comment"># Use binary search to find the correct position for the new event</span>
+        left, right = 0, len(self.intervals)-1
+        
+        while left <= right:
+            mid = left + (right-left)//2
+            
+            <span class="comment"># Check for overlap: [a,b) and [c,d) overlap if a < d AND c < b</span>
+            if start < self.intervals[mid][1] and end > self.intervals[mid][0]:
+                return False  <span class="comment"># Overlap found, cannot book</span>
+                
+            <span class="comment"># Navigate the binary search</span>
+            if self.intervals[mid][0] < start:
+                left = mid + 1  <span class="comment"># Look in the right half</span>
+            else:
+                right = mid - 1  <span class="comment"># Look in the left half</span>
+                
+        <span class="comment"># No overlap found, insert the event at the correct position</span>
+        self.intervals.insert(left, [start, end])
+        return True
+
+
+<span class="comment"># Usage example:</span>
+<span class="comment"># obj = MyCalendar()</span>
+<span class="comment"># param_1 = obj.book(start,end)</span></pre>
+        
+        <div class="example">
+            <p><strong>Example Execution:</strong></p>
+            <pre class="command"><span class="comment"># Create a new calendar</span>
+myCalendar = MyCalendar()
+
+<span class="comment"># Book events</span>
+print(myCalendar.book(10, 20))  <span class="comment"># True - event is booked</span>
+print(myCalendar.book(15, 25))  <span class="comment"># False - overlaps with [10,20)</span>
+print(myCalendar.book(20, 30))  <span class="comment"># True - event is booked</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">True
+False
+True</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Execution Walkthrough:</strong>
+        </p>
+        <ol>
+            <li>
+                <strong>Initialize</strong> myCalendar with an empty intervals list.
+            </li>
+            <li>
+                <strong>Book(10, 20):</strong>
+                <ul>
+                    <li>intervals is empty, so we add [10, 20] and return true.</li>
+                    <li>intervals = [[10, 20]]</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Book(15, 25):</strong>
+                <ul>
+                    <li>Use binary search on intervals = [[10, 20]]</li>
+                    <li>mid = 0, intervals[0] = [10, 20]</li>
+                    <li>Check: 15 < 20 and 25 > 10? Yes, there's an overlap.</li>
+                    <li>Return false, event not booked.</li>
+                    <li>intervals = [[10, 20]]</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Book(20, 30):</strong>
+                <ul>
+                    <li>Use binary search on intervals = [[10, 20]]</li>
+                    <li>mid = 0, intervals[0] = [10, 20]</li>
+                    <li>Check: 20 < 20 and 30 > 10? No, 20 is not less than 20, so no overlap.</li>
+                    <li>intervals[0][0] = 10 < 20, so left = 1</li>
+                    <li>Binary search ends with left = 1, right = -1</li>
+                    <li>Insert [20, 30] at position 1</li>
+                    <li>intervals = [[10, 20], [20, 30]]</li>
+                    <li>Return true, event booked.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+</body>
+</html>

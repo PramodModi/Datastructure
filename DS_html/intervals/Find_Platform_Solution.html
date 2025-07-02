@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Platform Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .bug-fix {
+            background-color: #fff1f0;
+            border-left: 5px solid #ff4d4f;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .compare {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .compare-item {
+            flex: 1;
+            min-width: 300px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find Platform Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Minimum Platforms</strong></p>
+        <p>
+            Given the arrival and departure times of all trains that reach a railway station, the task is to find the minimum number of platforms required for the railway station so that no train waits. We are given two arrays that represent the arrival and departure times of trains that stop.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong></p>
+            <p>arr = [100, 300, 500]</p>
+            <p>dep = [900, 400, 600]</p>
+            <p><strong>Output:</strong> 2</p>
+            <p><strong>Explanation:</strong> The minimum number of platforms required is 2.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong></p>
+            <p>arr = [900, 940, 950, 1100, 1500, 1800]</p>
+            <p>dep = [910, 1200, 1120, 1130, 1900, 2000]</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong> The minimum number of platforms required is 3.</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem is about finding the minimum number of railway platforms needed to accommodate all trains without any waiting. Here are the key points to understand:
+        </p>
+        <ul>
+            <li>Each train has an arrival time and a departure time.</li>
+            <li>A platform can only serve one train at a time.</li>
+            <li>As soon as a train departs, its platform becomes available for another train.</li>
+            <li>We need to find the maximum number of trains that will be at the station simultaneously at any point in time.</li>
+        </ul>
+        <p>
+            This is essentially an interval overlap counting problem, similar to the "Meeting Rooms II" problem. We need to find the maximum number of overlapping intervals at any given time.
+        </p>
+        <p>
+            For example, with arrival times [100, 300, 500] and departure times [900, 400, 600]:
+            <ul>
+                <li>At time 100, train 1 arrives, requiring 1 platform.</li>
+                <li>At time 300, train 2 arrives, requiring 2 platforms.</li>
+                <li>At time 400, train 2 departs, freeing up 1 platform.</li>
+                <li>At time 500, train 3 arrives, requiring 2 platforms again.</li>
+                <li>At time 600, train 3 departs.</li>
+                <li>At time 900, train 1 departs.</li>
+            </ul>
+            The maximum number of platforms used at any time is 2.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            There are two main approaches to solve this problem:
+        </p>
+        
+        <div class="compare">
+            <div class="compare-item">
+                <h3>Approach 1: Min Heap (Priority Queue)</h3>
+                <p>This approach uses a min heap to track the departure times of trains currently at the station:</p>
+                <ol>
+                    <li>Create intervals by pairing arrival and departure times.</li>
+                    <li>Sort intervals by arrival time.</li>
+                    <li>Use a min heap to keep track of departure times of trains at the station.</li>
+                    <li>For each train, check if any previous train has departed before its arrival.</li>
+                    <li>The maximum size of the heap at any point will be the answer.</li>
+                </ol>
+            </div>
+            
+            <div class="compare-item">
+                <h3>Approach 2: Sorting Arrival and Departure Separately</h3>
+                <p>This approach sorts arrival and departure times separately and uses a linear scan:</p>
+                <ol>
+                    <li>Sort arrival and departure times separately.</li>
+                    <li>Use two pointers to track the next arrival and departure.</li>
+                    <li>If the next event is an arrival, increment the platform count.</li>
+                    <li>If the next event is a departure, decrement the platform count.</li>
+                    <li>Track the maximum platform count seen at any time.</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> By treating arrivals and departures as separate events and processing them in chronological order, we can keep track of the exact number of trains at the station at any moment.</p>
+        </div>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            For the heap-based approach, we use:
+        </p>
+        <ul>
+            <li><strong>List of intervals</strong>: To pair arrival and departure times.</li>
+            <li><strong>Min heap</strong>: To efficiently track the earliest departure times. This allows us to quickly determine if a platform can be reused.</li>
+        </ul>
+        <p>
+            For the sorting approach, we simply use:
+        </p>
+        <ul>
+            <li><strong>Two sorted arrays</strong>: One for arrivals and one for departures.</li>
+            <li><strong>Two pointers</strong>: To track the current position in each array.</li>
+        </ul>
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Heap Approach:</strong>
+                <ul>
+                    <li><strong>Time Complexity:</strong> O(n log n) for sorting and heap operations.</li>
+                    <li><strong>Space Complexity:</strong> O(n) for storing intervals and the heap.</li>
+                </ul>
+            </li>
+            <li><strong>Sorting Approach:</strong>
+                <ul>
+                    <li><strong>Time Complexity:</strong> O(n log n) for sorting.</li>
+                    <li><strong>Space Complexity:</strong> O(1) extra space (apart from input arrays).</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <h3>Heap-Based Approach:</h3>
+        <ol>
+            <li>
+                <strong>Create intervals:</strong>
+                <ul>
+                    <li>For each train i, create an interval [arr[i], dep[i]].</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Sort intervals:</strong>
+                <ul>
+                    <li>Sort the intervals by arrival time.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Process intervals:</strong>
+                <ul>
+                    <li>Initialize a min heap with the first train's departure time.</li>
+                    <li>For each subsequent train:</li>
+                    <ul>
+                        <li>If the earliest departure (top of heap) is after this train's arrival, we need a new platform.</li>
+                        <li>Otherwise, we can reuse a platform (pop from heap).</li>
+                        <li>Add this train's departure time to the heap.</li>
+                    </ul>
+                    <li>The final size of the heap is the answer.</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <h3>Sorting Approach:</h3>
+        <ol>
+            <li>
+                <strong>Sort arrival and departure times:</strong>
+                <ul>
+                    <li>Sort both arrival and departure arrays independently.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>Set platform count to 1 (for the first train).</li>
+                    <li>Set result (max platforms) to 1.</li>
+                    <li>Initialize i = 1 (next arrival) and j = 0 (next departure).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Process events chronologically:</strong>
+                <ul>
+                    <li>While there are more arrivals or departures to process:</li>
+                    <ul>
+                        <li>If the next arrival is before or at the next departure, increment platform count.</li>
+                        <li>Otherwise, decrement platform count.</li>
+                        <li>Update result to the maximum platform count seen so far.</li>
+                    </ul>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        
+        <h3>Approach 1: Min Heap Solution</h3>
+        <pre>
+import heapq
+
+def findPlatform(arr, dep):
+    <span class="comment"># Create intervals from arrival and departure times</span>
+    interval = []
+    n = len(arr)
+    for i in range(n):
+        interval.append([arr[i], dep[i]])
+    
+    <span class="comment"># Sort intervals by arrival time</span>
+    interval.sort()
+    
+    <span class="comment"># Initialize min heap with first train's departure time</span>
+    p = []
+    heapq.heappush(p, interval[0][1])
+    
+    <span class="comment"># Track the number of platforms needed</span>
+    number = 1
+    
+    <span class="comment"># Process each subsequent train</span>
+    for i in range(1, n):
+        <span class="comment"># If earliest departure is after current arrival, need new platform</span>
+        if p[0] > interval[i][0]:
+            number += 1
+        else:
+            <span class="comment"># Can reuse a platform, remove earliest departure</span>
+            heapq.heappop(p)
+            
+        <span class="comment"># Add current train's departure to heap</span>
+        heapq.heappush(p, interval[i][1])
+        
+    <span class="comment"># Final heap size is the answer</span>
+    return number</pre>
+        
+        <h3>Approach 2: Sorting Solution</h3>
+
+        <pre>
+def findPlatform1(arr, dep):
+    <span class="comment"># Sort arrival and departure times separately</span>
+    arr.sort()
+    dep.sort()
+    n = len(arr)
+    
+    <span class="comment"># Initialize variables</span>
+    i = 0  <span class="comment"># Pointer for arrivals</span>
+    j = 0  <span class="comment"># Pointer for departures</span>
+    number = 1  <span class="comment"># Current platform count</span>
+    result = 1  <span class="comment"># Maximum platforms needed</span>
+    
+    <span class="comment"># Process events chronologically</span>
+    while i < n and j < n:
+        <span class="comment"># If next event is an arrival</span>
+        if arr[i] <= dep[j]:
+            number += 1  <span class="comment"># Need one more platform</span>
+            i += 1  <span class="comment"># Move to next arrival</span>
+        else:
+            <span class="comment"># Next event is a departure</span>
+            number -= 1  <span class="comment"># Free up one platform</span>
+            j += 1  <span class="comment"># Move to next departure</span>
+            
+        <span class="comment"># Update maximum platforms needed</span>
+        result = max(result, number)
+        
+    <span class="comment"># Return the maximum platforms needed</span>
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Example Run (Heap Approach):</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+arr = [100, 300, 500]
+dep = [900, 400, 600]
+
+<span class="comment"># Call our function</span>
+findPlatform(arr, dep)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">2</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Execution (Heap Approach):</strong>
+        </p>
+        <ol>
+            <li>
+                <strong>Create and sort intervals:</strong>
+                <ul>
+                    <li>intervals = [[100, 900], [300, 400], [500, 600]]</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Initialize heap with first departure:</strong>
+                <ul>
+                    <li>p = [900]</li>
+                    <li>number = 1</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Process interval [300, 400]:</strong>
+                <ul>
+                    <li>Is 900 > 300? Yes, need new platform.</li>
+                    <li>number = 2</li>
+                    <li>Add 400 to heap: p = [400, 900]</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Process interval [500, 600]:</strong>
+                <ul>
+                    <li>Is 400 > 500? No, can reuse platform.</li>
+                    <li>Pop 400 from heap: p = [900]</li>
+                    <li>Add 600 to heap: p = [600, 900]</li>
+                    <li>number remains 2</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Result:</strong> 2 platforms needed</li>
+        </ol>
+        
+        <div class="example">
+            <p><strong>Example Run (Sorting Approach):</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+arr = [900, 940, 950, 1100, 1500, 1800]
+dep = [910, 1200, 1120, 1130, 1900, 2000]
+
+<span class="comment"># Call our function</span>
+findPlatform1(arr, dep)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">3</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Execution (Sorting Approach):</strong>
+        </p>
+        <table>
+            <tr>
+                <th>Event</th>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Platforms</th>
+                <th>Max Platforms</th>
+            </tr>
+            <tr>
+                <td>Arrival</td>
+                <td>900</td>
+                <td>number += 1</td>
+                <td>2</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>Departure</td>
+                <td>910</td>
+                <td>number -= 1</td>
+                <td>1</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>Arrival</td>
+                <td>940</td>
+                <td>number += 1</td>
+                <td>2</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>Arrival</td>
+                <td>950</td>
+                <td>number += 1</td>
+                <td>3</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>Arrival</td>
+                <td>1100</td>
+                <td>number += 1</td>
+                <td>4</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>Departure</td>
+                <td>1120</td>
+                <td>number -= 1</td>
+                <td>3</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>Departure</td>
+                <td>1130</td>
+                <td>number -= 1</td>
+                <td>2</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>Departure</td>
+                <td>1200</td>
+                <td>number -= 1</td>
+                <td>1</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>Arrival</td>
+                <td>1500</td>
+                <td>number += 1</td>
+                <td>2</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>Arrival</td>
+                <td>1800</td>
+                <td>number += 1</td>
+                <td>3</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>Departure</td>
+                <td>1900</td>
+                <td>number -= 1</td>
+                <td>2</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>Departure</td>
+                <td>2000</td>
+                <td>number -= 1</td>
+                <td>1</td>
+                <td>4</td>
+            </tr>
+        </table>
+        <p>Final result: 4 platforms needed</p>
+    </div>
+
+</body>
+</html>

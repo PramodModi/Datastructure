@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge Overlapping Intervals Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Merge Overlapping Intervals Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Merge Intervals (LeetCode #56)</strong></p>
+        <p><a href="https://leetcode.com/problems/merge-intervals/" target="_blank">https://leetcode.com/problems/merge-intervals/</a></p>
+        <p>
+            Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example:</strong></p>
+            <p><strong>Input:</strong></p>
+            <pre>array = [
+  [1, 2],
+  [3, 5],
+  [4, 7],
+  [6, 8],
+  [9, 10]
+]</pre>
+            <p><strong>Output:</strong> [[1,2], [3,8], [9,10]]</p>
+            <p><strong>Explanation:</strong> [3,5] and [4,7] overlap and become [3,7], then [3,7] and [6,8] overlap and become [3,8]. The interval [9,10] doesn't overlap with any other interval.</p>
+        </div>
+        
+        <p>Notes:</p>
+        <ul>
+            <li>[1,5] and [6,7] are not overlapped, as they don't share any common point.</li>
+            <li>[1,5] and [5,7] are considered overlapped since they share point 5.</li>
+            <li>[1,7] and [2,4] are overlapped since the range [2,4] is completely contained within [1,7].</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to merge overlapping intervals to create a set of non-overlapping intervals that cover all the original intervals.
+        </p>
+        <p>
+            Two intervals [a,b] and [c,d] are considered to be overlapping if they share any common point. Mathematically, they overlap if:
+        </p>
+        <ul>
+            <li>b >= c (the end of the first interval is greater than or equal to the start of the second interval), AND</li>
+            <li>d >= a (the end of the second interval is greater than or equal to the start of the first interval)</li>
+        </ul>
+        <p>
+            When intervals overlap, we merge them into a single interval [min(a,c), max(b,d)], taking the minimum of the start times and the maximum of the end times.
+        </p>
+        
+        <div class="visualization">
+            <p><strong>Examples of Overlapping Intervals:</strong></p>
+            <p>Case 1: Partial overlap</p>
+            <pre>[3, 5] and [4, 7] → [3, 7]</pre>
+            <p>Case 2: Complete containment</p>
+            <pre>[1, 10] and [2, 5] → [1, 10]</pre>
+            <p>Case 3: Adjacent intervals (sharing an endpoint)</p>
+            <pre>[1, 3] and [3, 5] → [1, 5]</pre>
+            <p>Case 4: No overlap</p>
+            <pre>[1, 2] and [4, 5] → remain separate</pre>
+        </div>
+        
+        <p>
+            For the given example: [[1,2], [3,5], [4,7], [6,8], [9,10]]
+            <ul>
+                <li>[1,2] doesn't overlap with any other interval, so it remains as is.</li>
+                <li>[3,5] overlaps with [4,7] to form [3,7].</li>
+                <li>[3,7] overlaps with [6,8] to form [3,8].</li>
+                <li>[9,10] doesn't overlap with any other interval, so it remains as is.</li>
+            </ul>
+            The result is [[1,2], [3,8], [9,10]].
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            To solve this problem efficiently, we can use the following approach:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> If we sort the intervals by their start times, then we only need to check if adjacent intervals in the sorted order overlap. This simplifies our merging logic significantly.</p>
+        </div>
+        
+        <p>The algorithm works as follows:</p>
+        <ol>
+            <li>Sort the intervals based on their start times.</li>
+            <li>Initialize the result list with the first interval.</li>
+            <li>For each subsequent interval, check if it overlaps with the last interval in the result.</li>
+            <li>If they overlap, merge them by updating the end time of the last interval in the result.</li>
+            <li>If they don't overlap, add the current interval to the result.</li>
+        </ol>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We use a list (array) to store the intervals and the result. This is a natural choice for this problem because:
+        </p>
+        <ul>
+            <li>We need to sort the intervals, which is easily done with arrays.</li>
+            <li>We need to access the last merged interval, which is efficient with an array.</li>
+            <li>The problem specifies input and output as arrays of intervals.</li>
+        </ul>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n log n) where n is the number of intervals. The sorting step takes O(n log n) time, and the subsequent linear scan takes O(n) time.</li>
+            <li><strong>Space Complexity:</strong> O(n) for storing the sorted intervals and the result array.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Sort the intervals:</strong>
+                <ul>
+                    <li>Sort the intervals array based on the start times of each interval.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>Create an empty result array to store merged intervals.</li>
+                    <li>Set the current interval (temp) to the first interval in the sorted array.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Iterate through the sorted intervals:</strong>
+                <ul>
+                    <li>For each interval in the sorted array:</li>
+                    <ul>
+                        <li>If the current interval's end time is greater than or equal to the next interval's start time, they overlap.</li>
+                        <li>In case of overlap, merge them by updating the end time of the current interval to the maximum of both end times.</li>
+                        <li>If they don't overlap, add the current interval to the result array and update the current interval to the next interval.</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Add the final interval:</strong>
+                <ul>
+                    <li>Add the last current interval to the result array.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Return the array containing all merged intervals.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def mergeOverlappingIntervals(array):
+    <span class="comment"># Sort the array based on start times of intervals</span>
+    sortedArray = sorted(array, key=lambda x: x[0])
+    
+    <span class="comment"># Initialize result array and current interval</span>
+    result = []
+    temp = sortedArray[0]
+    
+    <span class="comment"># Iterate through all intervals</span>
+    for i in range(len(array)):
+        interval = array[i]
+        
+        <span class="comment"># Check if current interval overlaps with the next one</span>
+        if temp[1] >= interval[0]:
+            <span class="comment"># Merge the overlapping intervals</span>
+            temp[1] = max(temp[1], interval[1])
+        else:
+            <span class="comment"># No overlap, add current interval to result and update temp</span>
+            result.append(temp)
+            temp = interval
+            
+    <span class="comment"># Add the last interval</span>
+    result.append(temp)
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+array = [ [1, 2], [3, 5], [4, 7], [6, 8], [9, 10] ]
+
+<span class="comment"># Call our function</span>
+mergeOverlappingIntervals(array)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[[1, 2], [3, 8], [9, 10]]</pre>
+        </div>
+        
+        <p>
+            <strong>Alternative Implementation:</strong>
+        </p>
+        <pre>
+def mergeOverlappingIntervals(array):
+    <span class="comment"># Sort the array based on start times of intervals</span>
+    sortedArray = sorted(array, key=lambda x: x[0])
+    
+    <span class="comment"># Initialize result array and current interval</span>
+    result = []
+    temp = sortedArray[0]
+    
+    <span class="comment"># Iterate through all intervals in sorted order</span>
+    for i in range(1, len(sortedArray)):  <span class="comment"># Start from index 1</span>
+        interval = sortedArray[i]  <span class="comment"># Use sortedArray instead of array</span>
+        
+        <span class="comment"># Check if current interval overlaps with the next one</span>
+        if temp[1] >= interval[0]:
+            <span class="comment"># Merge the overlapping intervals</span>
+            temp[1] = max(temp[1], interval[1])
+        else:
+            <span class="comment"># No overlap, add current interval to result and update temp</span>
+            result.append(temp)
+            temp = interval
+            
+    <span class="comment"># Add the last interval</span>
+    result.append(temp)
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Additional Example:</strong></p>
+            <pre class="command"><span class="comment"># Example input with touching intervals</span>
+array = [[10, 20], [20, 30], [30, 40], [40, 50]]
+
+<span class="comment"># Call our function</span>
+print(mergeOverlappingIntervals(array))</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[[10, 50]]</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Second Example:</strong>
+        </p>
+        <p>
+            In this example, all intervals are adjacent (the end of one is equal to the start of the next). According to our overlap definition, these intervals overlap and should be merged into a single interval [10, 50].  
+        </p>
+        <ul>
+            <li>[10, 20] and [20, 30] overlap at point 20, so they merge to [10, 30]</li>
+            <li>[10, 30] and [30, 40] overlap at point 30, so they merge to [10, 40]</li>
+            <li>[10, 40] and [40, 50] overlap at point 40, so they merge to [10, 50]</li>
+        </ul>
+    </div>
+
+</body>
+</html>

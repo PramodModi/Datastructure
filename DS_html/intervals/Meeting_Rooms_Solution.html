@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeting Rooms Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .bug-fixes {
+            background-color: #fff1f0;
+            border-left: 5px solid #ff4d4f;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Meeting Rooms Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Meeting Rooms</strong></p>
+        <p><a href="https://leetcode.com/problems/meeting-rooms/" target="_blank">https://leetcode.com/problems/meeting-rooms/</a></p>
+        <p>
+            Given an array of meeting time intervals consisting of start and end times [[s1,e1],[s2,e2],…] (si < ei), determine if a person could attend all meetings.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example:</strong></p>
+            <p><strong>Input:</strong> [[0,30],[5,10],[15,20]]</p>
+            <p><strong>Output:</strong> false</p>
+            <p><strong>Explanation:</strong> The meetings [0,30] and [5,10] overlap, so a person cannot attend all meetings.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>0 <= intervals.length</li>
+            <li>intervals[i].length == 2</li>
+            <li>0 <= start_i < end_i</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to determine if a person can attend all the meetings in a given schedule. The key insight is that a person cannot attend two meetings at the same time, so we need to check if any two meetings overlap.
+        </p>
+        <p>
+            For meetings to be attended without conflicts:
+        </p>
+        <ul>
+            <li>No two meetings can overlap, meaning the end time of one meeting must be less than or equal to the start time of the next meeting.</li>
+            <li>If any two meetings overlap, it's impossible to attend all meetings.</li>
+        </ul>
+        <p>
+            For example, in [[0,30],[5,10],[15,20]]:
+            <ul>
+                <li>Meeting [0,30] overlaps with [5,10] because 30 > 5.</li>
+                <li>Meeting [0,30] also overlaps with [15,20] because 30 > 15.</li>
+                <li>Therefore, it's impossible to attend all meetings.</li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            The approach to solve this problem efficiently is straightforward:
+        </p>
+        <ol>
+            <li><strong>Sort the intervals</strong> by their start times.</li>
+            <li><strong>Check adjacent intervals</strong> for overlaps.</li>
+        </ol>
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We use lists to represent the intervals, which is natural for this problem. Sorting the intervals by start time ensures that we only need to check if the end time of each meeting overlaps with the start time of the next meeting.
+        </p>
+        <p>
+            This approach works because if meetings are sorted by start time and there are no overlaps between adjacent meetings, then there will be no overlaps between any pair of meetings.
+        </p>
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n log n) where n is the number of meetings. The sorting step takes O(n log n) time, and the subsequent traversal takes O(n) time.</li>
+            <li><strong>Space Complexity:</strong> O(1) or O(n) depending on the sorting implementation. The space required for the result is O(1) since we only return a boolean.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Handle the edge case:</strong> If there are no meetings or only one meeting, return true as there can't be any conflicts.
+            </li>
+            <li>
+                <strong>Sort the meetings</strong> by their start times.
+            </li>
+            <li>
+                <strong>Iterate through the sorted meetings:</strong>
+                <ul>
+                    <li>For each pair of adjacent meetings, check if the end time of the current meeting is greater than the start time of the next meeting.</li>
+                    <li>If yes, there is an overlap, so return false.</li>
+                    <li>If no, continue checking the next pair.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>If no overlaps are found</strong> after checking all adjacent meetings, return true.
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        
+        <h3>Implementation</h3>
+        <pre>
+def canAttendMeeting(intervals):
+    <span class="comment"># Handle edge cases</span>
+    if len(intervals) <= 1:
+        return True
+    
+    <span class="comment"># Sort intervals based on start times</span>
+    sortedIntervals = sorted(intervals, key=lambda x: x[0])
+    
+    <span class="comment"># Check for overlaps between adjacent meetings</span>
+    for i in range(1, len(sortedIntervals)):
+        <span class="comment"># If end time of previous meeting > start time of current meeting</span>
+        if sortedIntervals[i-1][1] > sortedIntervals[i][0]:
+            return False
+    
+    <span class="comment"># No overlaps found, all meetings can be attended</span>
+    return True</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+intervals = [[0,30],[5,10],[15,20]]
+
+<span class="comment"># Call our function</span>
+canAttendMeeting(intervals)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">False</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Code Execution:</strong>
+        </p>
+        <ol>
+            <li>Input intervals: [[0,30],[5,10],[15,20]]</li>
+            <li>After sorting by start time: [[0,30],[5,10],[15,20]] (already sorted in this case)</li>
+            <li>Comparing intervals[0] = [0,30] and intervals[1] = [5,10]:</li>
+            <li>Since 30 > 5, there is an overlap, so we return False</li>
+            <li>We don't need to check other meetings because the person cannot attend all meetings</li>
+        </ol>
+        
+        <div class="example">
+            <p><strong>Additional Example:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+intervals = [[1,5],[8,10],[15,20]]
+
+<span class="comment"># Call our function</span>
+canAttendMeeting(intervals)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">True</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Second Example:</strong>
+        </p>
+        <ol>
+            <li>Input intervals: [[1,5],[8,10],[15,20]]</li>
+            <li>After sorting: [[1,5],[8,10],[15,20]] (already sorted)</li>
+            <li>Comparing intervals[0] = [1,5] and intervals[1] = [8,10]: Since 5 < 8, no overlap</li>
+            <li>Comparing intervals[1] = [8,10] and intervals[2] = [15,20]: Since 10 < 15, no overlap</li>
+            <li>No overlaps found, so we return True - all meetings can be attended</li>
+        </ol>
+    </div>
+
+</body>
+</html>

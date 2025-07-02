@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge Intervals Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Merge Intervals Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Merge Intervals (LeetCode #56)</strong></p>
+        <p><a href="https://leetcode.com/problems/merge-intervals/" target="_blank">https://leetcode.com/problems/merge-intervals/</a></p>
+        <p>
+            Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> intervals = [[1,3],[2,6],[8,10],[15,18]]</p>
+            <p><strong>Output:</strong> [[1,6],[8,10],[15,18]]</p>
+            <p><strong>Explanation:</strong> Since intervals [1,3] and [2,6] overlap, merge them into [1,6].</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> intervals = [[1,4],[4,5]]</p>
+            <p><strong>Output:</strong> [[1,5]]</p>
+            <p><strong>Explanation:</strong> Intervals [1,4] and [4,5] are considered overlapping.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= intervals.length <= 10<sup>4</sup></li>
+            <li>intervals[i].length == 2</li>
+            <li>0 <= start<sub>i</sub> <= end<sub>i</sub> <= 10<sup>4</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we are given a collection of intervals, and we need to merge all overlapping intervals to produce a list where no two intervals overlap. The result should cover all the time ranges from the original intervals.
+        </p>
+        <p>
+            Key points to understand:
+        </p>
+        <ul>
+            <li>Two intervals [a,b] and [c,d] are considered overlapping if b >= c and d >= a. In simpler terms, they overlap if one interval starts before the other ends.</li>
+            <li>When intervals overlap, we merge them into a single interval [min(a,c), max(b,d)], taking the minimum start time and maximum end time.</li>
+            <li>The input intervals are not necessarily sorted, which adds complexity to the problem.</li>
+            <li>We need to handle multiple overlapping intervals, not just pairs.</li>
+        </ul>
+        <p>
+            For example, if we have intervals [[1,3],[2,6],[8,10],[15,18]], we can see that [1,3] and [2,6] overlap because 3 >= 2. When merged, they become [1,6]. No other intervals overlap, so the final result is [[1,6],[8,10],[15,18]].
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            The approach to this problem involves sorting and linear traversal:
+        </p>
+        <ol>
+            <li><strong>Sort the intervals</strong> based on their start times. This ensures that overlapping intervals will be adjacent in the array.</li>
+            <li><strong>Traverse the sorted intervals</strong> and merge adjacent overlapping ones.</li>
+        </ol>
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We use lists to represent the intervals and the result, which is natural for this problem. Sorting the intervals by start time is crucial because it allows us to identify overlaps by comparing each interval only with the most recently processed one, rather than checking against all previous intervals.
+        </p>
+        <p>
+            This is an example of the "line sweep" approach, where we process intervals in order of their position on the number line. By sorting, we ensure that we only need to look at adjacent intervals for potential overlaps.
+        </p>
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n log n) where n is the number of intervals. The sorting step takes O(n log n) time, and the subsequent traversal takes O(n) time.</li>
+            <li><strong>Space Complexity:</strong> O(n) for storing the sorted intervals and the result array.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Sort the intervals</strong> based on their start times.
+                <p>This is a key step because it puts potentially overlapping intervals next to each other in the array.</p>
+            </li>
+            <li>
+                <strong>Initialize an empty result list</strong> and add the first interval from the sorted list as the current interval to compare against.
+            </li>
+            <li>
+                <strong>Iterate through the remaining sorted intervals</strong> starting from the second interval:
+                <ul>
+                    <li>For each interval, check if it overlaps with the current interval by comparing the current interval's end time with the next interval's start time.</li>
+                    <li>If they overlap (current_end >= next_start), merge them by taking the minimum of start times (which is already the current_start due to sorting) and the maximum of end times.</li>
+                    <li>If they don't overlap, add the current interval to the result list and update the current interval to the next interval.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Add the final current interval</strong> to the result list.
+            </li>
+            <li>
+                <strong>Return the result list</strong> containing all merged intervals.
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def merge(intervals):
+    <span class="comment"># Sort intervals based on start times</span>
+    sortedIntervals = sorted(intervals, key= lambda x:x[0])
+    
+    <span class="comment"># Initialize result list and current interval</span>
+    result = []
+    temp = sortedIntervals[0]  <span class="comment"># Current interval to compare with others</span>
+
+    <span class="comment"># Iterate through remaining intervals</span>
+    for i in range(1, len(sortedIntervals)):
+        interval = sortedIntervals[i]
+        
+        <span class="comment"># Check for overlap: current end >= next start</span>
+        if temp[1] >= interval[0]:
+            <span class="comment"># Merge by keeping min start (already temp[0] due to sorting) and max end</span>
+            temp = [temp[0], max(temp[1], interval[1])]
+        else:
+            <span class="comment"># No overlap, add current interval to result and update current</span>
+            result.append(temp)
+            temp = interval
+            
+    <span class="comment"># Don't forget to add the last interval</span>
+    result.append(temp)
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+intervals = [[1,3],[2,6],[8,10],[15,18]]
+
+<span class="comment"># Call our function</span>
+merge(intervals)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[[1, 6], [8, 10], [15, 18]]</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Code Execution:</strong>
+        </p>
+        <ol>
+            <li>We sort the intervals: [[1,3],[2,6],[8,10],[15,18]] (already sorted by start time in this example)</li>
+            <li>Initialize temp = [1,3] (first interval)</li>
+            <li>For interval [2,6]: Since temp[1] = 3 >= interval[0] = 2, they overlap. Merge to temp = [1,6]</li>
+            <li>For interval [8,10]: Since temp[1] = 6 < interval[0] = 8, no overlap. Add [1,6] to result and set temp = [8,10]</li>
+            <li>For interval [15,18]: Since temp[1] = 10 < interval[0] = 15, no overlap. Add [8,10] to result and set temp = [15,18]</li>
+            <li>Finally, add [15,18] to result</li>
+            <li>Return result = [[1,6],[8,10],[15,18]]</li>
+        </ol>
+    </div>
+
+</body>
+</html>
