@@ -9,60 +9,82 @@
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             color: #333;
-            max-width: 1200px;
-            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
         }
         h1 {
-            color: #2c3e50;
-            text-align: center;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
+            margin: 0;
+            font-size: 1.8em;
         }
-        h2 {
-            color: #3498db;
-            margin-top: 20px;
-            padding-left: 10px;
-            border-left: 4px solid #3498db;
+        .container {
+            display: flex;
+            flex: 1;
         }
-        .folder {
-            margin-bottom: 30px;
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .sidebar {
+            width: 250px;
+            background-color: #f5f5f5;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .folder-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-left: 4px solid transparent;
+        }
+        .folder-item:hover {
+            background-color: #eaeaea;
+        }
+        .folder-item.active {
+            background-color: #e0e0e0;
+            border-left-color: #3498db;
+            font-weight: bold;
         }
         .file-list {
             list-style-type: none;
-            padding-left: 20px;
+            padding-left: 0;
         }
         .file-list li {
             margin: 10px 0;
-            padding: 8px;
+            padding: 12px 15px;
             background-color: #fff;
             border-left: 3px solid #2ecc71;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
         }
         .file-list li:hover {
-            background-color: #f1f1f1;
+            background-color: #f9f9f9;
             transform: translateX(5px);
+        }
+        .files-container h2 {
+            color: #3498db;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            margin-top: 0;
         }
         a {
             text-decoration: none;
             color: #2980b9;
             display: block;
-            padding: 5px;
         }
         a:hover {
             color: #3498db;
             text-decoration: underline;
-        }
-        .timestamp {
-            text-align: center;
-            font-size: 0.8em;
-            color: #7f8c8d;
-            margin-top: 40px;
         }
         .loading {
             text-align: center;
@@ -77,23 +99,53 @@
             border-left: 4px solid #e74c3c;
             margin: 10px 0;
         }
+        .timestamp {
+            text-align: center;
+            font-size: 0.8em;
+            color: #7f8c8d;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #eee;
+        }
+        .no-content {
+            text-align: center;
+            color: #7f8c8d;
+            margin-top: 50px;
+        }
     </style>
 </head>
 <body>
-    <h1>Data Structure Solutions</h1>
+    <header>
+        <h1>Data Structure Solutions</h1>
+    </header>
     
-    <div id="content-container">
-        <p class="loading">Loading folders and files...</p>
+    <div class="container">
+        <!-- Left sidebar for folders -->
+        <div class="sidebar" id="folders-sidebar">
+            <p class="loading">Loading folders...</p>
+        </div>
+        
+        <!-- Main content area for files -->
+        <div class="main-content">
+            <div class="files-container" id="files-container">
+                <p class="loading">Select a folder to view files...</p>
+            </div>
+        </div>
     </div>
-
-    <p class="timestamp" id="timestamp">Last updated: Fetching...</p>
+    
+    <footer>
+        <p class="timestamp" id="timestamp">Last updated: Fetching...</p>
+    </footer>
 
     <script>
+        // Global variables to store data
+        let folderContentsMap = {};
+        
         // Configuration - Update these values with your GitHub repository information
         const config = {
             username: 'PramodModi', // Your GitHub username
             repository: 'Datastructure', // Your repository name
-            branch: 'master', // The branch name (usually 'main' or 'master')
+            branch: 'main', // The branch name (usually 'main' or 'master')
             path: 'DS_html' // The path to your DS_html folder in the repository
         };
 
@@ -111,23 +163,32 @@
             return fileName.toLowerCase().endsWith('.html');
         }
 
-        // Function to sort items (folders first, then files)
-        function sortItems(a, b) {
-            if (a.type === 'dir' && b.type !== 'dir') return -1;
-            if (a.type !== 'dir' && b.type === 'dir') return 1;
-            return a.name.localeCompare(b.name);
-        }
-
-        // Function to create folder HTML structure
-        function createFolderHTML(folderName, files) {
-            const htmlFiles = files.filter(file => isHtmlFile(file.name));
+        // Function to display folder contents in the main area
+        function displayFolderContents(folderName) {
+            const filesContainer = document.getElementById('files-container');
+            const folderData = folderContentsMap[folderName];
             
-            if (htmlFiles.length === 0) return '';
+            // Update active folder in sidebar
+            const folderItems = document.querySelectorAll('.folder-item');
+            folderItems.forEach(item => item.classList.remove('active'));
+            document.querySelector(`[data-folder="${folderName}"]`).classList.add('active');
+            
+            if (!folderData || folderData.length === 0) {
+                filesContainer.innerHTML = '<p class="no-content">No HTML files found in this folder.</p>';
+                return;
+            }
+            
+            // Display HTML files from the folder
+            const htmlFiles = folderData.filter(file => isHtmlFile(file.name));
+            
+            if (htmlFiles.length === 0) {
+                filesContainer.innerHTML = '<p class="no-content">No HTML files found in this folder.</p>';
+                return;
+            }
             
             let html = `
-                <div class="folder">
-                    <h2>${folderName}</h2>
-                    <ul class="file-list">
+                <h2>${folderName}</h2>
+                <ul class="file-list">
             `;
             
             htmlFiles.forEach(file => {
@@ -136,18 +197,15 @@
                 html += `<li><a href="${filePath}" target="_blank">${displayName}</a></li>`;
             });
             
-            html += `
-                    </ul>
-                </div>
-            `;
-            
-            return html;
+            html += '</ul>';
+            filesContainer.innerHTML = html;
         }
 
         // Function to get GitHub repository contents
         async function fetchRepoContents() {
             try {
-                const contentContainer = document.getElementById('content-container');
+                const foldersContainer = document.getElementById('folders-sidebar');
+                const filesContainer = document.getElementById('files-container');
                 const baseApiUrl = `https://api.github.com/repos/${config.username}/${config.repository}/contents/${config.path}`;
                 
                 // Fetch the root contents
@@ -161,30 +219,37 @@
                 const folders = contents.filter(item => item.type === 'dir').sort((a, b) => a.name.localeCompare(b.name));
                 
                 if (folders.length === 0) {
-                    contentContainer.innerHTML = '<p>No folders found containing HTML files.</p>';
+                    foldersContainer.innerHTML = '<p class="no-content">No folders found.</p>';
+                    filesContainer.innerHTML = '<p class="no-content">No folders available.</p>';
                     return;
                 }
                 
                 // Clear loading message
-                contentContainer.innerHTML = '';
+                foldersContainer.innerHTML = '';
                 
-                // Process each folder
+                // Build folder sidebar
                 for (const folder of folders) {
-                    const folderResponse = await fetch(folder.url);
+                    // Create folder item in sidebar
+                    const folderItem = document.createElement('div');
+                    folderItem.className = 'folder-item';
+                    folderItem.setAttribute('data-folder', folder.name);
+                    folderItem.textContent = folder.name;
+                    folderItem.addEventListener('click', () => displayFolderContents(folder.name));
+                    foldersContainer.appendChild(folderItem);
                     
+                    // Fetch and store folder contents
+                    const folderResponse = await fetch(folder.url);
                     if (folderResponse.ok) {
                         const folderContents = await folderResponse.json();
-                        const folderHtml = createFolderHTML(folder.name, folderContents);
-                        
-                        if (folderHtml) {
-                            contentContainer.innerHTML += folderHtml;
-                        }
+                        folderContentsMap[folder.name] = folderContents;
                     }
                 }
                 
-                // If after processing all folders, there's no content
-                if (contentContainer.innerHTML === '') {
-                    contentContainer.innerHTML = '<p>No HTML files found in any folders.</p>';
+                // Select first folder by default
+                if (folders.length > 0) {
+                    const firstFolder = folders[0].name;
+                    document.querySelector(`[data-folder="${firstFolder}"]`).classList.add('active');
+                    displayFolderContents(firstFolder);
                 }
                 
                 // Update timestamp
@@ -192,7 +257,12 @@
                 document.getElementById('timestamp').textContent = `Last updated: ${now.toLocaleString()}`;
             } catch (error) {
                 console.error('Error fetching repository contents:', error);
-                document.getElementById('content-container').innerHTML = `
+                document.getElementById('folders-sidebar').innerHTML = `
+                    <div class="error-message">
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+                document.getElementById('files-container').innerHTML = `
                     <div class="error-message">
                         <p>Error loading repository contents: ${error.message}</p>
                         <p>Please check your GitHub repository configuration.</p>
