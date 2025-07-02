@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Linked List Cycle - Fast & Slow Pointers Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #3498db;
+            margin-top: 20px;
+        }
+        h3 {
+            color: #2980b9;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 15px 0;
+        }
+        .comment {
+            color: #75715e;
+        }
+        .example {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 10px 20px;
+            margin: 20px 0;
+        }
+        .visualization {
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .step-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 10px 20px;
+            margin: 20px 0;
+        }
+        .highlight {
+            background-color: #ffffcc;
+            padding: 2px 4px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .slow {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .fast {
+            color: #3498db;
+            font-weight: bold;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .node {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            background-color: #3498db;
+            color: white;
+            margin: 5px;
+            position: relative;
+        }
+        .node-link {
+            display: inline-block;
+            width: 30px;
+            border-top: 2px solid #2c3e50;
+            margin: 0 -2px;
+            position: relative;
+            top: -15px;
+        }
+        .cycle-link {
+            display: block;
+            width: 50px;
+            height: 50px;
+            border-top: 2px solid #e74c3c;
+            border-right: 2px solid #e74c3c;
+            position: absolute;
+            top: 40px;
+            right: -20px;
+            border-top-right-radius: 10px;
+        }
+        .return-link {
+            display: block;
+            width: 250px;
+            border-bottom: 2px solid #e74c3c;
+            position: absolute;
+            bottom: -30px;
+            right: -20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Linked List Cycle - Fast & Slow Pointers Solution</h1>
+
+<p>Problem URL: <a href="https://leetcode.com/problems/linked-list-cycle/" target="_blank">LeetCode - 141. Linked List Cycle</a></p>
+
+<h2>Problem Statement</h2>
+
+<p>Given <code>head</code>, the head of a linked list, determine if the linked list has a cycle in it.</p>
+
+<p>There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, <code>pos</code> is used to denote the index of the node that tail's next pointer is connected to. <strong>Note that <code>pos</code> is not passed as a parameter</strong>.</p>
+
+<p>Return <code>true</code> if there is a cycle in the linked list. Otherwise, return <code>false</code>.</p>
+
+<div class="example">
+    <h3>Example 1:</h3>
+    <p><strong>Input:</strong> head = [3,2,0,-4], pos = 1</p>
+    <p><strong>Output:</strong> true</p>
+    <p><strong>Explanation:</strong> There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed).</p>
+    <div class="visualization">
+        <div class="node">3</div>
+        <div class="node-link">→</div>
+        <div class="node">2</div>
+        <div class="node-link">→</div>
+        <div class="node">0</div>
+        <div class="node-link">→</div>
+        <div class="node" style="position: relative;">-4
+            <div class="cycle-link"></div>
+            <div class="return-link"></div>
+        </div>
+    </div>
+</div>
+
+<div class="example">
+    <h3>Example 2:</h3>
+    <p><strong>Input:</strong> head = [1,2], pos = 0</p>
+    <p><strong>Output:</strong> true</p>
+    <p><strong>Explanation:</strong> There is a cycle in the linked list, where the tail connects to the 0th node.</p>
+</div>
+
+<div class="example">
+    <h3>Example 3:</h3>
+    <p><strong>Input:</strong> head = [1], pos = -1</p>
+    <p><strong>Output:</strong> false</p>
+    <p><strong>Explanation:</strong> There is no cycle in the linked list.</p>
+</div>
+
+<h2>Understanding the Problem</h2>
+
+<p>A linked list cycle exists when a node's <code>next</code> pointer points back to a previous node in the list, creating a loop. In this problem, we need to determine whether such a cycle exists in the given linked list.</p>
+
+<p>The challenge is to detect the cycle without modifying the original linked list and using only O(1) extra space.</p>
+
+<h2>Approach: Fast & Slow Pointers (Floyd's Cycle-Finding Algorithm)</h2>
+
+<p>For this problem, we'll use the Fast & Slow pointers pattern, also known as Floyd's Cycle-Finding Algorithm or the "Tortoise and Hare" algorithm:</p>
+
+<ol>
+    <li>Use two pointers, <span class="slow">slow</span> and <span class="fast">fast</span>, both starting at the head of the linked list.</li>
+    <li>Move the <span class="slow">slow pointer</span> one step at a time (slow = slow.next).</li>
+    <li>Move the <span class="fast">fast pointer</span> two steps at a time (fast = fast.next.next).</li>
+    <li>If there is no cycle, the <span class="fast">fast pointer</span> will eventually reach the end of the list (fast or fast.next will be null).</li>
+    <li>If there is a cycle, the two pointers will eventually meet at some point inside the cycle.</li>
+</ol>
+
+<div class="step-block">
+    <h3>Why This Approach Works</h3>
+    <p>If there is a cycle, the <span class="fast">fast pointer</span> will eventually catch up to the <span class="slow">slow pointer</span> inside the cycle. This is because the <span class="fast">fast pointer</span> moves one step closer to the <span class="slow">slow pointer</span> in each iteration (since it moves two steps while the <span class="slow">slow pointer</span> moves one).</p>
+</div>
+
+<h2>Algorithm</h2>
+
+<ol>
+    <li>Initialize two pointers, <span class="slow">slow</span> and <span class="fast">fast</span>, both pointing to the head of the linked list.</li>
+    <li>Traverse the linked list with these two pointers:
+        <ul>
+            <li>Move <span class="slow">slow pointer</span> one step at a time</li>
+            <li>Move <span class="fast">fast pointer</span> two steps at a time</li>
+        </ul>
+    </li>
+    <li>If <span class="fast">fast</span> pointer reaches null (fast == null or fast.next == null), there is no cycle in the linked list.</li>
+    <li>If <span class="slow">slow</span> pointer meets <span class="fast">fast pointer</span> at some point, then there is a cycle in the linked list.</li>
+</ol>
+
+<h3>Visualization of the Algorithm</h3>
+
+<p>Let's visualize this for Example 1: head = [3,2,0,-4], pos = 1</p>
+
+<div class="visualization">
+    <table>
+        <tr>
+            <th>Step</th>
+            <th>slow pointer</th>
+            <th>fast pointer</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            <td>Initial</td>
+            <td>3</td>
+            <td>3</td>
+            <td>Initialize both pointers at head</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>0</td>
+            <td>slow moves one step, fast moves two steps</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>0</td>
+            <td>2</td>
+            <td>slow moves one step, fast moves two steps (from -4 back to 2 because of the cycle)</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>-4</td>
+            <td>0</td>
+            <td>slow moves one step, fast moves two steps</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>2</td>
+            <td>2</td>
+            <td>slow moves one step (from -4 back to 2 because of the cycle), fast moves two steps</td>
+        </tr>
+        <tr>
+            <td>Result</td>
+            <td colspan="3">Both pointers meet at node 2, indicating there is a cycle!</td>
+        </tr>
+    </table>
+</div>
+
+<h2>Python Implementation</h2>
+
+<pre class="code-block">
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+def hasCycle(head):
+    # Initialize slow and fast pointers at head
+    slow_pointer = head
+    fast_pointer = head
+    
+    # Traverse the linked list
+    while fast_pointer and fast_pointer.next:
+        # Move slow pointer one step ahead
+        slow_pointer = slow_pointer.next
+        
+        # Move fast pointer two steps ahead
+        fast_pointer = fast_pointer.next.next
+        
+        # If slow and fast pointers meet, there is a cycle
+        if slow_pointer == fast_pointer:
+            return True
+    
+    # If fast pointer reaches the end, there is no cycle
+    return False
+</pre>
+
+<h2>Time and Space Complexity</h2>
+
+<h3>Time Complexity</h3>
+<p><strong>O(n)</strong> where n is the number of nodes in the linked list. In the worst case, we need to traverse the entire list once.</p>
+
+<h3>Space Complexity</h3>
+<p><strong>O(1)</strong> as we only use two pointers regardless of the linked list size.</p>
+
+<h2>Edge Cases and Considerations</h2>
+
+<ul>
+    <li><strong>Empty List:</strong> If the head is null, there is no cycle, and the function returns false.</li>
+    <li><strong>Single Node:</strong> If there's only one node, it will only have a cycle if it points to itself. The algorithm correctly handles this case.</li>
+    <li><strong>No Cycle:</strong> If there's no cycle, the fast pointer will eventually reach the end of the list, and the function will return false.</li>
+    <li><strong>Cycle at Different Positions:</strong> The algorithm works regardless of where the cycle begins in the linked list.</li>
+</ul>
+
+<h2>Alternative Approaches</h2>
+
+<h3>Hash Set Approach</h3>
+<p>Another way to solve this problem is to use a hash set to keep track of nodes we've already seen:</p>
+
+<pre class="code-block">
+def hasCycle(head):
+    visited = set()
+    current = head
+    
+    while current:
+        if current in visited:
+            return True
+        visited.add(current)
+        current = current.next
+    
+    return False
+</pre>
+
+<p>This approach has:</p>
+<ul>
+    <li>Time Complexity: O(n)</li>
+    <li>Space Complexity: O(n)</li>
+</ul>
+
+<p>While this solution is also correct, it uses O(n) extra space, whereas the Fast & Slow pointers approach uses only O(1) extra space.</p>
+
+<h2>Summary</h2>
+
+<p>The Fast & Slow pointers technique is an elegant solution for detecting cycles in linked lists. The key insight is that if a cycle exists, the faster pointer will eventually catch up to the slower pointer, allowing us to detect the presence of a cycle without using additional space.</p>
+
+<p>This problem demonstrates a classic application of the Fast & Slow pointers pattern, which is also useful for finding the middle of a linked list, determining if a linked list is a palindrome, and finding the start of a cycle.</p>
+
+</body>
+</html>
