@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dutch National Flag Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .flag {
+            display: flex;
+            margin: 20px 0;
+        }
+        .flag-red, .flag-white, .flag-blue {
+            height: 50px;
+            flex: 1;
+        }
+        .flag-red {
+            background-color: #AE1C28;
+        }
+        .flag-white {
+            background-color: #FFFFFF;
+            border: 1px solid #ddd;
+        }
+        .flag-blue {
+            background-color: #21468B;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dutch National Flag Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Sort Colors (LeetCode #75)</strong></p>
+        <p><a href="https://leetcode.com/problems/sort-colors/description/" target="_blank">https://leetcode.com/problems/sort-colors/description/</a></p>
+        <p>
+            Given an array containing 0s, 1s and 2s, sort the array in-place. You should treat numbers of the array as objects, hence, we can't count 0s, 1s, and 2s to recreate the array.
+        </p>
+        <p>
+            The flag of the Netherlands consists of three colors: red, white and blue; and since our input array also consists of three different numbers that is why it is called Dutch National Flag problem.
+        </p>
+        <div class="flag">
+            <div class="flag-red"></div>
+            <div class="flag-white"></div>
+            <div class="flag-blue"></div>
+        </div>
+        <p>
+            You must solve this problem without using the library's sort function.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [2,0,2,1,1,0]</p>
+            <p><strong>Output:</strong> [0,0,1,1,2,2]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [2,0,1]</p>
+            <p><strong>Output:</strong> [0,1,2]</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>n == nums.length</li>
+            <li>1 <= n <= 300</li>
+            <li>nums[i] is either 0, 1, or 2.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            The Dutch National Flag Problem is a classic computer science problem that involves sorting an array containing only three distinct values. In this case, we have an array containing 0s, 1s, and 2s that needs to be sorted in-place.
+        </p>
+        <p>
+            The problem is named after the flag of the Netherlands, which consists of three horizontal bands of colors: red (top), white (middle), and blue (bottom). Similarly, our goal is to arrange the three values (0s, 1s, and 2s) in order.
+        </p>
+        <p>
+            Key aspects of this problem:
+        </p>
+        <ul>
+            <li><strong>In-place sorting:</strong> We need to sort the array without using extra space (except for a few variables).</li>
+            <li><strong>No counting:</strong> We can't simply count the occurrences and reconstruct the array.</li>
+            <li><strong>One-pass algorithm:</strong> The optimal solution involves just one pass through the array.</li>
+        </ul>
+        <p>
+            A naive approach would be to use any standard sorting algorithm, which would typically be O(n log n). However, since we know the array contains only three distinct values, we can develop a more efficient algorithm with O(n) time complexity.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a three-pointer approach to solve this problem efficiently:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Divide the array into three sections, each containing one specific value (0, 1, or 2). As we process elements, we maintain these sections by swapping elements to their correct sections.</p>
+        </div>
+        
+        <p>The approach uses three pointers:</p>
+        <ol>
+            <li><strong>left:</strong> Elements to the left of this pointer (excluding the pointer) are 0s.</li>
+            <li><strong>right:</strong> Elements to the right of this pointer (excluding the pointer) are 2s.</li>
+            <li><strong>i:</strong> Current element being processed, all elements between left and i-1 are 1s.</li>
+        </ol>
+        
+        <p>As we iterate through the array with pointer i:</p>
+        <ul>
+            <li>If nums[i] is 0, we swap it with the element at the left pointer and increment both i and left.</li>
+            <li>If nums[i] is 2, we swap it with the element at the right pointer and decrement right, but don't increment i yet (as the swapped element needs to be processed).</li>
+            <li>If nums[i] is 1, we just increment i (as 1 is already in the correct section).</li>
+        </ul>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Three-Pointer Approach:</strong></p>
+            <pre>
+Initial state: nums = [2,0,2,1,1,0], left = 0, i = 0, right = 5
+
+Iteration 1: i = 0, nums[i] = 2
+   Swap with right: [0,0,2,1,1,2], right = 4, i = 0 (don't increment)
+
+Iteration 2: i = 0, nums[i] = 0
+   Swap with left: [0,0,2,1,1,2], left = 1, i = 1
+
+Iteration 3: i = 1, nums[i] = 0
+   Swap with left: [0,0,2,1,1,2], left = 2, i = 2
+
+Iteration 4: i = 2, nums[i] = 2
+   Swap with right: [0,0,1,1,2,2], right = 3, i = 2 (don't increment)
+
+Iteration 5: i = 2, nums[i] = 1
+   Just increment i: i = 3
+
+Iteration 6: i = 3, nums[i] = 1
+   Just increment i: i = 4
+
+Iteration 7: i = 4, nums[i] = 2
+   i = 4 > right = 3, so we're done
+
+Final array: [0,0,1,1,2,2]</pre>
+        </div>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We don't need any additional data structures beyond the three pointers. This approach modifies the array in-place, which satisfies the space complexity requirement.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the length of the array. We process each element at most twice (once when we encounter it, and possibly once more if we swap a 2 into its position).</li>
+            <li><strong>Space Complexity:</strong> O(1) as we only use a constant amount of extra space regardless of input size.</li>
+        </ul>
+        
+        <p>
+            <strong>Why This is Better Than Standard Sorting:</strong>
+        </p>
+        <p>
+            Standard sorting algorithms like QuickSort, MergeSort, etc., have a time complexity of O(n log n), which is less efficient than our O(n) solution. Our solution takes advantage of the fact that there are only three distinct values in the array.
+        </p>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize three pointers:</strong>
+                <ul>
+                    <li><code>left</code> = 0 (to mark the boundary of 0s)</li>
+                    <li><code>right</code> = len(nums) - 1 (to mark the boundary of 2s)</li>
+                    <li><code>i</code> = 0 (current element being processed)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Process the array:</strong>
+                <ul>
+                    <li>While i <= right:</li>
+                    <ul>
+                        <li>If nums[i] is 0:</li>
+                        <ul>
+                            <li>Swap nums[i] and nums[left]</li>
+                            <li>Increment left</li>
+                            <li>Increment i</li>
+                        </ul>
+                        <li>If nums[i] is 2:</li>
+                        <ul>
+                            <li>Swap nums[i] and nums[right]</li>
+                            <li>Decrement right</li>
+                            <li>Don't increment i (need to check the swapped element)</li>
+                        </ul>
+                        <li>If nums[i] is 1:</li>
+                        <ul>
+                            <li>Increment i (1 is already in correct position)</li>
+                        </ul>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the sorted array</strong>
+            </li>
+        </ol>
+        
+        <p>
+            <strong>Important Note:</strong> When we swap with the right pointer, we don't increment i immediately because the element we just swapped in might be a 0 that needs to be processed again. When we swap with the left pointer, we know that we're swapping a 0 into its correct position, so we can safely increment i.
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def sortColors(nums):
+    <span class="comment"># Initialize pointers</span>
+    left = 0         <span class="comment"># Boundary for 0s</span>
+    right = len(nums) - 1  <span class="comment"># Boundary for 2s</span>
+    i = 0            <span class="comment"># Current element</span>
+    
+    <span class="comment"># Process array</span>
+    while i <= right:
+        if nums[i] == 0:
+            <span class="comment"># Swap with left boundary and move both pointers</span>
+            nums[i], nums[left] = nums[left], nums[i]
+            left += 1
+            i += 1
+        elif nums[i] == 2:
+            <span class="comment"># Swap with right boundary and move right pointer only</span>
+            nums[i], nums[right] = nums[right], nums[i]
+            right -= 1
+            <span class="comment"># Don't increment i as the swapped element needs processing</span>
+        else:  <span class="comment"># nums[i] == 1</span>
+            <span class="comment"># 1 is already in correct position, just move forward</span>
+            i += 1
+    
+    return nums</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [2, 0, 2, 1, 1, 0]
+
+<span class="comment"># Call our function</span>
+result = sortColors(nums)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[0, 0, 1, 1, 2, 2]</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Trace:</strong>
+        </p>
+        <table>
+            <tr>
+                <th>Step</th>
+                <th>i</th>
+                <th>left</th>
+                <th>right</th>
+                <th>nums[i]</th>
+                <th>Action</th>
+                <th>Array After Action</th>
+            </tr>
+            <tr>
+                <td>Initial</td>
+                <td>0</td>
+                <td>0</td>
+                <td>5</td>
+                <td>2</td>
+                <td>Swap with right</td>
+                <td>[0, 0, 2, 1, 1, 2]</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>0</td>
+                <td>4</td>
+                <td>0</td>
+                <td>Swap with left</td>
+                <td>[0, 0, 2, 1, 1, 2]</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>1</td>
+                <td>1</td>
+                <td>4</td>
+                <td>0</td>
+                <td>Swap with left</td>
+                <td>[0, 0, 2, 1, 1, 2]</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>2</td>
+                <td>2</td>
+                <td>4</td>
+                <td>2</td>
+                <td>Swap with right</td>
+                <td>[0, 0, 1, 1, 2, 2]</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>2</td>
+                <td>2</td>
+                <td>3</td>
+                <td>1</td>
+                <td>Move i</td>
+                <td>[0, 0, 1, 1, 2, 2]</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>3</td>
+                <td>2</td>
+                <td>3</td>
+                <td>1</td>
+                <td>Move i</td>
+                <td>[0, 0, 1, 1, 2, 2]</td>
+            </tr>
+            <tr>
+                <td>Final</td>
+                <td>4</td>
+                <td>2</td>
+                <td>3</td>
+                <td>-</td>
+                <td>i > right, exit</td>
+                <td>[0, 0, 1, 1, 2, 2]</td>
+            </tr>
+        </table>
+        
+        <div class="example">
+            <p><strong>Second Example:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [2, 0, 1]
+
+<span class="comment"># Call our function</span>
+result = sortColors(nums)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[0, 1, 2]</pre>
+        </div>
+        
+        <p>
+            <strong>Trace for Second Example:</strong>
+        </p>
+        <ol>
+            <li>Initial: i=0, left=0, right=2, nums=[2,0,1]</li>
+            <li>nums[0]=2: Swap with right, nums=[1,0,2], i=0, left=0, right=1</li>
+            <li>nums[0]=1: Just move i, i=1, left=0, right=1</li>
+            <li>nums[1]=0: Swap with left, nums=[0,1,2], i=2, left=1, right=1</li>
+            <li>i=2 > right=1, so we exit the loop</li>
+            <li>Final array: [0,1,2]</li>
+        </ol>
+    </div>
+
+</body>
+</html>

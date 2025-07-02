@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove Duplicates from Sorted Array Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Remove Duplicates from Sorted Array Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Remove Duplicates from Sorted Array (LeetCode #26)</strong></p>
+        <p><a href="https://leetcode.com/problems/remove-duplicates-from-sorted-array/description/" target="_blank">https://leetcode.com/problems/remove-duplicates-from-sorted-array/description/</a></p>
+        <p>
+            Given an integer array nums sorted in non-decreasing order, remove the duplicates in-place such that each unique element appears only once. The relative order of the elements should be kept the same. Then return the number of unique elements in nums.
+        </p>
+        <p>
+            Consider the number of unique elements of nums to be k, to get accepted, you need to do the following things:
+        </p>
+        <ol>
+            <li>Change the array nums such that the first k elements of nums contain the unique elements in the order they were present in nums initially. The remaining elements of nums are not important as well as the size of nums.</li>
+            <li>Return k.</li>
+        </ol>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [1,1,2]</p>
+            <p><strong>Output:</strong> 2, nums = [1,2,_]</p>
+            <p><strong>Explanation:</strong> Your function should return k = 2, with the first two elements of nums being 1 and 2 respectively. It does not matter what you leave beyond the returned k (hence they are underscores).</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [0,0,1,1,1,2,2,3,3,4]</p>
+            <p><strong>Output:</strong> 5, nums = [0,1,2,3,4,_,_,_,_,_]</p>
+            <p><strong>Explanation:</strong> Your function should return k = 5, with the first five elements of nums being 0, 1, 2, 3, and 4 respectively. It does not matter what you leave beyond the returned k (hence they are underscores).</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= nums.length <= 3 * 10<sup>4</sup></li>
+            <li>-100 <= nums[i] <= 100</li>
+            <li>nums is sorted in non-decreasing order.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to remove duplicate elements from a sorted array in-place and return the count of unique elements. Let's break down what this means:
+        </p>
+        <ul>
+            <li><strong>In-place removal:</strong> We need to modify the original array without using additional arrays.</li>
+            <li><strong>First k elements:</strong> After our operation, the first k positions of the array should contain the unique elements in their original order.</li>
+            <li><strong>Return value:</strong> We need to return k, the count of unique elements.</li>
+            <li><strong>Remaining elements:</strong> Elements beyond the first k positions don't matter.</li>
+        </ul>
+        <p>
+            Since the array is already sorted, all duplicates of any element will be adjacent to each other. For example, in [0,0,1,1,1,2,2,3,3,4], all zeros are together, all ones are together, and so on.
+        </p>
+        <p>
+            This makes it easier to identify and handle duplicates because we can simply compare each element with the previous unique element we've found. If they're different, we've found a new unique element.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            For this problem, we'll use the Two Pointers technique:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We can use two pointers - one to keep track of the position for the next unique element (unique), and another to iterate through the array (i).</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Initialize a pointer <code>unique</code> to 0, which represents the position of the last unique element found.</li>
+            <li>Iterate through the array starting from index 1 with pointer <code>i</code>.</li>
+            <li>If the current element at <code>i</code> is different from the element at <code>unique</code>, we've found a new unique element.</li>
+            <li>Increment <code>unique</code> and place the new unique element at that position.</li>
+            <li>Continue iterating until we've processed the entire array.</li>
+            <li>Return <code>unique + 1</code> as the count of unique elements (adding 1 because <code>unique</code> is zero-indexed).</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Two Pointers Approach:</strong></p>
+            <pre>
+Example: nums = [0,0,1,1,1,2,2,3,3,4]
+
+Initialize: unique = 0, i = 1
+
+Iteration 1: i = 1, nums[unique] = 0, nums[i] = 0
+   They're equal, so just increment i: i = 2
+
+Iteration 2: i = 2, nums[unique] = 0, nums[i] = 1
+   They're different, so increment unique: unique = 1
+   Set nums[unique] = nums[i]: nums[1] = 1
+   nums = [0,1,1,1,1,2,2,3,3,4], i = 3
+
+Iteration 3: i = 3, nums[unique] = 1, nums[i] = 1
+   They're equal, so just increment i: i = 4
+
+Iteration 4: i = 4, nums[unique] = 1, nums[i] = 1
+   They're equal, so just increment i: i = 5
+
+Iteration 5: i = 5, nums[unique] = 1, nums[i] = 2
+   They're different, so increment unique: unique = 2
+   Set nums[unique] = nums[i]: nums[2] = 2
+   nums = [0,1,2,1,1,2,2,3,3,4], i = 6
+
+... (continuing the process) ...
+
+Final array: nums = [0,1,2,3,4,2,2,3,3,4]
+Return: unique + 1 = 5</pre>
+        </div>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            This approach doesn't require any additional data structures. We're modifying the array in-place and using two pointers to track our progress, which gives us O(1) space complexity.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the length of the array. We traverse the array once from start to end.</li>
+            <li><strong>Space Complexity:</strong> O(1) as we're only using two pointers regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize pointers:</strong>
+                <ul>
+                    <li>Set <code>unique</code> to 0 (position of the last unique element)</li>
+                    <li>Set <code>i</code> to 1 (to start iterating from the second element)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Iterate through the array:</strong>
+                <ul>
+                    <li>While <code>i < len(nums)</code>:</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Check for unique elements:</strong>
+                <ul>
+                    <li>If <code>nums[unique] != nums[i]</code> (found a new unique element):</li>
+                    <ul>
+                        <li>Increment <code>unique</code></li>
+                        <li>Set <code>nums[unique] = nums[i]</code> (place the new unique element)</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Move to the next element:</strong>
+                <ul>
+                    <li>Increment <code>i</code></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return result:</strong>
+                <ul>
+                    <li>Return <code>unique + 1</code> (the count of unique elements)</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def removeDuplicates(nums):
+    <span class="comment"># Edge case: empty array</span>
+    if not nums:
+        return 0
+        
+    <span class="comment"># Initialize pointer for the position of last unique element</span>
+    unique = 0
+    
+    <span class="comment"># Iterate through the array starting from the second element</span>
+    i = 1
+    while i < len(nums):
+        <span class="comment"># If current element is different from the last unique element</span>
+        if nums[unique] != nums[i]:
+            <span class="comment"># Move unique pointer forward</span>
+            unique += 1
+            <span class="comment"># Place the new unique element at the unique pointer position</span>
+            nums[unique] = nums[i]
+        <span class="comment"># Move to next element</span>
+        i += 1
+        
+    <span class="comment"># Return the count of unique elements (unique + 1 because zero-indexed)</span>
+    return unique + 1</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [1, 1, 2]
+
+<span class="comment"># Call our function</span>
+result = removeDuplicates(nums)
+print(f"Result: {result}, Modified array: {nums}")</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">Result: 2, Modified array: [1, 2, 2]</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Trace for Example 1:</strong>
+        </p>
+        <ol>
+            <li>
+                <strong>Initialize:</strong> unique = 0, i = 1
+                <ul>
+                    <li>nums = [1,1,2]</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Iteration 1:</strong> i = 1
+                <ul>
+                    <li>nums[unique] = 1, nums[i] = 1</li>
+                    <li>They're equal, so just increment i: i = 2</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Iteration 2:</strong> i = 2
+                <ul>
+                    <li>nums[unique] = 1, nums[i] = 2</li>
+                    <li>They're different, so increment unique: unique = 1</li>
+                    <li>Set nums[unique] = nums[i]: nums[1] = 2</li>
+                    <li>nums = [1,2,2], i = 3</li>
+                </ul>
+            </li>
+            <li>
+                <strong>End of loop:</strong> i = 3 >= len(nums), so exit
+            </li>
+            <li>
+                <strong>Return:</strong> unique + 1 = 2
+            </li>
+        </ol>
+        
+        <div class="example">
+            <p><strong>Example Run 2:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [0, 0, 1, 1, 1, 2, 2, 3, 3, 4]
+
+<span class="comment"># Call our function</span>
+result = removeDuplicates(nums)
+print(f"Result: {result}, First {result} elements: {nums[:result]}")</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">Result: 5, First 5 elements: [0, 1, 2, 3, 4]</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Second Example:</strong>
+        </p>
+        <p>
+            The function processes the array [0,0,1,1,1,2,2,3,3,4] and identifies five unique elements: 0, 1, 2, 3, and 4. It modifies the array so that these unique elements appear at the beginning, and returns 5 as the count. The first 5 elements of the modified array are [0,1,2,3,4], which are the unique elements in their original order.
+        </p>
+    </div>
+
+</body>
+</html>

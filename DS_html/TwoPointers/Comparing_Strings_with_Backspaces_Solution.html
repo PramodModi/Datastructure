@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparing Strings containing Backspaces Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Comparing Strings containing Backspaces Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Backspace String Compare (LeetCode #844)</strong></p>
+        <p><a href="https://leetcode.com/problems/backspace-string-compare/description/" target="_blank">https://leetcode.com/problems/backspace-string-compare/description/</a></p>
+        <p>
+            Given two strings s and t, return true if they are equal when both are typed into empty text editors. '#' means a backspace character.
+        </p>
+        <p>
+            Note that after backspacing an empty text, the text will continue empty.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "ab#c", t = "ad#c"</p>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong> Both s and t become "ac".</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = "ab##", t = "c#d#"</p>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong> Both s and t become "".</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> s = "a#c", t = "b"</p>
+            <p><strong>Output:</strong> false</p>
+            <p><strong>Explanation:</strong> s becomes "c" while t becomes "b".</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= s.length, t.length <= 200</li>
+            <li>s and t only contain lowercase letters and '#' characters.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to compare two strings after applying backspaces. In other words, we need to determine if two strings are equal after processing all the backspace characters ('#').
+        </p>
+        <p>
+            The key elements of this problem are:
+        </p>
+        <ul>
+            <li><strong>Backspace Character:</strong> The '#' character represents a backspace, which deletes the previous character if there is one.</li>
+            <li><strong>Empty Text:</strong> If there's a backspace with no preceding character (e.g., at the beginning of a string or after all characters have been deleted), nothing happens.</li>
+            <li><strong>String Comparison:</strong> After all backspaces are processed, we need to check if the resulting strings are identical.</li>
+        </ul>
+        <p>
+            For example:
+        </p>
+        <ul>
+            <li>"ab#c" becomes "ac" (the 'b' is deleted by the '#')</li>
+            <li>"ad#c" becomes "ac" (the 'd' is deleted by the '#')</li>
+            <li>"ab##" becomes "" (both 'a' and 'b' are deleted by the two '#'s)</li>
+            <li>"c#d#" becomes "" (both 'c' and 'd' are deleted by the '#'s)</li>
+        </ul>
+        <p>
+            A naive approach would be to build the final strings by processing each character and then compare them. However, we can solve this more efficiently.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a Two Pointers approach, but with a twist: we'll start from the end of both strings and work backwards.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> By starting from the end of the strings and carefully handling backspaces, we can compare characters that would actually be in the final strings without explicitly building them.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Initialize two pointers, each pointing to the end of one of the strings.</li>
+            <li>For each pointer, find the next valid character (after processing backspaces).</li>
+            <li>Compare these characters - if they're different, the strings are different.</li>
+            <li>Move both pointers to the previous position and repeat.</li>
+            <li>If we reach the beginning of both strings without finding any differences, the strings are equal.</li>
+        </ol>
+        
+        <p>
+            Finding the next valid character requires careful handling of backspaces. We need to skip characters that would be deleted by backspaces and also skip the backspaces themselves.
+        </p>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Process:</strong></p>
+            <pre>
+For s = "ab#c" and t = "ad#c":
+
+Initial state: pointers at the end
+s: a b # c
+         ^
+         
+t: a d # c
+         ^
+
+Step 1: Find next valid char in s
+- pointer at 'c', no backspaces, valid char is 'c'
+
+Step 2: Find next valid char in t
+- pointer at 'c', no backspaces, valid char is 'c'
+
+Step 3: Compare 'c' and 'c' - they match
+
+Step 4: Move pointers back
+s: a b # c
+     ^
+
+t: a d # c
+     ^
+
+Step 5: Find next valid char in s
+- pointer at '#', it's a backspace, skip next char
+- skip 'b'
+- pointer at 'a', valid char is 'a'
+
+Step 6: Find next valid char in t
+- pointer at '#', it's a backspace, skip next char
+- skip 'd'
+- pointer at 'a', valid char is 'a'
+
+Step 7: Compare 'a' and 'a' - they match
+
+Step 8: Move pointers back - both are now before the start of strings
+
+Result: No differences found, return true
+</pre>
+        </div>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We don't need any additional data structures for this approach. We're using two pointers to traverse the strings and a counter to keep track of backspaces. This gives us O(1) space complexity, which is optimal.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n + m) where n and m are the lengths of the two strings. In the worst case, we might need to traverse both strings entirely.</li>
+            <li><strong>Space Complexity:</strong> O(1) as we only use a constant amount of extra space regardless of input size.</li>
+        </ul>
+        
+        <p>
+            <strong>Alternative Approach:</strong>
+        </p>
+        <p>
+            An alternative approach would be to build the final strings after applying backspaces using stacks or string manipulation, and then compare them. This would be simpler to implement but would have O(n + m) space complexity. Our Two Pointers approach is more space-efficient.
+        </p>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize two pointers:</strong>
+                <ul>
+                    <li>pointer1 at the end of string s</li>
+                    <li>pointer2 at the end of string t</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Loop while either pointer is in bounds:</strong>
+                <ul>
+                    <li>Find the next valid character index in s (after handling backspaces)</li>
+                    <li>Find the next valid character index in t (after handling backspaces)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Compare the results:</strong>
+                <ul>
+                    <li>If both indices are negative (< 0), both strings are empty after backspaces, return true</li>
+                    <li>If only one index is negative, one string is empty and the other isn't, return false</li>
+                    <li>If the characters at these indices don't match, return false</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Move the pointers:</strong>
+                <ul>
+                    <li>Move both pointers one position back (index - 1)</li>
+                    <li>Continue the loop</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return true if we reach this point:</strong>
+                <ul>
+                    <li>If we've compared all characters without finding differences, the strings are equal</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <p>
+            <strong>Helper Function: Finding the Next Valid Character</strong>
+        </p>
+        <ol>
+            <li>Initialize a backspace counter to 0</li>
+            <li>While the pointer is in bounds (>= 0):
+                <ul>
+                    <li>If the current character is '#', increment the backspace counter</li>
+                    <li>Else if the backspace counter is positive, decrement it (character is skipped)</li>
+                    <li>Else break the loop (we've found a valid character)</li>
+                    <li>Move the pointer one position back</li>
+                </ul>
+            </li>
+            <li>Return the final pointer position</li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def backspaceCompare(s, t):
+    <span class="comment"># Initialize pointers at the end of both strings</span>
+    pointer1 = len(s) - 1
+    pointer2 = len(t) - 1
+    
+    <span class="comment"># Process characters from right to left</span>
+    while pointer1 >= 0 or pointer2 >= 0:
+        <span class="comment"># Find the next valid character in both strings</span>
+        index1 = getCharacterIndex(s, pointer1)
+        index2 = getCharacterIndex(t, pointer2)
+        
+        <span class="comment"># If both strings are empty after backspaces</span>
+        if index1 < 0 and index2 < 0:
+            return True
+        
+        <span class="comment"># If one string is empty and the other isn't</span>
+        if index1 < 0 or index2 < 0:
+            return False
+        
+        <span class="comment"># If the characters don't match</span>
+        if s[index1] != t[index2]:
+            return False
+        
+        <span class="comment"># Move to previous characters</span>
+        pointer1 = index1 - 1
+        pointer2 = index2 - 1
+    
+    <span class="comment"># If we've processed all characters without finding differences</span>
+    return True
+
+<span class="comment"># Helper function to find the next valid character index</span>
+def getCharacterIndex(string, pointer):
+    backSpace = 0
+    while pointer >= 0:
+        if string[pointer] == "#":
+            <span class="comment"># Found a backspace, increment counter</span>
+            backSpace += 1
+        elif backSpace > 0:
+            <span class="comment"># Character will be deleted by a backspace</span>
+            backSpace -= 1
+        else:
+            <span class="comment"># Found a valid character</span>
+            break
+        pointer -= 1
+    return pointer</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+s = "ab#c"
+t = "ad#c"
+
+<span class="comment"># Call our function</span>
+backspaceCompare(s, t)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">True</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Trace:</strong>
+        </p>
+        <ol>
+            <li>
+                <strong>Initialize:</strong> pointer1 = 3, pointer2 = 3
+            </li>
+            <li>
+                <strong>First iteration:</strong>
+                <ul>
+                    <li>index1 = getCharacterIndex(s, 3) -> pointer = 3, s[3] = 'c' is not '#', return 3</li>
+                    <li>index2 = getCharacterIndex(t, 3) -> pointer = 3, t[3] = 'c' is not '#', return 3</li>
+                    <li>s[3] = 'c', t[3] = 'c', they match</li>
+                    <li>Update: pointer1 = 2, pointer2 = 2</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Second iteration:</strong>
+                <ul>
+                    <li>index1 = getCharacterIndex(s, 2):
+                        <ul>
+                            <li>pointer = 2, s[2] = '#', backSpace = 1</li>
+                            <li>pointer = 1, s[1] = 'b', backSpace = 0 (used to skip 'b')</li>
+                            <li>pointer = 0, s[0] = 'a' is not '#' and backSpace = 0, return 0</li>
+                        </ul>
+                    </li>
+                    <li>index2 = getCharacterIndex(t, 2):
+                        <ul>
+                            <li>pointer = 2, t[2] = '#', backSpace = 1</li>
+                            <li>pointer = 1, t[1] = 'd', backSpace = 0 (used to skip 'd')</li>
+                            <li>pointer = 0, t[0] = 'a' is not '#' and backSpace = 0, return 0</li>
+                        </ul>
+                    </li>
+                    <li>s[0] = 'a', t[0] = 'a', they match</li>
+                    <li>Update: pointer1 = -1, pointer2 = -1</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Third iteration:</strong>
+                <ul>
+                    <li>Both pointers are < 0, exit the loop</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Result:</strong> Return true as all characters matched
+            </li>
+        </ol>
+        
+        <div class="example">
+            <p><strong>Another Example:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+s = "ab##"
+t = "c#d#"
+
+<span class="comment"># Call our function</span>
+backspaceCompare(s, t)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">True</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Second Example:</strong>
+        </p>
+        <p>
+            In this case, both strings become empty after processing the backspaces:
+        </p>
+        <ul>
+            <li>"ab##": The two '#'s delete both 'a' and 'b', resulting in an empty string.</li>
+            <li>"c#d#": The first '#' deletes 'c', and the second '#' deletes 'd', also resulting in an empty string.</li>
+        </ul>
+        <p>
+            Since both resulting strings are empty, they are equal, and the function returns true.
+        </p>
+    </div>
+
+</body>
+</html>

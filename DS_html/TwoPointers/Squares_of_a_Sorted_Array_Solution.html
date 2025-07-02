@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Squares of a Sorted Array Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .naive-approach {
+            background-color: #fff2e8;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Squares of a Sorted Array Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Squares of a Sorted Array (LeetCode #977)</strong></p>
+        <p><a href="https://leetcode.com/problems/squares-of-a-sorted-array/description/" target="_blank">https://leetcode.com/problems/squares-of-a-sorted-array/description/</a></p>
+        <p>
+            Given an integer array nums sorted in non-decreasing order, return an array of the squares of each number sorted in non-decreasing order.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [-4,-1,0,3,10]</p>
+            <p><strong>Output:</strong> [0,1,9,16,100]</p>
+            <p><strong>Explanation:</strong> After squaring, the array becomes [16,1,0,9,100]. After sorting, it becomes [0,1,9,16,100].</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [-7,-3,2,3,11]</p>
+            <p><strong>Output:</strong> [4,9,9,49,121]</p>
+            <p><strong>Explanation:</strong> After squaring, the array becomes [49,9,4,9,121]. After sorting, it becomes [4,9,9,49,121].</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= nums.length <= 10<sup>4</sup></li>
+            <li>-10<sup>4</sup> <= nums[i] <= 10<sup>4</sup></li>
+            <li>nums is sorted in non-decreasing order.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to square each element of a sorted array and return a new array with these squares in sorted order. The key aspects to understand are:
+        </p>
+        <ul>
+            <li><strong>Input order:</strong> The input array is sorted in non-decreasing order (i.e., ascending order).</li>
+            <li><strong>Negative numbers:</strong> The array may contain negative numbers, which when squared, become positive.</li>
+            <li><strong>Output requirement:</strong> The output must be a new array with the squared values in sorted order.</li>
+        </ul>
+        <p>
+            The challenge here is that simply squaring each element will disrupt the sorted order. For example, if we square each element in [-4,-1,0,3,10], we get [16,1,0,9,100], which is no longer sorted.
+        </p>
+        <p>
+            A naive approach would be to square each element and then sort the resulting array, which would have a time complexity of O(n log n) due to the sorting step. However, we can leverage the fact that the original array is already sorted to achieve a more efficient O(n) solution.
+        </p>
+        <p>
+            The key insight is to recognize that the largest squared values will be at the extremes of the array (either the most negative numbers or the largest positive numbers), and the smallest squared values will be near zero.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <div class="naive-approach">
+            <p><strong>Naive Approach:</strong> Square each element and then sort the array.</p>
+            <p>Time Complexity: O(n log n) due to sorting.</p>
+            <p>Space Complexity: O(n) for the result array.</p>
+        </div>
+        
+        <p>Instead, we'll use a more efficient Two Pointers approach:</p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> In a sorted array with negative and positive numbers, the largest squared values will come from either the most negative elements or the largest positive elements.</p>
+        </div>
+        
+        <p>The Two Pointers approach works as follows:</p>
+        <ol>
+            <li>Initialize two pointers: one at the beginning of the array (left) and one at the end (right).</li>
+            <li>Create a new array of the same length to store the result.</li>
+            <li>Start filling the result array from the end (highest index) towards the beginning:</li>
+            <ul>
+                <li>Compare the squares of the elements at the left and right pointers.</li>
+                <li>Place the larger square at the current position in the result array.</li>
+                <li>Move the pointer that gave the larger square (left increases or right decreases).</li>
+            </ul>
+            <li>Continue until all positions in the result array are filled.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Two Pointers Approach:</strong></p>
+            <pre>
+Example: nums = [-4,-1,0,3,10]
+
+Initialize: left = 0, right = 4, result = [0,0,0,0,0], index = 4
+
+Iteration 1: Compare square(nums[left]) and square(nums[right])
+   square(nums[0]) = square(-4) = 16
+   square(nums[4]) = square(10) = 100
+   100 > 16, so result[4] = 100, right = 3
+   result = [0,0,0,0,100], index = 3
+
+Iteration 2: Compare square(nums[left]) and square(nums[right])
+   square(nums[0]) = square(-4) = 16
+   square(nums[3]) = square(3) = 9
+   16 > 9, so result[3] = 16, left = 1
+   result = [0,0,0,16,100], index = 2
+
+Iteration 3: Compare square(nums[left]) and square(nums[right])
+   square(nums[1]) = square(-1) = 1
+   square(nums[3]) = square(3) = 9
+   9 > 1, so result[2] = 9, right = 2
+   result = [0,0,9,16,100], index = 1
+
+Iteration 4: Compare square(nums[left]) and square(nums[right])
+   square(nums[1]) = square(-1) = 1
+   square(nums[2]) = square(0) = 0
+   1 > 0, so result[1] = 1, left = 2
+   result = [0,1,9,16,100], index = 0
+
+Iteration 5: Compare square(nums[left]) and square(nums[right])
+   square(nums[2]) = square(0) = 0
+   square(nums[2]) = square(0) = 0
+   0 >= 0, so result[0] = 0, right = 1
+   result = [0,1,9,16,100], index = -1
+
+Final result: [0,1,9,16,100]</pre>
+        </div>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We use a simple array to store the result. This is sufficient because we're only concerned with placing elements in sorted order and don't need any more complex data structures.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the length of the array. We process each element exactly once.</li>
+            <li><strong>Space Complexity:</strong> O(n) for the result array.</li>
+        </ul>
+        
+        <p>
+            <strong>Advantages of this Approach:</strong>
+        </p>
+        <ul>
+            <li>More efficient than the naive approach (O(n) vs O(n log n)).</li>
+            <li>Handles negative numbers elegantly.</li>
+            <li>Only requires a single pass through the array.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>Set <code>left</code> to 0 (beginning of the array)</li>
+                    <li>Set <code>right</code> to len(nums) - 1 (end of the array)</li>
+                    <li>Create a result array of the same length as nums</li>
+                    <li>Set <code>index</code> to len(nums) - 1 (to fill result from end)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Process the array:</strong>
+                <ul>
+                    <li>While left <= right:</li>
+                    <ul>
+                        <li>Compute square of nums[left]</li>
+                        <li>Compute square of nums[right]</li>
+                        <li>Compare the two squares:</li>
+                        <ul>
+                            <li>If square of nums[right] >= square of nums[left]:</li>
+                            <ul>
+                                <li>Set result[index] = square of nums[right]</li>
+                                <li>Decrement right</li>
+                            </ul>
+                            <li>Else:</li>
+                            <ul>
+                                <li>Set result[index] = square of nums[left]</li>
+                                <li>Increment left</li>
+                            </ul>
+                        </ul>
+                        <li>Decrement index</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return result:</strong>
+                <ul>
+                    <li>Return the filled result array</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def sortedSquares(nums):
+    <span class="comment"># Initialize pointers at the beginning and end of array</span>
+    left, right = 0, len(nums) - 1
+    
+    <span class="comment"># Initialize result array and index to fill from end</span>
+    result = [0] * len(nums)
+    index = len(nums) - 1
+    
+    <span class="comment"># Process array from both ends towards middle</span>
+    while left <= right:
+        <span class="comment"># Calculate squares of left and right elements</span>
+        left_square = nums[left] * nums[left]
+        right_square = nums[right] * nums[right]
+        
+        <span class="comment"># Compare squares and place larger one in result</span>
+        if right_square >= left_square:
+            result[index] = right_square
+            right -= 1  <span class="comment"># Move right pointer inward</span>
+        else:
+            result[index] = left_square
+            left += 1   <span class="comment"># Move left pointer inward</span>
+        
+        <span class="comment"># Move to previous position in result array</span>
+        index -= 1
+    
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [-4, -1, 0, 3, 10]
+
+<span class="comment"># Call our function</span>
+result = sortedSquares(nums)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[0, 1, 9, 16, 100]</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Trace for Example 1:</strong>
+        </p>
+        <table>
+            <tr>
+                <th>Iteration</th>
+                <th>left</th>
+                <th>right</th>
+                <th>nums[left]</th>
+                <th>nums[right]</th>
+                <th>left_square</th>
+                <th>right_square</th>
+                <th>index</th>
+                <th>result</th>
+            </tr>
+            <tr>
+                <td>Initial</td>
+                <td>0</td>
+                <td>4</td>
+                <td>-4</td>
+                <td>10</td>
+                <td>16</td>
+                <td>100</td>
+                <td>4</td>
+                <td>[0,0,0,0,0]</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>3</td>
+                <td>-4</td>
+                <td>3</td>
+                <td>16</td>
+                <td>9</td>
+                <td>3</td>
+                <td>[0,0,0,0,100]</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>1</td>
+                <td>3</td>
+                <td>-1</td>
+                <td>3</td>
+                <td>1</td>
+                <td>9</td>
+                <td>2</td>
+                <td>[0,0,0,16,100]</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>1</td>
+                <td>2</td>
+                <td>-1</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>1</td>
+                <td>[0,0,9,16,100]</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>2</td>
+                <td>2</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>[0,1,9,16,100]</td>
+            </tr>
+            <tr>
+                <td>Final</td>
+                <td>3</td>
+                <td>1</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-1</td>
+                <td>[0,1,9,16,100]</td>
+            </tr>
+        </table>
+        
+        <div class="example">
+            <p><strong>Example Run 2:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [-7, -3, 2, 3, 11]
+
+<span class="comment"># Call our function</span>
+result = sortedSquares(nums)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[4, 9, 9, 49, 121]</pre>
+        </div>
+        
+        <p>
+            <strong>Special Case - All Negative Numbers:</strong>
+        </p>
+        <div class="example">
+            <p><strong>Example Run 3:</strong></p>
+            <pre class="command"><span class="comment"># Example with all negative numbers</span>
+nums = [-7, -4, -3, -2, -1]
+
+<span class="comment"># Call our function</span>
+result = sortedSquares(nums)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[1, 4, 9, 16, 49]</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation for All Negative Case:</strong>
+            When all numbers are negative, their squares will be in reverse order. Our algorithm handles this correctly by placing the squares of the most negative numbers (which are largest) at the end of the result array.
+        </p>
+    </div>
+
+</body>
+</html>

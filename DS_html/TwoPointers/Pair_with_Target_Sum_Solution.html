@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pair with Target Sum Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pair with Target Sum Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Pair with Target Sum</strong></p>
+        <p>
+            Given an array of numbers sorted in ascending order and a target sum, find a pair in the array whose sum is equal to the given target.
+        </p>
+        <p>
+            Write a function to return the indices of the two numbers (i.e. the pair) such that they add up to the given target.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> [1, 2, 3, 4, 6], target=6</p>
+            <p><strong>Output:</strong> [1, 3]</p>
+            <p><strong>Explanation:</strong> The numbers at index 1 and 3 add up to 6: 2+4=6</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> [2, 5, 9, 11], target=11</p>
+            <p><strong>Output:</strong> [0, 2]</p>
+            <p><strong>Explanation:</strong> The numbers at index 0 and 2 add up to 11: 2+9=11</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find two numbers in a sorted array that add up to a specified target value, and return their indices.
+        </p>
+        <p>
+            The key elements of this problem are:
+        </p>
+        <ul>
+            <li><strong>Sorted Array:</strong> The input array is already sorted in ascending order, which we can take advantage of.</li>
+            <li><strong>Pair Sum:</strong> We need to find exactly two numbers whose sum equals the target.</li>
+            <li><strong>Return Indices:</strong> The output should be the indices of these two numbers, not the numbers themselves.</li>
+        </ul>
+        <p>
+            For example, in the array [1, 2, 3, 4, 6] with target 6, the pair 2 and 4 sum to 6, and they're located at indices 1 and 3 respectively.
+        </p>
+        <p>
+            Since the array is sorted, if we pick two numbers and their sum is greater than the target, we need to consider smaller numbers. Conversely, if their sum is less than the target, we need to consider larger numbers.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            Since the array is sorted, we can use the Two Pointers approach, which allows us to solve this problem efficiently:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> By maintaining two pointers at opposite ends of the array and moving them based on the comparison of the current sum with the target, we can efficiently find the pair without checking all possible pairs.</p>
+        </div>
+        
+        <p>The Two Pointers approach works as follows:</p>
+        <ol>
+            <li>Initialize two pointers, one at the start of the array (left) and one at the end (right).</li>
+            <li>Calculate the sum of the elements at the left and right pointers.</li>
+            <li>If the sum equals the target, we've found our pair.</li>
+            <li>If the sum is greater than the target, decrement the right pointer to consider a smaller element.</li>
+            <li>If the sum is less than the target, increment the left pointer to consider a larger element.</li>
+            <li>Continue this process until either a pair is found or the pointers meet.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Two Pointers Approach:</strong></p>
+            <pre>
+Array: [1, 2, 3, 4, 6], Target: 6
+
+Step 1: left = 0, right = 4
+       [1, 2, 3, 4, 6]
+        ^        ^
+       left     right
+       Sum = 1 + 6 = 7 > 6, so move right pointer left
+
+Step 2: left = 0, right = 3
+       [1, 2, 3, 4, 6]
+        ^     ^
+       left  right
+       Sum = 1 + 4 = 5 < 6, so move left pointer right
+
+Step 3: left = 1, right = 3
+       [1, 2, 3, 4, 6]
+           ^  ^
+          left right
+       Sum = 2 + 4 = 6 == 6, we found the pair!
+</pre>
+        </div>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We don't need any additional data structures for this approach, as we're just manipulating pointers on the input array. This gives us O(1) space complexity, which is optimal.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the length of the array. In the worst case, we might need to traverse the entire array once.</li>
+            <li><strong>Space Complexity:</strong> O(1) as we only use two pointers regardless of the input size.</li>
+        </ul>
+        
+        <p>
+            <strong>Alternative Approach:</strong>
+        </p>
+        <p>
+            Another approach would be to use a hash table (dictionary) to store elements we've seen so far and check if the complement (target - current element) exists in the hash table. However, this would use O(n) space and doesn't take advantage of the fact that the array is already sorted. The Two Pointers approach is more efficient for this specific problem.
+        </p>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize two pointers:</strong>
+                <ul>
+                    <li>Set the left pointer to the beginning of the array (index 0).</li>
+                    <li>Set the right pointer to the end of the array (index length-1).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Enter a loop that continues as long as left < right:</strong>
+                <ul>
+                    <li>Calculate the current sum: nums[left] + nums[right].</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Compare the current sum with the target:</strong>
+                <ul>
+                    <li>If sum > target: Decrement the right pointer to reduce the sum.</li>
+                    <li>If sum < target: Increment the left pointer to increase the sum.</li>
+                    <li>If sum == target: Return the current indices [left, right] as the answer.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return [-1, -1] if no pair is found:</strong>
+                <ul>
+                    <li>If we exit the loop without finding a pair, return [-1, -1] to indicate failure.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def pairWithTargetSum(nums, target):
+    <span class="comment"># Initialize two pointers at the beginning and end of the array</span>
+    left, right = 0, len(nums) - 1
+    
+    <span class="comment"># Continue until the pointers meet</span>
+    while left < right:
+        <span class="comment"># Calculate current sum</span>
+        current_sum = nums[left] + nums[right]
+        
+        <span class="comment"># If sum equals target, we found our pair</span>
+        if current_sum == target:
+            return [left, right]
+        
+        <span class="comment"># If sum is too large, decrement right pointer to reduce sum</span>
+        elif current_sum > target:
+            right -= 1
+        
+        <span class="comment"># If sum is too small, increment left pointer to increase sum</span>
+        else:  <span class="comment"># current_sum < target</span>
+            left += 1
+    
+    <span class="comment"># If no pair is found, return [-1, -1]</span>
+    return [-1, -1]</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [1, 2, 3, 4, 6]
+target = 6
+
+<span class="comment"># Call our function</span>
+pairWithTargetSum(nums, target)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[1, 3]</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Trace:</strong>
+        </p>
+        <ol>
+            <li>
+                <strong>Initialize:</strong> left = 0, right = 4
+                <ul>
+                    <li>Array at this point: [1, 2, 3, 4, 6]</li>
+                    <li>Current sum: nums[0] + nums[4] = 1 + 6 = 7</li>
+                    <li>7 > 6, so decrement right: right = 3</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Next iteration:</strong> left = 0, right = 3
+                <ul>
+                    <li>Current sum: nums[0] + nums[3] = 1 + 4 = 5</li>
+                    <li>5 < 6, so increment left: left = 1</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Next iteration:</strong> left = 1, right = 3
+                <ul>
+                    <li>Current sum: nums[1] + nums[3] = 2 + 4 = 6</li>
+                    <li>6 == 6, we found our pair!</li>
+                    <li>Return [1, 3]</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <div class="example">
+            <p><strong>Second Example:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [2, 5, 9, 11]
+target = 11
+
+<span class="comment"># Call our function</span>
+pairWithTargetSum(nums, target)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[0, 2]</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Second Example:</strong>
+        </p>
+        <p>
+            In the array [2, 5, 9, 11], the function checks:
+        </p>
+        <ul>
+            <li>First sum: 2 + 11 = 13 > 11, so right pointer moves: right = 2</li>
+            <li>Next sum: 2 + 9 = 11 == 11, which matches our target</li>
+            <li>Return [0, 2] as these are the indices of 2 and 9</li>
+        </ul>
+    </div>
+
+</body>
+</html>
