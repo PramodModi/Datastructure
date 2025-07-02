@@ -225,8 +225,10 @@
                     return;
                 }
                 
-                // Clear loading message
+                // Clear loading message but preserve the Pattern heading
+                const patternHeading = foldersContainer.querySelector('h2');
                 foldersContainer.innerHTML = '';
+                foldersContainer.appendChild(patternHeading);
                 
                 // Build folder sidebar
                 for (const folder of folders) {
