@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Fill Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 50px);
+            gap: 2px;
+            margin: 20px 0;
+        }
+        .grid-item {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        .color-0 {
+            background-color: #ffffff;
+            color: black;
+        }
+        .color-1 {
+            background-color: #3498db;
+        }
+        .color-2 {
+            background-color: #e74c3c;
+        }
+        .arrow {
+            font-size: 24px;
+            margin: 0 20px;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flood Fill Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Flood Fill (LeetCode #733)</strong></p>
+        <p><a href="https://leetcode.com/problems/flood-fill/description/" target="_blank">https://leetcode.com/problems/flood-fill/description/</a></p>
+        <p>
+            An image is represented by an m x n integer grid image where image[i][j] represents the pixel value of the image.
+        </p>
+        <p>
+            You are also given three integers sr, sc, and color. You should perform a flood fill on the image starting from the pixel image[sr][sc].
+        </p>
+        <p>
+            To perform a flood fill, consider the starting pixel, plus any pixels connected 4-directionally to the starting pixel of the same color as the starting pixel, plus any pixels connected 4-directionally to those pixels (also with the same color), and so on. Replace the color of all of the aforementioned pixels with color.
+        </p>
+        <p>Return the modified image after performing the flood fill.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <div style="display: flex; align-items: center;">
+                <div class="grid-container">
+                    <div class="grid-item color-1">1</div>
+                    <div class="grid-item color-1">1</div>
+                    <div class="grid-item color-1">1</div>
+                    <div class="grid-item color-1">1</div>
+                    <div class="grid-item color-1">1</div>
+                    <div class="grid-item color-0">0</div>
+                    <div class="grid-item color-1">1</div>
+                    <div class="grid-item color-0">0</div>
+                    <div class="grid-item color-1">1</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="grid-container">
+                    <div class="grid-item color-2">2</div>
+                    <div class="grid-item color-2">2</div>
+                    <div class="grid-item color-2">2</div>
+                    <div class="grid-item color-2">2</div>
+                    <div class="grid-item color-2">2</div>
+                    <div class="grid-item color-0">0</div>
+                    <div class="grid-item color-2">2</div>
+                    <div class="grid-item color-0">0</div>
+                    <div class="grid-item color-1">1</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> image = [[1,1,1],[1,1,0],[1,0,1]], sr = 1, sc = 1, color = 2</p>
+            <p><strong>Output:</strong> [[2,2,2],[2,2,0],[2,0,1]]</p>
+            <p><strong>Explanation:</strong> From the center of the image with position (sr, sc) = (1, 1) (i.e., the red pixel), all pixels connected by a path of the same color as the starting pixel (i.e., the blue pixels) are colored with the new color. Note the bottom corner is not colored 2, because it is not 4-directionally connected to the starting pixel.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> image = [[0,0,0],[0,0,0]], sr = 0, sc = 0, color = 0</p>
+            <p><strong>Output:</strong> [[0,0,0],[0,0,0]]</p>
+            <p><strong>Explanation:</strong> The starting pixel is already colored 0, so no changes are made to the image.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>m == image.length</li>
+            <li>n == image[i].length</li>
+            <li>1 <= m, n <= 50</li>
+            <li>0 <= image[i][j], color < 2<sup>16</sup></li>
+            <li>0 <= sr < m</li>
+            <li>0 <= sc < n</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            The Flood Fill problem is based on the classic Paint Bucket tool found in image editing software. When you select a pixel and use the paint bucket, it fills that pixel and all connected pixels of the same color with a new color.
+        </p>
+        <p>
+            Key components of the problem:
+        </p>
+        <ul>
+            <li><strong>Starting position:</strong> The pixel at coordinates (sr, sc) where the fill begins.</li>
+            <li><strong>Source color:</strong> The color of the starting pixel, which determines what adjacent pixels will be filled.</li>
+            <li><strong>New color:</strong> The color to replace the source color with during the fill operation.</li>
+            <li><strong>4-directional connectivity:</strong> Only pixels connected horizontally or vertically (not diagonally) are considered adjacent.</li>
+        </ul>
+        <p>
+            The task is to replace the color of the starting pixel and all connected pixels that have the same color as the starting pixel with the new color. This is similar to a connected component in a graph, where connectivity is defined by having the same color and being adjacent in one of the four directions (up, down, left, right).
+        </p>
+        <p>
+            An important consideration: if the starting pixel's color is already the same as the new color, no changes need to be made to the image.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We can solve this problem using either Breadth-First Search (BFS) or Depth-First Search (DFS). Both approaches follow a similar pattern:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Start at the given pixel, then explore all connected pixels of the same color, changing their color to the new one as we go.</p>
+        </div>
+        
+        <p>
+            In our implementation, we'll use a BFS approach with a queue to systematically visit all connected pixels of the same color. However, there's an important consideration: if the new color is the same as the source color, we need to be careful not to process the same pixels multiple times.
+        </p>
+        
+        <p>There are two ways to handle this:</p>
+        <ol>
+            <li>Check if the new color is the same as the source color at the beginning. If they're the same, return the original image.</li>
+            <li>Use a temporary marker value to avoid revisiting pixels, then do a second pass to set all marked pixels to the new color.</li>
+        </ol>
+        
+        <p>
+            In our implementation, we'll use the second approach for clarity and robustness. We'll mark visited pixels with a temporary value (-1) during the BFS, and then in a second pass, we'll replace all -1 values with the new color.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n*m) where n and m are the dimensions of the image. In the worst case, we might need to visit every pixel in the image.</li>
+            <li><strong>Space Complexity:</strong> O(n*m) for the queue in BFS, as in the worst case, we might need to enqueue all pixels.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Get the source color:</strong>
+                <ul>
+                    <li>Store the color of the starting pixel image[sr][sc].</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Check special cases:</strong>
+                <ul>
+                    <li>If the source color is the same as the new color, return the original image (optional optimization).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Perform BFS:</strong>
+                <ul>
+                    <li>Create a queue and add the starting pixel (sr, sc).</li>
+                    <li>While the queue is not empty:</li>
+                    <ul>
+                        <li>Dequeue a pixel (r, c).</li>
+                        <li>Mark the pixel by setting image[r][c] = -1 (temporary value).</li>
+                        <li>Check all four adjacent pixels (up, down, left, right):</li>
+                        <ul>
+                            <li>If an adjacent pixel is within bounds and has the same color as the source color, add it to the queue.</li>
+                        </ul>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Replace all marked pixels with the new color:</strong>
+                <ul>
+                    <li>Iterate through the image and replace all pixels with value -1 with the new color.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the modified image.</strong>
+            </li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the BFS process for Example 1:</strong></p>
+            <p>Starting with the image:</p>
+            <pre>
+[1, 1, 1]
+[1, 1, 0]
+[1, 0, 1]</pre>
+            <p>Starting pixel: (1, 1) with value 1, New color: 2</p>
+            <p>Step 1: Add (1, 1) to the queue.</p>
+            <p>Step 2: Dequeue (1, 1), mark it as -1.</p>
+            <pre>
+[1, 1, 1]
+[1, <b>-1</b>, 0]
+[1, 0, 1]</pre>
+            <p>Step 3: Add all adjacent pixels with value 1: (0, 1), (1, 0), (0, 0), (2, 0).</p>
+            <p>Step 4: Dequeue (0, 1), mark it as -1.</p>
+            <pre>
+[1, <b>-1</b>, 1]
+[1, -1, 0]
+[1, 0, 1]</pre>
+            <p>Step 5: Add adjacent pixels (0, 0), (0, 2).</p>
+            <p>...</p>
+            <p>Continue this process until all connected pixels with value 1 are marked as -1.</p>
+            <p>After BFS, the image will be:</p>
+            <pre>
+[<b>-1</b>, <b>-1</b>, <b>-1</b>]
+[<b>-1</b>, <b>-1</b>, 0]
+[<b>-1</b>, 0, 1]</pre>
+            <p>Final step: Replace all -1 with the new color 2:</p>
+            <pre>
+[2, 2, 2]
+[2, 2, 0]
+[2, 0, 1]</pre>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+from collections import deque
+
+def floodFill(image, sr, sc, color):
+    <span class="comment"># Get the source color</span>
+    srcValue = image[sr][sc]
+    
+    <span class="comment"># Optimization: If source color is the same as new color, no changes needed</span>
+    if srcValue == color:
+        return image
+    
+    <span class="comment"># Initialize queue for BFS</span>
+    q = deque([(sr, sc)])
+    
+    <span class="comment"># Perform BFS</span>
+    while q:
+        r, c = q.popleft()
+        <span class="comment"># Mark this pixel with a temporary value (-1)</span>
+        image[r][c] = -1
+        
+        <span class="comment"># Get all 4-directionally adjacent neighbors</span>
+        nrs = getNeighbours(r, c, image)
+        
+        <span class="comment"># Check each neighbor</span>
+        for row, col in nrs:
+            <span class="comment"># If the neighbor has the same color as the source, add it to the queue</span>
+            if image[row][col] == srcValue:
+                q.append((row, col))
+    
+    <span class="comment"># Replace all marked pixels (-1) with the new color</span>
+    for i in range(len(image)):
+        for j in range(len(image[i])):
+            if image[i][j] == -1:
+                image[i][j] = color
+    
+    return image
+
+def getNeighbours(row, col, image):
+    <span class="comment"># Return all valid 4-directionally adjacent neighbors</span>
+    nbrs = []
+    
+    <span class="comment"># Check up</span>
+    if row > 0:
+        nbrs.append((row-1, col))
+    
+    <span class="comment"># Check left</span>
+    if col > 0:
+        nbrs.append((row, col-1))
+    
+    <span class="comment"># Check down</span>
+    if row < len(image)-1:
+        nbrs.append((row+1, col))
+    
+    <span class="comment"># Check right</span>
+    if col < len(image[row])-1:
+        nbrs.append((row, col+1))
+    
+    return nbrs</pre>
+        
+        <div class="key-insight">
+            <p><strong>Note:</strong> The code uses a two-pass approach to avoid an issue where the new color might be the same as the source color. First, we mark all connected pixels with a temporary value (-1), then we replace all marked pixels with the new color. This ensures we don't revisit already processed pixels.</p>
+        </div>
+        
+        <h3>Alternative Implementation (DFS):</h3>
+        <pre>
+def floodFill(image, sr, sc, color):
+    <span class="comment"># Get the source color</span>
+    srcValue = image[sr][sc]
+    
+    <span class="comment"># Optimization: If source color is the same as new color, no changes needed</span>
+    if srcValue == color:
+        return image
+    
+    <span class="comment"># Define DFS function</span>
+    def dfs(r, c):
+        <span class="comment"># If this pixel has the source color, change it and explore neighbors</span>
+        if 0 <= r < len(image) and 0 <= c < len(image[0]) and image[r][c] == srcValue:
+            <span class="comment"># Change the color</span>
+            image[r][c] = color
+            
+            <span class="comment"># Explore all 4-directionally adjacent pixels</span>
+            dfs(r+1, c)
+            dfs(r-1, c)
+            dfs(r, c+1)
+            dfs(r, c-1)
+    
+    <span class="comment"># Start DFS from the given pixel</span>
+    dfs(sr, sc)
+    
+    return image</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command">
+image = [[1,1,1],[1,1,0],[1,0,1]]
+sr = 1
+sc = 1
+color = 2
+
+result = floodFill(image, sr, sc, color)
+print(result)  # Output: [[2,2,2],[2,2,0],[2,0,1]]</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[[2, 2, 2], [2, 2, 0], [2, 0, 1]]</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity Comparison:</strong>
+        </p>
+        <table>
+            <tr>
+                <th></th>
+                <th>BFS</th>
+                <th>DFS</th>
+            </tr>
+            <tr>
+                <td><strong>Time Complexity</strong></td>
+                <td>O(n*m)</td>
+                <td>O(n*m)</td>
+            </tr>
+            <tr>
+                <td><strong>Space Complexity</strong></td>
+                <td>O(n*m) for queue</td>
+                <td>O(n*m) for recursion stack</td>
+            </tr>
+            <tr>
+                <td><strong>Traversal Pattern</strong></td>
+                <td>Level by level</td>
+                <td>Explore as far as possible along one branch</td>
+            </tr>
+        </table>
+        
+        <p>
+            Both BFS and DFS solutions have the same time and space complexity for this problem. The choice between them is more a matter of preference in implementation style.
+        </p>
+    </div>
+</body>
+</html>

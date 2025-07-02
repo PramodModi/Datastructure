@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Island Perimeter Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 50px);
+            gap: 2px;
+            margin: 20px 0;
+        }
+        .grid-item {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .land {
+            background-color: #8bc34a;
+            color: white;
+        }
+        .water {
+            background-color: #03a9f4;
+            color: white;
+        }
+        .perimeter {
+            border: 2px dashed #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <h1>Island Perimeter Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Island Perimeter (LeetCode #463)</strong></p>
+        <p><a href="https://leetcode.com/problems/island-perimeter/" target="_blank">https://leetcode.com/problems/island-perimeter/</a></p>
+        <p>
+            You are given row x col grid representing a map where grid[i][j] = 1 represents land and grid[i][j] = 0 represents water.
+        </p>
+        <p>
+            Grid cells are connected horizontally/vertically (not diagonally). The grid is completely surrounded by water, and there is exactly one island (i.e., one or more connected land cells).
+        </p>
+        <p>
+            The island doesn't have "lakes", meaning the water inside isn't connected to the water around the island. One cell is a square with side length 1. The grid is rectangular, width and height don't exceed 100. Determine the perimeter of the island.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> grid = [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]</p>
+            <p><strong>Output:</strong> 16</p>
+            <p><strong>Explanation:</strong> The perimeter is the 16 yellow stripes around the land cells.</p>
+            <div class="grid-container">
+                <div class="grid-item water">0</div>
+                <div class="grid-item land perimeter">1</div>
+                <div class="grid-item water">0</div>
+                <div class="grid-item water">0</div>
+                <div class="grid-item land perimeter">1</div>
+                <div class="grid-item land">1</div>
+                <div class="grid-item land perimeter">1</div>
+                <div class="grid-item water">0</div>
+                <div class="grid-item water">0</div>
+                <div class="grid-item land perimeter">1</div>
+                <div class="grid-item water">0</div>
+                <div class="grid-item water">0</div>
+                <div class="grid-item land perimeter">1</div>
+                <div class="grid-item land perimeter">1</div>
+                <div class="grid-item water">0</div>
+                <div class="grid-item water">0</div>
+            </div>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> grid = [[1]]</p>
+            <p><strong>Output:</strong> 4</p>
+            <p><strong>Explanation:</strong> The perimeter is the 4 sides of the single land cell.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> grid = [[1,0]]</p>
+            <p><strong>Output:</strong> 4</p>
+            <p><strong>Explanation:</strong> The perimeter is the 4 sides of the single land cell (only the left cell is land).</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>row == grid.length</li>
+            <li>col == grid[i].length</li>
+            <li>1 <= row, col <= 100</li>
+            <li>grid[i][j] is 0 or 1</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the perimeter of an island in a grid. Let's understand what this means:
+        </p>
+        <ul>
+            <li><strong>Island:</strong> A group of connected land cells (1's) in the grid.</li>
+            <li><strong>Perimeter:</strong> The total length of the boundary of the island, which is the sum of the lengths of the edges of the island that are adjacent to water or the edge of the grid.</li>
+            <li><strong>Connectivity:</strong> Cells are connected horizontally or vertically, not diagonally.</li>
+            <li><strong>Single Island:</strong> The grid contains exactly one island (one or more connected land cells).</li>
+            <li><strong>No Lakes:</strong> The island doesn't have any internal water cells completely surrounded by land.</li>
+        </ul>
+        <p>
+            Each land cell is a 1×1 square, so each edge of a land cell contributes 1 to the perimeter if that edge is either adjacent to water (0) or the edge of the grid.
+        </p>
+        <p>
+            For example, a single land cell (surrounded by water on all sides) has a perimeter of 4. Two adjacent land cells have a perimeter of 6 (not 8), because the shared edge doesn't contribute to the perimeter.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            There are two main approaches to solve this problem:
+        </p>
+        
+        <h3>Approach 1: Count Land Cells and Adjacent Land Cells</h3>
+        <p>
+            This approach is based on the observation that each land cell contributes 4 to the perimeter, but we need to subtract 2 for each pair of adjacent land cells (because each shared edge is counted twice and doesn't contribute to the perimeter).
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> For each land cell, count its contribution to the perimeter by starting with 4 and subtracting the number of adjacent land cells.</p>
+        </div>
+        
+        <p>The formula is:</p>
+        <p>Perimeter = 4 * (number of land cells) - 2 * (number of adjacent land cell pairs)</p>
+        <p>Or equivalently, for each land cell:</p>
+        <p>Contribution to perimeter = 4 - (number of adjacent land cells)</p>
+        
+        <h3>Approach 2: Count Edges Adjacent to Water</h3>
+        <p>
+            Another approach is to directly count the number of edges that are adjacent to water or the edge of the grid.
+        </p>
+        <p>
+            For each land cell, check its four adjacent cells (up, down, left, right). If an adjacent cell is water (0) or outside the grid, add 1 to the perimeter.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(m * n) where m is the number of rows and n is the number of columns. We need to visit each cell once.</li>
+            <li><strong>Space Complexity:</strong> O(1) as we only use a constant amount of extra space regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <h3>Using Approach 1:</h3>
+        <ol>
+            <li>Initialize perimeter to 0.</li>
+            <li>Iterate through each cell in the grid:</li>
+            <ul>
+                <li>If the cell is land (1):</li>
+                <ul>
+                    <li>Add 4 to the perimeter (initial contribution of each land cell).</li>
+                    <li>Check the four adjacent cells (up, down, left, right):</li>
+                    <ul>
+                        <li>For each adjacent cell that is land, subtract 1 from the perimeter.</li>
+                    </ul>
+                </ul>
+            </ul>
+            <li>Return the final perimeter.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Process:</strong></p>
+            <p>For the grid: [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]</p>
+            <pre>
+Cell (0,1) is land:
+  Initial contribution = 4
+  Adjacent land cells: (1,1) = 1
+  Contribution = 4 - 1 = 3
+
+Cell (1,0) is land:
+  Initial contribution = 4
+  Adjacent land cells: (1,1) = 1
+  Contribution = 4 - 1 = 3
+
+Cell (1,1) is land:
+  Initial contribution = 4
+  Adjacent land cells: (0,1), (1,0), (1,2), (2,1) = 4
+  Contribution = 4 - 4 = 0
+
+Cell (1,2) is land:
+  Initial contribution = 4
+  Adjacent land cells: (1,1) = 1
+  Contribution = 4 - 1 = 3
+
+Cell (2,1) is land:
+  Initial contribution = 4
+  Adjacent land cells: (1,1), (3,1) = 2
+  Contribution = 4 - 2 = 2
+
+Cell (3,0) is land:
+  Initial contribution = 4
+  Adjacent land cells: (3,1) = 1
+  Contribution = 4 - 1 = 3
+
+Cell (3,1) is land:
+  Initial contribution = 4
+  Adjacent land cells: (2,1), (3,0) = 2
+  Contribution = 4 - 2 = 2
+
+Total perimeter = 3 + 3 + 0 + 3 + 2 + 3 + 2 = 16</pre>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def islandPerimeter(grid):
+    <span class="comment"># Initialize perimeter</span>
+    perimeter = 0
+    
+    <span class="comment"># Iterate through each cell in the grid</span>
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            <span class="comment"># If the cell is land</span>
+            if grid[i][j] == 1:
+                <span class="comment"># Add (4 - number of adjacent land cells) to the perimeter</span>
+                perimeter += (4 - getNeighbours(i, j, grid))
+    
+    return perimeter
+    
+def getNeighbours(row, col, grid):
+    <span class="comment"># Count the number of adjacent land cells</span>
+    count = 0
+    
+    <span class="comment"># Check up</span>
+    if row > 0 and grid[row-1][col]:
+        count += 1
+    
+    <span class="comment"># Check left</span>
+    if col > 0 and grid[row][col-1]:
+        count += 1
+    
+    <span class="comment"># Check down</span>
+    if row < len(grid)-1 and grid[row+1][col]:
+        count += 1
+    
+    <span class="comment"># Check right</span>
+    if col < len(grid[row])-1 and grid[row][col+1]:
+        count += 1
+    
+    return count</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command">
+grid = [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]
+result = islandPerimeter(grid)
+print(result)  # Output: 16</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">16</pre>
+        </div>
+        
+        <h3>Alternative Implementation:</h3>
+        <p>Here's another implementation that directly counts edges adjacent to water or the grid boundary:</p>
+        <pre>
+def islandPerimeter(grid):
+    rows = len(grid)
+    cols = len(grid[0])
+    perimeter = 0
+    
+    for i in range(rows):
+        for j in range(cols):
+            <span class="comment"># If this cell is land</span>
+            if grid[i][j] == 1:
+                <span class="comment"># Check each of the four edges</span>
+                
+                <span class="comment"># Top edge</span>
+                if i == 0 or grid[i-1][j] == 0:
+                    perimeter += 1
+                
+                <span class="comment"># Left edge</span>
+                if j == 0 or grid[i][j-1] == 0:
+                    perimeter += 1
+                
+                <span class="comment"># Bottom edge</span>
+                if i == rows-1 or grid[i+1][j] == 0:
+                    perimeter += 1
+                
+                <span class="comment"># Right edge</span>
+                if j == cols-1 or grid[i][j+1] == 0:
+                    perimeter += 1
+    
+    return perimeter</pre>
+        
+        <div class="key-insight">
+            <p><strong>Mathematical Insight:</strong></p>
+            <p>For a single land cell, the perimeter is 4.</p>
+            <p>For two connected land cells, the perimeter is 4 + 4 - 2 = 6 (we subtract 2 because the shared edge doesn't contribute to the perimeter).</p>
+            <p>For three connected land cells in a line, the perimeter is 4 + 4 + 4 - 2 - 2 = 8 (we subtract 2 for each shared edge).</p>
+            <p>This pattern continues: each land cell contributes 4 to the perimeter, and each shared edge between two land cells reduces the perimeter by 2.</p>
+        </div>
+    </div>
+</body>
+</html>

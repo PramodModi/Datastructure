@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number of Islands Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Number of Islands Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Number of Islands (LeetCode #200)</strong></p>
+        <p><a href="https://leetcode.com/problems/number-of-islands/" target="_blank">https://leetcode.com/problems/number-of-islands/</a></p>
+        <p>
+            Given an m x n 2D binary grid which represents a map of '1's (land) and '0's (water), return the number of islands.
+        </p>
+        <p>
+            An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre>
+Input: grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+Output: 1</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre>
+Input: grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+Output: 3</pre>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to count the number of islands in a 2D grid, where:
+        </p>
+        <ul>
+            <li><strong>Island:</strong> A group of connected '1's (land) that is surrounded by '0's (water).</li>
+            <li><strong>Connected:</strong> Two lands are considered connected if they are adjacent horizontally or vertically (not diagonally).</li>
+            <li><strong>Boundary:</strong> The edges of the grid are all considered water.</li>
+        </ul>
+        <p>
+            For example, in the first example, there is only one island even though some parts are separated by water. This is because all the '1's are connected to form a single island. In the second example, there are three separate islands that aren't connected to each other.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We can solve this problem using either DFS (Depth-First Search) or BFS (Breadth-First Search) to traverse the grid and identify connected components (islands):
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Once we find a land cell ('1'), we can use graph traversal to mark all connected land cells as visited to ensure we count each island only once.</p>
+        </div>
+        
+        <p>The general approach is:</p>
+        <ol>
+            <li>Iterate through each cell in the grid.</li>
+            <li>When we find a land cell ('1'), we increment our island counter.</li>
+            <li>We then explore all connected land cells using either DFS or BFS and mark them as visited to avoid counting them again.</li>
+            <li>After traversing the entire grid, the island counter will give us the number of islands.</li>
+        </ol>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(m × n) where m is the number of rows and n is the number of columns. We visit each cell at most once.</li>
+            <li><strong>Space Complexity:</strong> 
+                <ul>
+                    <li>For DFS: O(m × n) in the worst case (if the entire grid is one island, the recursion stack could be as large as the grid).</li>
+                    <li>For BFS: O(min(m, n)) for the queue.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <h3>DFS Approach:</h3>
+        <ol>
+            <li>Initialize island counter to 0.</li>
+            <li>Iterate through each cell in the grid.</li>
+            <li>If the cell is land ('1'):</li>
+            <ul>
+                <li>Increment island counter.</li>
+                <li>Perform DFS to mark all connected land cells as visited.</li>
+            </ul>
+            <li>Return the island counter.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of DFS on Example 2:</strong></p>
+            <pre>
+Initial Grid:
+["1","1","0","0","0"],
+["1","1","0","0","0"],
+["0","0","1","0","0"],
+["0","0","0","1","1"]
+
+Island Counter = 0
+
+Iteration (0,0): Found land
+Island Counter = 1
+DFS marks all connected land cells as visited:
+["2","2","0","0","0"],
+["2","2","0","0","0"],
+["0","0","1","0","0"],
+["0","0","0","1","1"]
+
+Iteration (2,2): Found land
+Island Counter = 2
+DFS marks all connected land cells as visited:
+["2","2","0","0","0"],
+["2","2","0","0","0"],
+["0","0","2","0","0"],
+["0","0","0","1","1"]
+
+Iteration (3,3): Found land
+Island Counter = 3
+DFS marks all connected land cells as visited:
+["2","2","0","0","0"],
+["2","2","0","0","0"],
+["0","0","2","0","0"],
+["0","0","0","2","2"]
+
+Final Island Count = 3</pre>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <h3>DFS Implementation:</h3>
+        <pre>
+def numIslands(grid):
+    <span class="comment"># Initialize island counter</span>
+    num = 0
+    
+    <span class="comment"># Iterate through each cell in the grid</span>
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            <span class="comment"># If we find a land cell that hasn't been visited</span>
+            if grid[i][j] == "1":
+                <span class="comment"># Increment island counter</span>
+                num += getIsland(i, j, grid)
+    return num
+
+def getIsland(row, col, grid):
+    <span class="comment"># Mark the current cell as visited</span>
+    grid[row][col] = "2"
+    
+    <span class="comment"># Get all valid neighboring cells</span>
+    neighbors = getNeighbours(row, col, grid)
+    
+    <span class="comment"># Explore all connected land cells</span>
+    for r, c in neighbors:
+        if grid[r][c] == "1":
+            getIsland(r, c, grid)
+    
+    <span class="comment"># Return 1 to indicate we've found one island</span>
+    return 1
+
+def getNeighbours(row, col, grid):
+    <span class="comment"># Initialize list to store valid neighbors</span>
+    neighbors = []
+    
+    <span class="comment"># Check all four directions (up, down, left, right)</span>
+    if row > 0:  <span class="comment"># Up</span>
+        neighbors.append((row-1, col))
+    if row < len(grid)-1:  <span class="comment"># Down</span>
+        neighbors.append((row+1, col))
+    if col > 0:  <span class="comment"># Left</span>
+        neighbors.append((row, col-1))
+    if col < len(grid[row]) - 1:  <span class="comment"># Right</span>
+        neighbors.append((row, col+1))
+    
+    return neighbors</pre>
+        
+        <p>Alternative DFS Implementation (More Concise):</p>
+        <pre>
+def numIslands(grid):
+    num = 0
+    
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            if grid[i][j] == "1":
+                num += getIsland(i, j, grid)
+    return num
+
+def getIsland(row, col, grid):
+    <span class="comment"># Mark the current cell as visited</span>
+    grid[row][col] = "2"
+    
+    <span class="comment"># Define the four directions: right, left, down, up</span>
+    directions = [(0,1), (0,-1), (1,0), (-1,0)]
+    
+    <span class="comment"># Check all four adjacent cells</span>
+    for dx, dy in directions:
+        r = row + dx
+        c = col + dy
+        
+        <span class="comment"># If the adjacent cell is within bounds and is land</span>
+        if r >= 0 and r < len(grid) and c >= 0 and c < len(grid[0]) and grid[r][c] == "1":
+            getIsland(r, c, grid)
+    
+    return 1</pre>
+        
+        <h3>BFS Implementation:</h3>
+        <pre>
+from collections import deque
+
+def numIslandsBFS(grid):
+    <span class="comment"># Initialize island counter</span>
+    num = 0
+    
+    <span class="comment"># Iterate through each cell in the grid</span>
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            <span class="comment"># If we find a land cell that hasn't been visited</span>
+            if grid[i][j] == "1":
+                <span class="comment"># Increment island counter</span>
+                num += getIslandBFS(i, j, grid)
+    return num
+
+def getIslandBFS(row, col, grid):
+    <span class="comment"># Initialize queue with the starting cell</span>
+    queue = deque([(row, col)])
+    
+    <span class="comment"># Process cells in the queue</span>
+    while queue:
+        <span class="comment"># Dequeue a cell</span>
+        r, c = queue.popleft()
+        grid[r][c] = "2"  <span class="comment"># Mark as visited</span>
+        
+        <span class="comment"># Check all four directions</span>
+        if r > 0 and grid[r-1][c] == "1":  <span class="comment"># Up</span>
+            grid[r-1][c] = "2"  <span class="comment"># Mark as visited</span>
+            queue.append((r-1, c))
+        if r < len(grid)-1 and grid[r+1][c] == "1":  <span class="comment"># Down</span>
+            grid[r+1][c] = "2"  <span class="comment"># Mark as visited</span>
+            queue.append((r+1, c))
+        if c > 0 and grid[r][c-1] == "1":  <span class="comment"># Left</span>
+            grid[r][c-1] = "2"  <span class="comment"># Mark as visited</span>
+            queue.append((r, c-1))
+        if c < len(grid[r])-1 and grid[r][c+1] == "1":  <span class="comment"># Right</span>
+            grid[r][c+1] = "2"  <span class="comment"># Mark as visited</span>
+            queue.append((r, c+1))
+    
+    return 1</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command">
+grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+
+result = numIslands(grid)
+print(result)  # Output: 3</pre>
+        </div>
+    </div>
+</body>
+</html>
