@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Window Sort Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minimum Window Sort Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Shortest Unsorted Continuous Subarray (LeetCode #581)</strong></p>
+        <p><a href="https://leetcode.com/problems/shortest-unsorted-continuous-subarray/description/" target="_blank">https://leetcode.com/problems/shortest-unsorted-continuous-subarray/description/</a></p>
+        <p>
+            Given an integer array nums, you need to find one continuous subarray such that if you only sort this subarray in non-decreasing order, then the whole array will be sorted in non-decreasing order.
+        </p>
+        <p>
+            Return the shortest such subarray and output its length.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [2,6,4,8,10,9,15]</p>
+            <p><strong>Output:</strong> 5</p>
+            <p><strong>Explanation:</strong> You need to sort [6, 4, 8, 10, 9] in ascending order to make the whole array sorted in ascending order.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [1,2,3,4]</p>
+            <p><strong>Output:</strong> 0</p>
+            <p><strong>Explanation:</strong> The array is already sorted, so no subarray needs to be sorted.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> nums = [1]</p>
+            <p><strong>Output:</strong> 0</p>
+            <p><strong>Explanation:</strong> The array is already sorted, so no subarray needs to be sorted.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= nums.length <= 10<sup>4</sup></li>
+            <li>-10<sup>5</sup> <= nums[i] <= 10<sup>5</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find the shortest continuous subarray that, when sorted, would result in the entire array being sorted. In other words, we need to find the boundaries of the "unsorted" portion of the array.
+        </p>
+        <p>
+            The key to understanding this problem is to recognize that:
+        </p>
+        <ul>
+            <li>If the array is already sorted, we return 0.</li>
+            <li>If the array is partially sorted, there will be some elements that are out of place.</li>
+            <li>Elements to the left of the minimum out-of-place element and elements to the right of the maximum out-of-place element are already in their correct positions.</li>
+            <li>The subarray between the correct positions of the minimum and maximum out-of-place elements needs to be sorted.</li>
+        </ul>
+        <p>
+            For example, in [2,6,4,8,10,9,15]:
+        </p>
+        <ul>
+            <li>2 is in the correct position (it's smaller than all elements to its right).</li>
+            <li>15 is in the correct position (it's larger than all elements to its left).</li>
+            <li>The middle section [6,4,8,10,9] is unsorted and needs to be rearranged.</li>
+        </ul>
+        <p>
+            Our goal is to identify the smallest and largest indices between which we need to sort elements to make the entire array sorted.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a Two Pointers approach to find the boundaries of the unsorted subarray:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> The bounds of the unsorted subarray are determined by the minimum and maximum elements that are out of order. We need to find where these elements should be placed in a sorted array.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Traverse the array to find elements that are out of order (where the current element is smaller than the previous element).</li>
+            <li>Keep track of the minimum and maximum values found in these out-of-order elements.</li>
+            <li>If no out-of-order elements are found, the array is already sorted, so return 0.</li>
+            <li>Find the correct position for the minimum out-of-order element by scanning from the beginning of the array.</li>
+            <li>Find the correct position for the maximum out-of-order element by scanning from the end of the array.</li>
+            <li>The subarray between these two positions (inclusive) is the minimum window that needs to be sorted.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach:</strong></p>
+            <pre>
+Example: nums = [2,6,4,8,10,9,15]
+
+Step 1: Find out-of-order elements
+  At index 2: 4 < 6, so out of order. min = 4, max = 6
+  At index 5: 9 < 10, so out of order. min = 4, max = 10
+
+Step 2: Find the correct position for min (4)
+  Start from the beginning:
+  4 > 2, continue
+  4 < 6, position found at index 1
+
+Step 3: Find the correct position for max (10)
+  Start from the end:
+  10 < 15, continue
+  10 > 9, position found at index 5
+
+Step 4: Calculate length
+  subarray length = 5 - 1 + 1 = 5
+
+Output: 5</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the length of the array. We perform three linear scans of the array.</li>
+            <li><strong>Space Complexity:</strong> O(1) as we only use a constant amount of extra space regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>Set <code>min_val</code> to positive infinity (the minimum out-of-order element).</li>
+                    <li>Set <code>max_val</code> to negative infinity (the maximum out-of-order element).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Find out-of-order elements:</strong>
+                <ul>
+                    <li>Iterate through the array starting from index 1:</li>
+                    <ul>
+                        <li>If the current element is smaller than the previous element:</li>
+                        <ul>
+                            <li>Update <code>min_val</code> to be the minimum of <code>min_val</code> and the current element.</li>
+                            <li>Update <code>max_val</code> to be the maximum of <code>max_val</code> and the previous element.</li>
+                        </ul>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Check if array is already sorted:</strong>
+                <ul>
+                    <li>If <code>min_val</code> is still infinity, the array is already sorted, so return 0.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Find the left boundary:</strong>
+                <ul>
+                    <li>Starting from the beginning of the array, find the first position where <code>min_val</code> is less than the element.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Find the right boundary:</strong>
+                <ul>
+                    <li>Starting from the end of the array, find the first position where <code>max_val</code> is greater than the element.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Calculate the length:</strong>
+                <ul>
+                    <li>Return (right - left + 1) as the length of the unsorted subarray.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def findUnsortedSubarray(nums):
+    <span class="comment"># Initialize minimum and maximum values for out-of-order elements</span>
+    min_val = float("inf")
+    max_val = float("-inf")
+    
+    <span class="comment"># Find out-of-order elements and track their min and max values</span>
+    for i in range(1, len(nums)):
+        if nums[i] < nums[i-1]:  <span class="comment"># Found an out-of-order element</span>
+            min_val = min(min_val, nums[i])
+            max_val = max(max_val, nums[i-1])
+    
+    <span class="comment"># If array is already sorted, return 0</span>
+    if min_val == float("inf"):
+        return 0
+    
+    <span class="comment"># Find the correct position for min_val (left boundary)</span>
+    left = 0
+    while min_val >= nums[left]:
+        left += 1
+    
+    <span class="comment"># Find the correct position for max_val (right boundary)</span>
+    right = len(nums) - 1
+    while max_val <= nums[right]:
+        right -= 1
+    
+    <span class="comment"># Return the length of the unsorted subarray</span>
+    return right - left + 1</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [2, 6, 4, 8, 10, 9, 15]
+
+<span class="comment"># Call our function</span>
+result = findUnsortedSubarray(nums)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">5</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Trace for Example 1:</strong>
+        </p>
+        <p>Let's trace through the execution for nums = [2, 6, 4, 8, 10, 9, 15]:</p>
+        <ol>
+            <li>Initialize <code>min_val = inf</code> and <code>max_val = -inf</code></li>
+            <li>
+                Scan for out-of-order elements:
+                <ul>
+                    <li>i = 1: nums[1] = 6, nums[0] = 2. Since 6 > 2, this is in order.</li>
+                    <li>i = 2: nums[2] = 4, nums[1] = 6. Since 4 < 6, this is out of order.
+                        <ul>
+                            <li>Update min_val = min(inf, 4) = 4</li>
+                            <li>Update max_val = max(-inf, 6) = 6</li>
+                        </ul>
+                    </li>
+                    <li>i = 3: nums[3] = 8, nums[2] = 4. Since 8 > 4, this is in order.</li>
+                    <li>i = 4: nums[4] = 10, nums[3] = 8. Since 10 > 8, this is in order.</li>
+                    <li>i = 5: nums[5] = 9, nums[4] = 10. Since 9 < 10, this is out of order.
+                        <ul>
+                            <li>Update min_val = min(4, 9) = 4</li>
+                            <li>Update max_val = max(6, 10) = 10</li>
+                        </ul>
+                    </li>
+                    <li>i = 6: nums[6] = 15, nums[5] = 9. Since 15 > 9, this is in order.</li>
+                </ul>
+            </li>
+            <li>After scanning, <code>min_val = 4</code> and <code>max_val = 10</code></li>
+            <li>
+                Find the left boundary:
+                <ul>
+                    <li>left = 0, nums[0] = 2. Since 4 > 2, increment left to 1</li>
+                    <li>left = 1, nums[1] = 6. Since 4 < 6, stop at left = 1</li>
+                </ul>
+            </li>
+            <li>
+                Find the right boundary:
+                <ul>
+                    <li>right = 6, nums[6] = 15. Since 10 < 15, decrement right to 5</li>
+                    <li>right = 5, nums[5] = 9. Since 10 > 9, stop at right = 5</li>
+                </ul>
+            </li>
+            <li>Calculate length: right - left + 1 = 5 - 1 + 1 = 5</li>
+        </ol>
+        
+        <div class="example">
+            <p><strong>Example Run 2:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [1, 2, 3, 4]
+
+<span class="comment"># Call our function</span>
+result = findUnsortedSubarray(nums)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">0</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Second Example:</strong>
+        </p>
+        <p>
+            For nums = [1, 2, 3, 4], the array is already sorted, so we don't find any out-of-order elements. The min_val remains infinity, and we return 0.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Alternative Approach:</strong> Another way to solve this problem is to create a sorted copy of the array and compare it with the original array. The first and last positions where they differ define the boundaries of the unsorted subarray. However, this approach requires O(n log n) time for sorting and O(n) extra space for the copy.</p>
+        </div>
+    </div>
+
+</body>
+</html>

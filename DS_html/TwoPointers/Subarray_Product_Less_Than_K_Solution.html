@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subarray Product Less Than K Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Subarray Product Less Than K Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Subarray Product Less Than K (LeetCode #713)</strong></p>
+        <p><a href="https://leetcode.com/problems/subarray-product-less-than-k/description/" target="_blank">https://leetcode.com/problems/subarray-product-less-than-k/description/</a></p>
+        <p>
+            Given an array of integers nums and an integer k, return the number of contiguous subarrays where the product of all the elements in the subarray is strictly less than k.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [10,5,2,6], k = 100</p>
+            <p><strong>Output:</strong> 8</p>
+            <p><strong>Explanation:</strong> The 8 subarrays that have product less than 100 are:</p>
+            <p>[10], [5], [2], [6], [10, 5], [5, 2], [2, 6], [5, 2, 6]</p>
+            <p>Note that [10, 5, 2] is not included as the product of 100 is not strictly less than k.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [1,2,3], k = 0</p>
+            <p><strong>Output:</strong> 0</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= nums.length <= 3 * 10<sup>4</sup></li>
+            <li>1 <= nums[i] <= 1000</li>
+            <li>0 <= k <= 10<sup>6</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find the number of contiguous subarrays where the product of all elements is less than a given threshold k. Let's break down what this means:
+        </p>
+        <ul>
+            <li><strong>Contiguous subarrays:</strong> Subarrays are continuous segments of an array. For example, in [10,5,2,6], some subarrays are [10], [5], [10,5], [5,2,6], etc.</li>
+            <li><strong>Product less than k:</strong> For each subarray, we calculate the product of all its elements, and check if it's strictly less than k.</li>
+            <li><strong>Count:</strong> We need to return the total count of valid subarrays.</li>
+        </ul>
+        <p>
+            A naive approach would be to check all possible subarrays, but that would result in an O(n²) solution. Instead, we can use a sliding window approach with two pointers to achieve an O(n) solution.
+        </p>
+        <p>
+            For the example [10,5,2,6] with k = 100:
+        </p>
+        <ul>
+            <li>Single-element subarrays: [10], [5], [2], [6] - all have products less than 100.</li>
+            <li>Two-element subarrays: [10,5] (product 50), [5,2] (product 10), [2,6] (product 12) - all less than 100.</li>
+            <li>Three-element subarrays: [10,5,2] (product 100) - equal to 100, so not counted; [5,2,6] (product 60) - less than 100.</li>
+            <li>Four-element subarrays: [10,5,2,6] (product 600) - greater than 100, so not counted.</li>
+        </ul>
+        <p>
+            So there are 8 subarrays with product less than 100.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a combination of the Sliding Window and Two Pointers patterns to solve this problem efficiently:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> By maintaining a sliding window where the product of all elements is less than k, we can efficiently count all valid subarrays.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Initialize two pointers, left and right, both at the beginning of the array.</li>
+            <li>Initialize a variable to track the current product of elements in the window.</li>
+            <li>Expand the window by moving the right pointer and including the new element in the product.</li>
+            <li>If the product becomes greater than or equal to k, contract the window from the left until the product is less than k.</li>
+            <li>For each valid window, count the number of subarrays ending at the right pointer.</li>
+            <li>Continue this process until the right pointer reaches the end of the array.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach:</strong></p>
+            <pre>
+Example: nums = [10,5,2,6], k = 100
+
+Initialize: left = 0, right = 0, product = 1, count = 0
+
+Iteration 1: right = 0
+  Include nums[right] = 10 in the product: product = 10
+  Is product < k? Yes
+  Count new subarrays ending at right: right-left+1 = 1
+    New subarrays: [10]
+  count = 1, right = 1
+
+Iteration 2: right = 1
+  Include nums[right] = 5 in the product: product = 50
+  Is product < k? Yes
+  Count new subarrays ending at right: right-left+1 = 2
+    New subarrays: [5], [10,5]
+  count = 3, right = 2
+
+Iteration 3: right = 2
+  Include nums[right] = 2 in the product: product = 100
+  Is product < k? No (it's equal to k)
+  Shrink window from left: product = product/nums[left] = 100/10 = 10, left = 1
+  Is product < k? Yes
+  Count new subarrays ending at right: right-left+1 = 2
+    New subarrays: [2], [5,2]
+  count = 5, right = 3
+
+Iteration 4: right = 3
+  Include nums[right] = 6 in the product: product = 60
+  Is product < k? Yes
+  Count new subarrays ending at right: right-left+1 = 3
+    New subarrays: [6], [2,6], [5,2,6]
+  count = 8, right = 4
+
+Final count: 8</pre>
+        </div>
+        
+        <p>
+            <strong>Why does right-left+1 give the count of new subarrays?</strong>
+        </p>
+        <p>
+            When we have a valid window [left...right], all subarrays ending at right and starting at or after left have a product less than k. There are (right-left+1) such subarrays, corresponding to different starting positions from left to right.
+        </p>
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the length of the array. Each element is processed at most twice (once when it enters the window via the right pointer, and once when it leaves the window via the left pointer).</li>
+            <li><strong>Space Complexity:</strong> O(1) as we only use a constant amount of extra space regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>Set <code>left = 0</code> and <code>right = 0</code> (the window boundaries).</li>
+                    <li>Set <code>product = 1</code> (to track the current product in the window).</li>
+                    <li>Set <code>count = 0</code> (to track the number of valid subarrays).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Expand and contract the window:</strong>
+                <ul>
+                    <li>While <code>right < len(nums)</code>:</li>
+                    <ul>
+                        <li>Expand the window by including the element at <code>right</code>: <code>product *= nums[right]</code>.</li>
+                        <li>Contract the window from the left while the product is too large:</li>
+                        <ul>
+                            <li>While <code>product >= k</code> and <code>left <= right</code>:</li>
+                            <ul>
+                                <li>Remove the element at <code>left</code> from the product: <code>product /= nums[left]</code>.</li>
+                                <li>Move the left boundary: <code>left += 1</code>.</li>
+                            </ul>
+                        </ul>
+                        <li>Count valid subarrays ending at <code>right</code>:</li>
+                        <ul>
+                            <li>If <code>product < k</code>, add <code>right - left + 1</code> to <code>count</code>.</li>
+                        </ul>
+                        <li>Move the right boundary: <code>right += 1</code>.</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Return <code>count</code> as the number of valid subarrays.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def numSubarrayProductLessThanK(nums, k):
+    <span class="comment"># If k <= 1, no subarray can have product less than k</span>
+    if k <= 1:
+        return 0
+    
+    <span class="comment"># Initialize variables</span>
+    product = 1
+    left = 0
+    count = 0
+    
+    <span class="comment"># Iterate through the array with right pointer</span>
+    for right in range(len(nums)):
+        <span class="comment"># Include the current element in the product</span>
+        product *= nums[right]
+        
+        <span class="comment"># Contract window from the left while product is too large</span>
+        while product >= k and left <= right:
+            <span class="comment"># Remove the leftmost element from the product</span>
+            product //= nums[left]
+            left += 1
+        
+        <span class="comment"># Count valid subarrays ending at right</span>
+        count += (right - left + 1)
+    
+    return count</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [10, 5, 2, 6]
+k = 100
+
+<span class="comment"># Call our function</span>
+result = numSubarrayProductLessThanK(nums, k)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">8</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Trace for Example 1:</strong>
+        </p>
+        <table border="1" cellpadding="5">
+            <tr>
+                <th>Iteration</th>
+                <th>right</th>
+                <th>nums[right]</th>
+                <th>product</th>
+                <th>left</th>
+                <th>window</th>
+                <th>new subarrays</th>
+                <th>count</th>
+            </tr>
+            <tr>
+                <td>Initial</td>
+                <td>-</td>
+                <td>-</td>
+                <td>1</td>
+                <td>0</td>
+                <td>[]</td>
+                <td>-</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>10</td>
+                <td>10</td>
+                <td>0</td>
+                <td>[10]</td>
+                <td>[10]</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>1</td>
+                <td>5</td>
+                <td>50</td>
+                <td>0</td>
+                <td>[10,5]</td>
+                <td>[5], [10,5]</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>2</td>
+                <td>2</td>
+                <td>100</td>
+                <td>0</td>
+                <td>[10,5,2]</td>
+                <td>Product = 100 ≥ k, shrink window</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>3 (after shrink)</td>
+                <td>2</td>
+                <td>2</td>
+                <td>10</td>
+                <td>1</td>
+                <td>[5,2]</td>
+                <td>[2], [5,2]</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>3</td>
+                <td>6</td>
+                <td>60</td>
+                <td>1</td>
+                <td>[5,2,6]</td>
+                <td>[6], [2,6], [5,2,6]</td>
+                <td>8</td>
+            </tr>
+        </table>
+        
+        <div class="example">
+            <p><strong>Example Run 2:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [1, 2, 3]
+k = 0
+
+<span class="comment"># Call our function</span>
+result = numSubarrayProductLessThanK(nums, k)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">0</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Second Example:</strong>
+        </p>
+        <p>
+            For nums = [1,2,3] and k = 0, since all elements in the array are positive integers, their product will always be at least 1. Since 1 is not strictly less than 0, there are no valid subarrays, so we return 0.
+        </p>
+        <p>
+            In fact, for any k ≤ 1, the function should return 0, as no product of positive integers can be less than or equal to 0, and no product can be less than 1.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Implementation Note:</strong> In the code, we use integer division (<code>//</code>) when removing elements from the product. This works for this problem because all elements are positive integers. In general cases, floating-point division might be needed.</p>
+        </div>
+    </div>
+
+</body>
+</html>

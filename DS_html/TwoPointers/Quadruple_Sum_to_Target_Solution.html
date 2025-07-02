@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadruple Sum to Target Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f5f5f5;
+            border-left: 5px solid #a0a0a0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quadruple Sum to Target Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: 4Sum (LeetCode #18)</strong></p>
+        <p><a href="https://leetcode.com/problems/4sum/" target="_blank">https://leetcode.com/problems/4sum/</a></p>
+        <p>
+            Given an array of unsorted numbers and a target number, find all unique quadruplets in it, whose sum is equal to the target number.
+        </p>
+        <p>
+            Unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
+        </p>
+        <ul>
+            <li>0 <= a, b, c, d < n</li>
+            <li>a, b, c, and d are distinct.</li>
+            <li>nums[a] + nums[b] + nums[c] + nums[d] == target</li>
+        </ul>
+        <p>You may return the answer in any order.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [4, 1, 2, -1, 1, -3], target = 1</p>
+            <p><strong>Output:</strong> [[-3, -1, 1, 4], [-3, 1, 1, 2]]</p>
+            <p><strong>Explanation:</strong> Both the quadruplets add up to the target.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [2, 0, -1, 1, -2, 2], target = 2</p>
+            <p><strong>Output:</strong> [[-2, 0, 2, 2], [-1, 0, 1, 2]]</p>
+            <p><strong>Explanation:</strong> Both the quadruplets add up to the target.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= nums.length <= 200</li>
+            <li>-10<sup>9</sup> <= nums[i] <= 10<sup>9</sup></li>
+            <li>-10<sup>9</sup> <= target <= 10<sup>9</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem is a natural extension of the 3Sum problem, but instead of finding triplets that sum to a particular value, we're looking for quadruplets (groups of four numbers) that sum to the target value.
+        </p>
+        <p>
+            The key objectives are:
+        </p>
+        <ul>
+            <li><strong>Find four distinct numbers:</strong> We need to select four unique indices from the array.</li>
+            <li><strong>Sum equals target:</strong> The sum of these four numbers must equal the given target value.</li>
+            <li><strong>Unique quadruplets:</strong> The result should not contain duplicate quadruplets, even if the array has duplicate values.</li>
+        </ul>
+        <p>
+            For example, with nums = [4, 1, 2, -1, 1, -3] and target = 1, we have two quadruplets:
+        </p>
+        <ul>
+            <li>[-3, -1, 1, 4] because (-3) + (-1) + 1 + 4 = 1</li>
+            <li>[-3, 1, 1, 2] because (-3) + 1 + 1 + 2 = 1</li>
+        </ul>
+        <p>
+            Notice that both quadruplets include unique indices even though the number 1 appears twice in the second quadruplet. This is because there are two instances of the value 1 in the input array.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll extend the approach used for the 3Sum problem, combining sorting with the two-pointer technique and adding an extra nested loop:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> After sorting the array, we can use two nested loops to fix the first two elements, then use the two-pointer technique to efficiently find pairs whose sum, along with the fixed elements, equals the target.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Sort the array in ascending order.</li>
+            <li>Use two nested loops to fix the first two elements of the quadruplet (nums[i] and nums[j]).</li>
+            <li>For each pair of fixed elements, use the two-pointer technique to find pairs (nums[left], nums[right]) such that nums[i] + nums[j] + nums[left] + nums[right] = target.</li>
+            <li>Use a set data structure to automatically handle duplicate quadruplets.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach:</strong></p>
+            <pre>
+Example: nums = [4, 1, 2, -1, 1, -3], target = 1
+
+After sorting: nums = [-3, -1, 1, 1, 2, 4]
+
+Iteration i=0, j=1:
+  i = 0, nums[i] = -3
+  j = 1, nums[j] = -1
+  left = 2, right = 5
+  Sum = -3 + (-1) + 1 + 4 = 1 == target, add quadruplet [-3, -1, 1, 4]
+  Move pointers: left++ and right--
+  left = 3, right = 4
+  Sum = -3 + (-1) + 1 + 2 = -1 < target, increment left
+  left = 4, now left == right, move to next j
+
+Iteration i=0, j=2:
+  i = 0, nums[i] = -3
+  j = 2, nums[j] = 1
+  left = 3, right = 5
+  Sum = -3 + 1 + 1 + 4 = 3 > target, decrement right
+  left = 3, right = 4
+  Sum = -3 + 1 + 1 + 2 = 1 == target, add quadruplet [-3, 1, 1, 2]
+  Move pointers: left++ and right--
+  left = 4, now left == right, move to next j
+
+Continue this process for all valid combinations of i and j...
+
+Result: [[-3, -1, 1, 4], [-3, 1, 1, 2]]</pre>
+        </div>
+        
+        <div class="complexity">
+            <p><strong>Time and Space Complexity:</strong></p>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n³) where n is the length of the array. Sorting takes O(n log n), and the three nested loops (two explicit and one implicit in the two-pointer approach) take O(n³).</li>
+                <li><strong>Space Complexity:</strong> O(n) for storing the result. If we don't count the output space, the algorithm uses O(1) extra space for the pointers and temporary variables, plus the space required by the sorting algorithm (typically O(log n) for the call stack).</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Sort the array:</strong>
+                <ul>
+                    <li>Sort the input array in ascending order to enable the two-pointer technique.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Initialize the result set:</strong>
+                <ul>
+                    <li>Create an empty set to store unique quadruplets.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>First loop (i):</strong>
+                <ul>
+                    <li>Iterate through the array with index i from 0 to len(nums) - 4.</li>
+                    <li>Optionally, skip duplicate values of i to avoid duplicate quadruplets.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Second loop (j):</strong>
+                <ul>
+                    <li>For each i, iterate through the array with index j from i + 1 to len(nums) - 3.</li>
+                    <li>Optionally, skip duplicate values of j to avoid duplicate quadruplets.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Two-pointer technique:</strong>
+                <ul>
+                    <li>For each pair (i, j), initialize left = j + 1 and right = len(nums) - 1.</li>
+                    <li>While left < right:</li>
+                    <ul>
+                        <li>Calculate the sum = nums[i] + nums[j] + nums[left] + nums[right].</li>
+                        <li>If sum == target:</li>
+                        <ul>
+                            <li>Add the quadruplet (nums[i], nums[j], nums[left], nums[right]) to the result set.</li>
+                            <li>Increment left and decrement right to look for more quadruplets.</li>
+                        </ul>
+                        <li>If sum > target:</li>
+                        <ul>
+                            <li>Decrement right to decrease the sum.</li>
+                        </ul>
+                        <li>If sum < target:</li>
+                        <ul>
+                            <li>Increment left to increase the sum.</li>
+                        </ul>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Convert the set to a list of quadruplets and return it.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def fourSum(nums, target):
+    <span class="comment"># Initialize a set to store unique quadruplets</span>
+    result = set()
+    
+    <span class="comment"># Sort the array to enable the two-pointer technique</span>
+    nums.sort()
+    
+    <span class="comment"># First loop: fix the first element</span>
+    for i in range(len(nums) - 3):
+        <span class="comment"># Optional: Skip duplicate values for i</span>
+        if i > 0 and nums[i] == nums[i-1]:
+            continue
+            
+        <span class="comment"># Second loop: fix the second element</span>
+        for j in range(i + 1, len(nums) - 2):
+            <span class="comment"># Optional: Skip duplicate values for j</span>
+            if j > i + 1 and nums[j] == nums[j-1]:
+                continue
+                
+            <span class="comment"># Initialize two pointers</span>
+            left = j + 1
+            right = len(nums) - 1
+            
+            <span class="comment"># Use two-pointer technique to find pairs</span>
+            while left < right:
+                <span class="comment"># Calculate the sum of the current quadruplet</span>
+                current_sum = nums[i] + nums[j] + nums[left] + nums[right]
+                
+                if current_sum == target:
+                    <span class="comment"># Found a quadruplet that sums to the target</span>
+                    result.add((nums[i], nums[j], nums[left], nums[right]))
+                    <span class="comment"># Move both pointers inward</span>
+                    left += 1
+                    right -= 1
+                elif current_sum > target:
+                    <span class="comment"># Sum is too large, decrease right to reduce the sum</span>
+                    right -= 1
+                else:
+                    <span class="comment"># Sum is too small, increase left to increase the sum</span>
+                    left += 1
+    
+    <span class="comment"># Convert set of tuples to list of lists for the final output</span>
+    return [list(quadruplet) for quadruplet in result]</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [4, 1, 2, -1, 1, -3]
+target = 1
+
+<span class="comment"># Call our function</span>
+result = fourSum(nums, target)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[[-3, -1, 1, 4], [-3, 1, 1, 2]]</pre>
+        </div>
+        
+        <p>
+            <strong>Alternative Implementation (Without Using a Set):</strong>
+        </p>
+        <pre>
+def fourSum(nums, target):
+    <span class="comment"># Sort the array</span>
+    nums.sort()
+    result = []
+    n = len(nums)
+    
+    for i in range(n - 3):
+        <span class="comment"># Skip duplicates for i</span>
+        if i > 0 and nums[i] == nums[i-1]:
+            continue
+            
+        for j in range(i + 1, n - 2):
+            <span class="comment"># Skip duplicates for j</span>
+            if j > i + 1 and nums[j] == nums[j-1]:
+                continue
+                
+            left, right = j + 1, n - 1
+            
+            while left < right:
+                sum_val = nums[i] + nums[j] + nums[left] + nums[right]
+                
+                if sum_val < target:
+                    left += 1
+                elif sum_val > target:
+                    right -= 1
+                else:
+                    <span class="comment"># Found a quadruplet</span>
+                    result.append([nums[i], nums[j], nums[left], nums[right]])
+                    
+                    <span class="comment"># Skip duplicates for left and right</span>
+                    while left < right and nums[left] == nums[left + 1]:
+                        left += 1
+                    while left < right and nums[right] == nums[right - 1]:
+                        right -= 1
+                        
+                    left += 1
+                    right -= 1
+                    
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Example Run 2:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [2, 0, -1, 1, -2, 2]
+target = 2
+
+<span class="comment"># Call our function</span>
+result = fourSum(nums, target)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[[-2, 0, 2, 2], [-1, 0, 1, 2]]</pre>
+        </div>
+        
+        <p>
+            <strong>Optimization Techniques:</strong>
+        </p>
+        <ul>
+            <li>
+                <strong>Early termination:</strong> We can add early termination conditions based on the sorted nature of the array. For example, if nums[i] + nums[i+1] + nums[i+2] + nums[i+3] > target, then we can break the outer loop since all further quadruplets will have a sum greater than the target.
+            </li>
+            <li>
+                <strong>Skip duplicates:</strong> As shown in the alternative implementation, we can skip duplicate values for all four indices to avoid generating duplicate quadruplets without needing a set data structure.
+            </li>
+            <li>
+                <strong>Pruning:</strong> If nums[i] + nums[j] + nums[n-2] + nums[n-1] < target, we can skip the current j since even with the two largest elements, the sum is still less than the target.
+            </li>
+        </ul>
+        
+        <p>
+            <strong>Generalization to k-Sum:</strong>
+        </p>
+        <p>
+            The approach used for this problem can be generalized to solve the k-Sum problem (finding k numbers that sum to a target) by using recursion:
+        </p>
+        <ol>
+            <li>For k = 2, use the two-pointer technique.</li>
+            <li>For k > 2, recursively reduce the problem to (k-1)-Sum.</li>
+        </ol>
+        <p>
+            This would allow us to solve 3Sum, 4Sum, or even higher-order sum problems with the same underlying approach.
+        </p>
+    </div>
+
+</body>
+</html>

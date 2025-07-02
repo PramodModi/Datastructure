@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triplets With Smaller Sum Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .correction {
+            background-color: #fff2e8;
+            border-left: 5px solid #fa541c;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Triplets With Smaller Sum Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Triplets with Smaller Sum</strong></p>
+        <p><a href="https://www.geeksforgeeks.org/count-triplets-with-sum-smaller-that-a-given-value/" target="_blank">https://www.geeksforgeeks.org/count-triplets-with-sum-smaller-that-a-given-value/</a></p>
+        <p>
+            Given an array of distinct integers and a target value. Find count of triplets with sum smaller than given target value. The expected Time Complexity is O(n²).
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [-2, 0, 1, 3], target = 2</p>
+            <p><strong>Output:</strong> 2</p>
+            <p><strong>Explanation:</strong> Below are triplets with sum less than 2:</p>
+            <p>(-2, 0, 1) and (-2, 0, 3)</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [5, 1, 3, 4, 7], target = 12</p>
+            <p><strong>Output:</strong> 4</p>
+            <p><strong>Explanation:</strong> Below are triplets with sum less than 12:</p>
+            <p>(1, 3, 4), (1, 3, 5), (1, 3, 7), and (1, 4, 5)</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to count all triplets (three distinct elements) from the array where the sum is strictly less than a given target value. Let's understand what this means:
+        </p>
+        <ul>
+            <li><strong>Triplet:</strong> A group of three distinct elements from the array.</li>
+            <li><strong>Sum smaller than target:</strong> The sum of these three elements must be strictly less than the given target value.</li>
+            <li><strong>Count:</strong> We need to return the total number of such triplets.</li>
+        </ul>
+        <p>
+            For example, with nums = [-2, 0, 1, 3] and target = 2, we have two triplets:
+        </p>
+        <ul>
+            <li>(-2, 0, 1) with sum = -2 + 0 + 1 = -1 < 2</li>
+            <li>(-2, 0, 3) with sum = -2 + 0 + 3 = 1 < 2</li>
+        </ul>
+        <p>
+            So the answer is 2.
+        </p>
+        <p>
+            A naive approach would be to use three nested loops to check every possible triplet, which would have a time complexity of O(n³). However, we can optimize this using sorting and the two-pointer technique to achieve the expected O(n²) time complexity.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a similar approach to the 3Sum problem, combining sorting with the two-pointer technique:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> After sorting the array, for each element at index i, we can use two pointers to efficiently find all pairs of elements that, along with the element at i, form a triplet with sum less than the target.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Sort the array in ascending order.</li>
+            <li>Iterate through the array with a pointer i:</li>
+            <ul>
+                <li>For each position i, use two pointers (left starting after i, and right at the end of the array) to find pairs such that nums[i] + nums[left] + nums[right] < target.</li>
+                <li>If the sum is less than the target, all pairs with indices left and any index between left and right will also form valid triplets. So we add (right - left) to our count and increment left.</li>
+                <li>If the sum is greater than or equal to the target, decrement right to decrease the sum.</li>
+            </ul>
+            <li>Return the total count after examining all possible triplets.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Two-Pointer Approach:</strong></p>
+            <pre>
+Example: nums = [-2, 0, 1, 3], target = 2
+
+After sorting: [-2, 0, 1, 3]
+
+Iteration 1: i = 0, nums[i] = -2
+  left = 1, right = 3
+  sum = -2 + 0 + 3 = 1 < target, so we've found valid triplets
+  All triplets with indices (0, 1, j) where j is between 1 and 3 are valid
+  That's (right - left) = 2 triplets: (-2, 0, 1) and (-2, 0, 3)
+  count = 2, left = 2
+  
+  left = 2, right = 3
+  sum = -2 + 1 + 3 = 2 >= target, so decrement right
+  right = 2, now left == right, so we're done with this iteration
+
+Iteration 2: i = 1, nums[i] = 0
+  left = 2, right = 3
+  sum = 0 + 1 + 3 = 4 >= target, so decrement right
+  right = 2, now left == right, so we're done with this iteration
+
+Iteration 3: i = 2, nums[i] = 1
+  left = 3, right = 3
+  left == right, so we're done with this iteration
+
+Final count: 2</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n²) where n is the length of the array. Sorting takes O(n log n), and the two nested loops (one explicit and one implicit in the two-pointer approach) take O(n²).</li>
+            <li><strong>Space Complexity:</strong> O(1) if we don't count the space required for sorting. The algorithm itself uses only a constant amount of extra space for variables.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Sort the array:</strong>
+                <ul>
+                    <li>Sort the input array in ascending order.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Initialize count:</strong>
+                <ul>
+                    <li>Set count = 0 to track the number of valid triplets.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Iterate through the array:</strong>
+                <ul>
+                    <li>For each index i from 0 to len(nums) - 3:</li>
+                    <ul>
+                        <li>Initialize left = i + 1 and right = len(nums) - 1.</li>
+                        <li>While left < right:</li>
+                        <ul>
+                            <li>Calculate sum = nums[i] + nums[left] + nums[right].</li>
+                            <li>If sum >= target:</li>
+                            <ul>
+                                <li>Decrement right to decrease the sum.</li>
+                            </ul>
+                            <li>If sum < target:</li>
+                            <ul>
+                                <li>Add (right - left) to count.</li>
+                                <li>Increment left to try other pairs.</li>
+                            </ul>
+                        </ul>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Return the final count of valid triplets.</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Why add (right - left)?</strong></p>
+            <p>When we find a triplet (nums[i], nums[left], nums[right]) with sum < target, all triplets with the first element as nums[i], the second element as nums[left], and the third element as any element between nums[left+1] and nums[right] will also have a sum < target. There are (right - left) such elements, so we add this count directly.</p>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        
+        <pre>
+def countTriplets(nums, target):
+    <span class="comment"># Initialize counter for triplets with sum less than target</span>
+    count = 0
+    
+    <span class="comment"># Sort the array to enable the two-pointer technique</span>
+    nums.sort()
+    
+    <span class="comment"># Iterate through the array to fix the first element</span>
+    for i in range(len(nums) - 2):
+        <span class="comment"># Initialize two pointers for the remaining elements</span>
+        left = i + 1
+        right = len(nums) - 1
+        
+        <span class="comment"># Use two-pointer technique to find valid triplets</span>
+        while left < right:
+            <span class="comment"># Calculate the sum of the current triplet</span>
+            current_sum = nums[i] + nums[left] + nums[right]
+            
+            if current_sum >= target:
+                <span class="comment"># Sum is too large, decrease the right pointer</span>
+                right -= 1
+            else:
+                <span class="comment"># Found valid triplets: all triplets with indices (i, left, j) where j is between left+1 and right</span>
+                count += (right - left)
+                <span class="comment"># Increase the left pointer to find more triplets</span>
+                left += 1
+    
+    <span class="comment"># Return the total count of valid triplets</span>
+    return count</pre>
+        
+        <div class="correction">
+            <p><strong>Note:</strong> There was an indentation error in the original code where the <code>return count</code> statement was inside the outer loop. This would cause the function to return after processing only the first element of the array. The code above has been corrected to properly return the count after all elements have been processed.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [-2, 0, 1, 3]
+target = 2
+
+<span class="comment"># Call our function</span>
+result = countTriplets(nums, target)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">2</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Trace for Example 1:</strong>
+        </p>
+        <p>Let's trace through the execution for nums = [-2, 0, 1, 3], target = 2:</p>
+        <ol>
+            <li>Sort the array: [-2, 0, 1, 3] (already sorted)</li>
+            <li>Initialize count = 0</li>
+            <li>
+                For i = 0, nums[i] = -2:
+                <ul>
+                    <li>left = 1, right = 3</li>
+                    <li>sum = -2 + 0 + 3 = 1 < 2</li>
+                    <li>count += (3 - 1) = 2</li>
+                    <li>left = 2</li>
+                    <li>left = 2, right = 3</li>
+                    <li>sum = -2 + 1 + 3 = 2 >= 2</li>
+                    <li>right = 2</li>
+                    <li>left = 2, right = 2, so break inner loop</li>
+                </ul>
+            </li>
+            <li>
+                For i = 1, nums[i] = 0:
+                <ul>
+                    <li>left = 2, right = 3</li>
+                    <li>sum = 0 + 1 + 3 = 4 >= 2</li>
+                    <li>right = 2</li>
+                    <li>left = 2, right = 2, so break inner loop</li>
+                </ul>
+            </li>
+            <li>
+                For i = 2, nums[i] = 1:
+                <ul>
+                    <li>left = 3, right = 3</li>
+                    <li>left = right, so we're done with this iteration</li>
+                </ul>
+            </li>
+            <li>Return count = 2</li>
+        </ol>
+        
+        <div class="example">
+            <p><strong>Example Run 2:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [5, 1, 3, 4, 7]
+target = 12
+
+<span class="comment"># Call our function</span>
+result = countTriplets(nums, target)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">4</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Second Example:</strong>
+        </p>
+        <p>
+            For nums = [5, 1, 3, 4, 7] and target = 12:
+        </p>
+        <ol>
+            <li>After sorting: [1, 3, 4, 5, 7]</li>
+            <li>
+                For i = 0, nums[i] = 1:
+                <ul>
+                    <li>We find triplets (1, 3, 4), (1, 3, 5), and (1, 3, 7) all have sum < 12</li>
+                    <li>We also find (1, 4, 5) has sum < 12</li>
+                </ul>
+            </li>
+            <li>For other values of i, no additional triplets with sum < 12 are found</li>
+            <li>Total count = 4</li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Variation:</strong> If you want to find the actual triplets instead of just counting them, you can modify the algorithm to store the triplets in an array when sum < target. Just be sure to handle potential duplicates if the input array can contain duplicate values.</p>
+        </div>
+    </div>
+
+</body>
+</html>

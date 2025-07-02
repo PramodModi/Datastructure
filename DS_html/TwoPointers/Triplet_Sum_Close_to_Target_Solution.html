@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triplet Sum Close to Target Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Triplet Sum Close to Target Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: 3Sum Closest (LeetCode #16)</strong></p>
+        <p><a href="https://leetcode.com/problems/3sum-closest/description/" target="_blank">https://leetcode.com/problems/3sum-closest/description/</a></p>
+        <p>
+            Given an integer array nums of length n and an integer target, find three integers in nums such that the sum is closest to target.
+        </p>
+        <p>
+            Return the sum of the three integers.
+        </p>
+        <p>
+            You may assume that each input would have exactly one solution.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [-1,2,1,-4], target = 1</p>
+            <p><strong>Output:</strong> 2</p>
+            <p><strong>Explanation:</strong> The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [0,0,0], target = 1</p>
+            <p><strong>Output:</strong> 0</p>
+            <p><strong>Explanation:</strong> The sum that is closest to the target is 0. (0 + 0 + 0 = 0).</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>3 <= nums.length <= 500</li>
+            <li>-1000 <= nums[i] <= 1000</li>
+            <li>-10<sup>4</sup> <= target <= 10<sup>4</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem is a variation of the 3Sum problem. Instead of finding triplets that sum exactly to zero, we need to find a triplet whose sum is as close as possible to a given target value.
+        </p>
+        <p>
+            The key objectives are:
+        </p>
+        <ul>
+            <li><strong>Find three numbers:</strong> We need to select three distinct numbers from the array.</li>
+            <li><strong>Closest to target:</strong> The sum of these three numbers should have the minimum absolute difference with the target value.</li>
+            <li><strong>Return the sum:</strong> Unlike the original 3Sum problem where we return the triplets themselves, here we just need to return the sum of the closest triplet.</li>
+        </ul>
+        <p>
+            For example, with nums = [-1,2,1,-4] and target = 1, the possible triplet sums are:
+        </p>
+        <ul>
+            <li>(-1) + 2 + 1 = 2 (difference with target: |2-1| = 1)</li>
+            <li>(-1) + 2 + (-4) = -3 (difference with target: |-3-1| = 4)</li>
+            <li>(-1) + 1 + (-4) = -4 (difference with target: |-4-1| = 5)</li>
+            <li>2 + 1 + (-4) = -1 (difference with target: |-1-1| = 2)</li>
+        </ul>
+        <p>
+            The closest sum is 2 with a difference of 1 from the target.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a similar approach to the 3Sum problem, combining sorting with the two-pointer technique:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> After sorting the array, we can fix one element and use two pointers to efficiently find the pair whose sum, along with the fixed element, is closest to the target.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Sort the array in ascending order.</li>
+            <li>Initialize a variable <code>closestSum</code> to track the sum closest to the target.</li>
+            <li>Iterate through the array with a pointer i:</li>
+            <ul>
+                <li>For each position i, use two pointers (left starting after i, and right at the end of the array) to find the closest sum to target.</li>
+                <li>Calculate the current sum = nums[i] + nums[left] + nums[right].</li>
+                <li>If this sum is closer to the target than our current closestSum, update closestSum.</li>
+                <li>If the sum is equal to the target, return it immediately (as it can't get any closer).</li>
+                <li>If the sum is greater than the target, decrement right to decrease the sum.</li>
+                <li>If the sum is less than the target, increment left to increase the sum.</li>
+            </ul>
+            <li>Return the closestSum after examining all possible triplets.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Two-Pointer Approach:</strong></p>
+            <pre>
+Example: nums = [-1,2,1,-4], target = 1
+
+After sorting: [-4,-1,1,2]
+
+Initialize closestSum = -4 + (-1) + 1 = -4
+
+Iteration 1: i = 0, nums[i] = -4
+  left = 1, right = 3
+  sum = -4 + (-1) + 2 = -3
+  |sum - target| = |-3 - 1| = 4
+  |closestSum - target| = |-4 - 1| = 5
+  4 < 5, so update closestSum = -3
+  sum < target, so increment left
+  
+  left = 2, right = 3
+  sum = -4 + 1 + 2 = -1
+  |sum - target| = |-1 - 1| = 2
+  |closestSum - target| = |-3 - 1| = 4
+  2 < 4, so update closestSum = -1
+  sum < target, so increment left
+  
+  left = 3, now left == right, so we're done with this iteration
+
+Iteration 2: i = 1, nums[i] = -1
+  left = 2, right = 3
+  sum = -1 + 1 + 2 = 2
+  |sum - target| = |2 - 1| = 1
+  |closestSum - target| = |-1 - 1| = 2
+  1 < 2, so update closestSum = 2
+  sum > target, so decrement right
+  
+  left = 2, right = 2, now left == right, so we're done with this iteration
+
+The closest sum is 2</pre>
+        </div>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We don't need any complex data structures for this problem. We're simply using variables to track the closest sum and the current triplet sum.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n²) where n is the length of the array. Sorting takes O(n log n), and the two-pointer approach takes O(n²).</li>
+            <li><strong>Space Complexity:</strong> O(1) or O(log n) depending on the sorting algorithm used. The algorithm itself uses only a constant amount of extra space for variables.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize the closest sum:</strong>
+                <ul>
+                    <li>Set <code>closestSum</code> to the sum of the first three elements as an initial value.</li>
+                    <li>Check if this sum equals the target. If yes, return the target immediately.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Sort the array:</strong>
+                <ul>
+                    <li>Sort the input array in ascending order to enable the two-pointer technique.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Iterate through the array:</strong>
+                <ul>
+                    <li>For each index i from 0 to len(nums) - 3:</li>
+                    <ul>
+                        <li>Initialize left = i + 1 and right = len(nums) - 1.</li>
+                        <li>While left < right:</li>
+                        <ul>
+                            <li>Calculate the sum of nums[i], nums[left], and nums[right].</li>
+                            <li>Calculate the absolute difference between this sum and the target.</li>
+                            <li>If this difference is smaller than the absolute difference between closestSum and the target, update closestSum.</li>
+                            <li>If sum equals target, return the target (it's the closest possible).</li>
+                            <li>If sum > target, decrement right to decrease the sum.</li>
+                            <li>If sum < target, increment left to increase the sum.</li>
+                        </ul>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Return the closest sum found.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def threeSumClosest(nums, target):
+    <span class="comment"># Initialize the closest sum to the sum of first three elements</span>
+    closestSum = nums[0] + nums[1] + nums[2]
+    
+    <span class="comment"># If the initial sum equals the target, we can return immediately</span>
+    if closestSum == target:
+        return target
+    
+    <span class="comment"># Sort the array to enable the two-pointer technique</span>
+    nums.sort()
+    
+    <span class="comment"># Iterate through the array</span>
+    for i in range(len(nums) - 2):
+        <span class="comment"># Initialize two pointers</span>
+        left = i + 1
+        right = len(nums) - 1
+        
+        <span class="comment"># Use two-pointer technique to find closest sum</span>
+        while left < right:
+            <span class="comment"># Calculate the current sum</span>
+            currentSum = nums[i] + nums[left] + nums[right]
+            
+            <span class="comment"># Calculate the absolute difference with target</span>
+            diff = abs(currentSum - target)
+            
+            <span class="comment"># If we found an exact match, return the target</span>
+            if diff == 0:
+                return target
+            
+            <span class="comment"># Update closestSum if current sum is closer to target</span>
+            if diff < abs(closestSum - target):
+                closestSum = currentSum
+            
+            <span class="comment"># Adjust pointers based on comparison with target</span>
+            if currentSum > target:
+                <span class="comment"># Sum is too large, decrease right to reduce sum</span>
+                right -= 1
+            else:
+                <span class="comment"># Sum is too small, increase left to increase sum</span>
+                left += 1
+    
+    <span class="comment"># Return the closest sum found</span>
+    return closestSum</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [-1, 2, 1, -4]
+target = 1
+
+<span class="comment"># Call our function</span>
+result = threeSumClosest(nums, target)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">2</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Trace for Example 1:</strong>
+        </p>
+        <p>Let's trace through the execution for nums = [-1, 2, 1, -4], target = 1:</p>
+        <ol>
+            <li>Initialize <code>closestSum = nums[0] + nums[1] + nums[2] = -1 + 2 + 1 = 2</code></li>
+            <li>Sort the array: <code>nums = [-4, -1, 1, 2]</code></li>
+            <li>
+                For i=0, nums[i] = -4:
+                <ul>
+                    <li>left=1, right=3: sum = -4 + (-1) + 2 = -3, diff = |-3 - 1| = 4</li>
+                    <li>Compare with |closestSum - target| = |2 - 1| = 1, diff > 1, so don't update</li>
+                    <li>sum < target, increment left to 2</li>
+                    <li>left=2, right=3: sum = -4 + 1 + 2 = -1, diff = |-1 - 1| = 2</li>
+                    <li>Compare with |closestSum - target| = |2 - 1| = 1, diff > 1, so don't update</li>
+                    <li>sum < target, increment left to 3, now left == right, done with i=0</li>
+                </ul>
+            </li>
+            <li>
+                For i=1, nums[i] = -1:
+                <ul>
+                    <li>left=2, right=3: sum = -1 + 1 + 2 = 2, diff = |2 - 1| = 1</li>
+                    <li>Compare with |closestSum - target| = |2 - 1| = 1, diff == 1, no update needed</li>
+                    <li>sum > target, decrement right to 2, now left == right, done with i=1</li>
+                </ul>
+            </li>
+            <li>Return closestSum = 2</li>
+        </ol>
+        
+        <div class="example">
+            <p><strong>Example Run 2:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [0, 0, 0]
+target = 1
+
+<span class="comment"># Call our function</span>
+result = threeSumClosest(nums, target)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">0</pre>
+        </div>
+        
+        <p>
+            <strong>Explanation of Second Example:</strong>
+        </p>
+        <p>
+            For nums = [0,0,0], target = 1:
+        </p>
+        <ul>
+            <li>Initialize closestSum = 0 + 0 + 0 = 0</li>
+            <li>The array is already sorted</li>
+            <li>When we iterate through the array, all possible triplets sum to 0</li>
+            <li>The closest possible sum to the target 1 is 0, with a difference of 1</li>
+            <li>Return 0 as the result</li>
+        </ul>
+        
+        <p>
+            <strong>Optimization:</strong>
+        </p>
+        <p>
+            We can further optimize the code by skipping duplicate elements and by early termination when we find an exact match. However, the current implementation is already efficient with O(n²) time complexity.
+        </p>
+    </div>
+
+</body>
+</html>

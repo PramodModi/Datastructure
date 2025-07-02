@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Duplicate Number Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .algorithm {
+            background-color: #f0f2f5;
+            border-left: 5px solid #8c8c8c;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find the Duplicate Number Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Find the Duplicate Number (LeetCode #287)</strong></p>
+        <p><a href="https://leetcode.com/problems/find-the-duplicate-number/description/" target="_blank">https://leetcode.com/problems/find-the-duplicate-number/description/</a></p>
+        <p>
+            Given an array of integers nums containing n + 1 integers where each integer is in the range [1, n] inclusive.
+        </p>
+        <p>
+            There is only one repeated number in nums, return this repeated number.
+        </p>
+        <p>
+            You must solve the problem without modifying the array nums and use only constant extra space.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [1,3,4,2,2]</p>
+            <p><strong>Output:</strong> 2</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [3,1,3,4,2]</p>
+            <p><strong>Output:</strong> 3</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= n <= 10<sup>5</sup></li>
+            <li>nums.length == n + 1</li>
+            <li>1 <= nums[i] <= n</li>
+            <li>All the integers in nums appear only once except for precisely one integer which appears two or more times.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find a duplicate number in an array under special constraints:
+        </p>
+        <ul>
+            <li>The array contains n+1 integers, where each integer is between 1 and n.</li>
+            <li>There is exactly one integer that appears more than once.</li>
+            <li>We can't modify the array and must use only O(1) extra space.</li>
+        </ul>
+        <p>
+            These constraints rule out many common approaches:
+        </p>
+        <ul>
+            <li>Sorting the array would modify it.</li>
+            <li>Using a hash set would require O(n) extra space.</li>
+            <li>Modifying elements in-place (like marking visited elements) is not allowed.</li>
+        </ul>
+        <p>
+            However, there's a key insight: since we have n+1 numbers in the range [1,n], by the pigeonhole principle, at least one number must be repeated. This allows us to treat the array as a linked list with a cycle, where the duplicate number creates the cycle.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll solve this problem using Floyd's Tortoise and Hare algorithm (cycle detection in a linked list):
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We can treat the array as a linked list where the value at each index points to the next index. Since there's a duplicate number, there must be a cycle in this "linked list" structure.</p>
+        </div>
+        
+        <p>Here's how we can map this array to a linked list with a cycle:</p>
+        <ul>
+            <li>For an array [1,3,4,2,2], we can view it as follows:</li>
+            <li>Index 0 contains value 1, so it points to index 1</li>
+            <li>Index 1 contains value 3, so it points to index 3</li>
+            <li>Index 3 contains value 2, so it points to index 2</li>
+            <li>Index 2 contains value 4, so it points to index 4</li>
+            <li>Index 4 contains value 2, so it points back to index 2</li>
+            <li>This creates a cycle: 0 → 1 → 3 → 2 → 4 → 2 → ...</li>
+            <li>The entrance to the cycle (index 2 in this case) corresponds to our duplicate number (which is 2).</li>
+        </ul>
+        
+        <div class="algorithm">
+            <p><strong>Floyd's Tortoise and Hare Algorithm:</strong></p>
+            <ol>
+                <li><strong>Phase 1 - Find the meeting point:</strong>
+                    <ul>
+                        <li>Start both pointers (slow and fast) at the beginning.</li>
+                        <li>Move slow one step at a time: slow = nums[slow]</li>
+                        <li>Move fast two steps at a time: fast = nums[nums[fast]]</li>
+                        <li>When they meet, we've found a point inside the cycle.</li>
+                    </ul>
+                </li>
+                <li><strong>Phase 2 - Find the entrance to the cycle:</strong>
+                    <ul>
+                        <li>Reset the slow pointer to the beginning.</li>
+                        <li>Keep the fast pointer at the meeting point.</li>
+                        <li>Move both pointers one step at a time.</li>
+                        <li>When they meet again, that's the entrance to the cycle (the duplicate number).</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+        
+        <div class="visualization">
+            <p><strong>Visualization for Example 1: nums = [1,3,4,2,2]</strong></p>
+            <pre>
+Create a linked list from the array:
+0 → 1 → 3 → 2 → 4 → 2 → 4 → 2 → ... (cycle detected)
+
+Phase 1 - Find meeting point:
+Initial: slow = 0, fast = 0
+Step 1: slow = nums[0] = 1, fast = nums[nums[0]] = nums[1] = 3
+Step 2: slow = nums[1] = 3, fast = nums[nums[3]] = nums[2] = 4
+Step 3: slow = nums[3] = 2, fast = nums[nums[4]] = nums[2] = 4
+Step 4: slow = nums[2] = 4, fast = nums[nums[4]] = nums[2] = 4
+Meeting point: index 4
+
+Phase 2 - Find cycle entrance:
+Reset: slow = 0, fast remains at 4
+Step 1: slow = nums[0] = 1, fast = nums[4] = 2
+Step 2: slow = nums[1] = 3, fast = nums[2] = 4
+Step 3: slow = nums[3] = 2, fast = nums[4] = 2
+Meet at index 2, which contains the value 2
+
+Result: The duplicate number is 2</pre>
+        </div>
+        
+        <p>
+            <strong>Why this works:</strong> Mathematical proof shows that when slow and fast pointers meet in Phase 1, if we reset the slow pointer to the beginning and move both pointers at the same speed, they will meet at the entrance of the cycle, which is our duplicate number.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the length of the array. In the worst case, the cycle might be as long as n.</li>
+            <li><strong>Space Complexity:</strong> O(1) as we only use two pointers regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Phase 1: Find the meeting point</strong>
+                <ul>
+                    <li>Initialize slow pointer and fast pointer to the first element (index 0)</li>
+                    <li>In a loop, move slow one step ahead: slow = nums[slow]</li>
+                    <li>Move fast two steps ahead: fast = nums[nums[fast]]</li>
+                    <li>Continue until slow and fast meet</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Phase 2: Find the cycle entrance (duplicate number)</strong>
+                <ul>
+                    <li>Reset slow pointer to the beginning (index 0)</li>
+                    <li>Keep fast pointer at the meeting point from Phase 1</li>
+                    <li>Move both pointers one step at a time until they meet</li>
+                    <li>When they meet, that position contains the duplicate number</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the duplicate number</strong>
+                <ul>
+                    <li>Return the value at the position where slow and fast meet in Phase 2</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def findDuplicate(nums):
+    <span class="comment"># Phase 1: Find the meeting point inside the cycle</span>
+    slow, fast = 0, 0
+    
+    <span class="comment"># Loop until we find the meeting point</span>
+    while True:
+        slow = nums[slow]         <span class="comment"># Move slow pointer by one step</span>
+        fast = nums[nums[fast]]   <span class="comment"># Move fast pointer by two steps</span>
+        if slow == fast:          <span class="comment"># If they meet, we've found a cycle</span>
+            break
+    
+    <span class="comment"># Phase 2: Find the entrance to the cycle (the duplicate number)</span>
+    slow = 0  <span class="comment"># Reset slow pointer to the beginning</span>
+    
+    <span class="comment"># Move both pointers one step at a time until they meet again</span>
+    while slow != fast:
+        slow = nums[slow]
+        fast = nums[fast]
+    
+    <span class="comment"># When they meet again, that's our duplicate number</span>
+    return slow</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [1, 3, 4, 2, 2]
+
+<span class="comment"># Call our function</span>
+result = findDuplicate(nums)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">2</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Execution Trace:</strong>
+        </p>
+        <table>
+            <tr>
+                <th>Phase</th>
+                <th>Step</th>
+                <th>slow</th>
+                <th>fast</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td rowspan="5">Phase 1</td>
+                <td>Initial</td>
+                <td>0</td>
+                <td>0</td>
+                <td>Initialize pointers</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>1</td>
+                <td>3</td>
+                <td>slow = nums[0] = 1, fast = nums[nums[0]] = nums[1] = 3</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>slow = nums[1] = 3, fast = nums[nums[3]] = nums[2] = 4</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>2</td>
+                <td>4</td>
+                <td>slow = nums[3] = 2, fast = nums[nums[4]] = nums[2] = 4</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+                <td>slow = nums[2] = 4, fast = nums[nums[4]] = nums[2] = 4, They meet!</td>
+            </tr>
+            <tr>
+                <td rowspan="4">Phase 2</td>
+                <td>Reset</td>
+                <td>0</td>
+                <td>4</td>
+                <td>Reset slow to beginning, keep fast at meeting point</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>1</td>
+                <td>2</td>
+                <td>slow = nums[0] = 1, fast = nums[4] = 2</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>slow = nums[1] = 3, fast = nums[2] = 4</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>2</td>
+                <td>2</td>
+                <td>slow = nums[3] = 2, fast = nums[4] = 2, They meet at 2!</td>
+            </tr>
+            <tr>
+                <td>Result</td>
+                <td colspan="3">Return 2 as the duplicate number</td>
+            </tr>
+        </table>
+        
+        <div class="example">
+            <p><strong>Second Example:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [3, 1, 3, 4, 2]
+
+<span class="comment"># Call our function</span>
+result = findDuplicate(nums)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">3</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Important Note:</strong> This algorithm works because of the specific constraints of the problem. It only works when:</p>
+            <ul>
+                <li>There are n+1 elements in the array</li>
+                <li>All elements are between 1 and n</li>
+                <li>There is exactly one duplicate element</li>
+            </ul>
+            <p>Under these constraints, there will always be a cycle in the "linked list" representation, and the entrance to that cycle will always be the duplicate number.</p>
+        </div>
+    </div>
+
+</body>
+</html>

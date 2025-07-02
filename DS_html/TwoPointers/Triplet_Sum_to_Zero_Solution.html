@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triplet Sum to Zero Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Triplet Sum to Zero Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: 3Sum (LeetCode #15)</strong></p>
+        <p><a href="https://leetcode.com/problems/3sum/description/" target="_blank">https://leetcode.com/problems/3sum/description/</a></p>
+        <p>
+            Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+        </p>
+        <p>
+            Notice that the solution set must not contain duplicate triplets.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [-1,0,1,2,-1,-4]</p>
+            <p><strong>Output:</strong> [[-1,-1,2],[-1,0,1]]</p>
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0</li>
+                <li>nums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0</li>
+                <li>nums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0</li>
+            </ul>
+            <p>The distinct triplets are [-1,0,1] and [-1,-1,2]. The order of the output and the order of the triplets does not matter.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [0,1,1]</p>
+            <p><strong>Output:</strong> []</p>
+            <p><strong>Explanation:</strong> The only possible triplet does not sum up to 0.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> nums = [0,0,0]</p>
+            <p><strong>Output:</strong> [[0,0,0]]</p>
+            <p><strong>Explanation:</strong> The only possible triplet sums up to 0.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>3 <= nums.length <= 3000</li>
+            <li>-10<sup>5</sup> <= nums[i] <= 10<sup>5</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find all unique triplets in the array that sum up to zero. Let's break down what this means:
+        </p>
+        <ul>
+            <li><strong>Triplet:</strong> A group of three integers from the array.</li>
+            <li><strong>Sum to zero:</strong> The three integers must add up to 0.</li>
+            <li><strong>Unique triplets:</strong> Duplicate triplets should not be included in the result.</li>
+            <li><strong>Different indices:</strong> The three integers must come from different positions in the array (i != j, i != k, j != k).</li>
+        </ul>
+        <p>
+            A naive approach would be to use three nested loops to check every possible triplet, which would have a time complexity of O(n³). However, we can optimize this using sorting and the two-pointer technique to achieve O(n²) time complexity.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a combination of sorting and the two-pointer technique to solve this problem efficiently:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> If we sort the array first, then for each element nums[i], we can use the two-pointer technique to find pairs (nums[j], nums[k]) such that nums[j] + nums[k] = -nums[i], which gives us nums[i] + nums[j] + nums[k] = 0.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Sort the input array in ascending order.</li>
+            <li>Iterate through the array with a pointer i:</li>
+            <ul>
+                <li>For each position i, use two pointers (j starting after i, and k at the end of the array) to find pairs that sum to -nums[i].</li>
+                <li>If nums[j] + nums[k] > -nums[i], decrement k.</li>
+                <li>If nums[j] + nums[k] < -nums[i], increment j.</li>
+                <li>If nums[j] + nums[k] = -nums[i], we've found a triplet. Add it to the result and move both pointers inward (j++ and k--).</li>
+            </ul>
+            <li>To avoid duplicates:</li>
+            <ul>
+                <li>Skip duplicate values for pointer i.</li>
+                <li>Use a set data structure or skip duplicate values for pointers j and k.</li>
+            </ul>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Two-Pointer Approach:</strong></p>
+            <pre>
+Example: nums = [-1,0,1,2,-1,-4]
+
+After sorting: [-4,-1,-1,0,1,2]
+
+Iteration 1: i = 0, nums[i] = -4
+  Target sum = -(-4) = 4
+  j = 1, k = 5
+  nums[j] + nums[k] = -1 + 2 = 1 < 4, so increment j
+  j = 2, k = 5
+  nums[j] + nums[k] = -1 + 2 = 1 < 4, so increment j
+  j = 3, k = 5
+  nums[j] + nums[k] = 0 + 2 = 2 < 4, so increment j
+  j = 4, k = 5
+  nums[j] + nums[k] = 1 + 2 = 3 < 4, so increment j
+  j = 5, now j == k, so we're done with this iteration
+  No triplets found for i = 0
+
+Iteration 2: i = 1, nums[i] = -1
+  Target sum = -(-1) = 1
+  j = 2, k = 5
+  nums[j] + nums[k] = -1 + 2 = 1 == 1, found triplet: [-1,-1,2]
+  Increment j and decrement k
+  j = 3, k = 4
+  nums[j] + nums[k] = 0 + 1 = 1 == 1, found triplet: [-1,0,1]
+  Increment j and decrement k
+  j = 4, now j == k, so we're done with this iteration
+
+Iteration 3: i = 2, nums[i] = -1
+  This is a duplicate of the previous iteration, skip it
+
+Iteration 4: i = 3, nums[i] = 0
+  Target sum = -(0) = 0
+  j = 4, k = 5
+  nums[j] + nums[k] = 1 + 2 = 3 > 0, so decrement k
+  j = 4, k = 4, now j == k, so we're done with this iteration
+  No new triplets found
+
+Final result: [[-1,-1,2], [-1,0,1]]</pre>
+        </div>
+        
+        <p>
+            <strong>Data Structure Choice:</strong>
+        </p>
+        <p>
+            We use a set data structure to automatically handle duplicate triplets. Alternatively, we could also use an array and manually skip duplicates.
+        </p>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n²) where n is the length of the array. Sorting takes O(n log n), and the two-pointer approach takes O(n²).</li>
+            <li><strong>Space Complexity:</strong> O(n) for storing the result. If we don't count the output space, the algorithm uses O(1) extra space for the pointers.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Sort the array:</strong>
+                <ul>
+                    <li>Sort the input array in ascending order to leverage the two-pointer technique.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Initialize the result set:</strong>
+                <ul>
+                    <li>Create an empty set to store unique triplets.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Iterate through the array:</strong>
+                <ul>
+                    <li>For each index i from 0 to len(nums) - 3:</li>
+                    <ul>
+                        <li>Initialize j = i + 1 and k = len(nums) - 1.</li>
+                        <li>While j < k:</li>
+                        <ul>
+                            <li>Calculate the sum of nums[i], nums[j], and nums[k].</li>
+                            <li>If sum == 0:</li>
+                            <ul>
+                                <li>Add the triplet (nums[i], nums[j], nums[k]) to the result set.</li>
+                                <li>Increment j and decrement k to look for more triplets.</li>
+                            </ul>
+                            <li>If sum > 0:</li>
+                            <ul>
+                                <li>Decrement k to decrease the sum.</li>
+                            </ul>
+                            <li>If sum < 0:</li>
+                            <ul>
+                                <li>Increment j to increase the sum.</li>
+                            </ul>
+                        </ul>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Convert the set to a list of triplets and return it.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def threeSum(nums):
+    <span class="comment"># Sort the array to enable the two-pointer technique</span>
+    nums.sort()
+    
+    <span class="comment"># Initialize a set to store unique triplets</span>
+    result = set()
+    
+    <span class="comment"># Iterate through the array</span>
+    for i in range(len(nums) - 2):
+        <span class="comment"># Skip duplicate values for i to avoid duplicate triplets</span>
+        if i > 0 and nums[i] == nums[i-1]:
+            continue
+            
+        <span class="comment"># Initialize two pointers</span>
+        j = i + 1
+        k = len(nums) - 1
+        
+        <span class="comment"># Use two-pointer technique to find pairs that sum to -nums[i]</span>
+        while j < k:
+            current_sum = nums[i] + nums[j] + nums[k]
+            
+            if current_sum == 0:
+                <span class="comment"># Found a triplet that sums to zero</span>
+                result.add((nums[i], nums[j], nums[k]))
+                <span class="comment"># Move both pointers inward</span>
+                j += 1
+                k -= 1
+            elif current_sum > 0:
+                <span class="comment"># Sum is too large, decrease k to reduce the sum</span>
+                k -= 1
+            else:
+                <span class="comment"># Sum is too small, increase j to increase the sum</span>
+                j += 1
+    
+    <span class="comment"># Convert set of tuples to list of lists for the final output</span>
+    return [list(triplet) for triplet in result]</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example input</span>
+nums = [-1, 0, 1, 2, -1, -4]
+
+<span class="comment"># Call our function</span>
+result = threeSum(nums)
+print(result)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[[-1, -1, 2], [-1, 0, 1]]</pre>
+        </div>
+        
+        <p>
+            <strong>Alternative Implementation (Without Using a Set):</strong>
+        </p>
+        <pre>
+def threeSum(nums):
+    <span class="comment"># Sort the array</span>
+    nums.sort()
+    result = []
+    
+    for i in range(len(nums) - 2):
+        <span class="comment"># Skip duplicates for i</span>
+        if i > 0 and nums[i] == nums[i-1]:
+            continue
+            
+        left, right = i + 1, len(nums) - 1
+        
+        while left < right:
+            sum_val = nums[i] + nums[left] + nums[right]
+            
+            if sum_val < 0:
+                left += 1
+            elif sum_val > 0:
+                right -= 1
+            else:
+                <span class="comment"># Found a triplet</span>
+                result.append([nums[i], nums[left], nums[right]])
+                
+                <span class="comment"># Skip duplicates for left and right</span>
+                while left < right and nums[left] == nums[left + 1]:
+                    left += 1
+                while left < right and nums[right] == nums[right - 1]:
+                    right -= 1
+                    
+                left += 1
+                right -= 1
+                
+    return result</pre>
+        
+        <p>
+            <strong>Explanation of Examples:</strong>
+        </p>
+        <p>
+            <strong>Example 1:</strong> nums = [-1,0,1,2,-1,-4]<br>
+            After sorting, the array becomes [-4,-1,-1,0,1,2].
+        </p>
+        <p>
+            For i=0 (value -4), we don't find any pairs that sum to 4.<br>
+            For i=1 (value -1), we find pairs (-1,2) and (0,1) that sum to 1, resulting in triplets [-1,-1,2] and [-1,0,1].<br>
+            For i=2 (value -1), it's a duplicate, so we skip it.<br>
+            For i=3 (value 0), we don't find any new pairs that sum to 0.<br>
+        </p>
+        <p>
+            <strong>Example 2:</strong> nums = [0,1,1]<br>
+            There's no way to form a triplet that sums to zero from this array, so the result is empty.
+        </p>
+        <p>
+            <strong>Example 3:</strong> nums = [0,0,0]<br>
+            All three elements are 0, so they sum to 0, giving us the triplet [0,0,0].
+        </p>
+    </div>
+
+</body>
+</html>
