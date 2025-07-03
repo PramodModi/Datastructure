@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove Nodes From Linked List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Remove Nodes From Linked List</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p>Given the head node of a singly linked list, modify the list such that any node that has a node with a greater value to its right gets removed. The function should return the head of the modified list.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> 5 -> 3 -> 7 -> 4 -> 2 -> 1</p>
+            <p><strong>Output:</strong> 7 -> 4 -> 2 -> 1</p>
+            <p><strong>Explanation:</strong> 5 and 3 are removed as they have nodes with larger values to their right.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> 1 -> 2 -> 3 -> 4 -> 5</p>
+            <p><strong>Output:</strong> 5</p>
+            <p><strong>Explanation:</strong> 1, 2, 3, and 4 are removed as they have nodes with larger values to their right.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> 5 -> 4 -> 3 -> 2 -> 1</p>
+            <p><strong>Output:</strong> 5 -> 4 -> 3 -> 2 -> 1</p>
+            <p><strong>Explanation:</strong> No nodes are removed as none have nodes with greater values to their right.</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>The problem asks us to remove any node that has a node with a greater value somewhere to its right in the linked list.</p>
+        <p>For example:</p>
+        <ul>
+            <li>In the list 5 -> 3 -> 7 -> 4 -> 2 -> 1:</li>
+            <ul>
+                <li>5 is removed because 7 is to its right and is greater</li>
+                <li>3 is removed because 7 is to its right and is greater</li>
+                <li>7 remains because no node to its right has a greater value</li>
+                <li>4 remains because no node to its right has a greater value</li>
+                <li>2 remains because no node to its right has a greater value</li>
+                <li>1 remains because no node to its right has a greater value</li>
+            </ul>
+            <li>The resulting list is 7 -> 4 -> 2 -> 1</li>
+        </ul>
+        <p>This is a perfect use case for the monotonic stack pattern, as we need to find the next greater node for each node in the list.</p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>We can solve this problem using a monotonic stack approach. The idea is to:</p>
+        <ol>
+            <li>Traverse the list and use a decreasing monotonic stack to keep track of nodes</li>
+            <li>When we find a node with a value greater than nodes in our stack, we pop those nodes (effectively removing them from the final list)</li>
+            <li>Connect the remaining nodes to form our result list</li>
+        </ol>
+        <p>However, there's a challenge with linked lists: when we want to remove a node, we need access to its previous node to update the pointers. We have two main approaches to solve this:</p>
+        <ol>
+            <li><strong>Approach 1:</strong> Keep track of both the node and its previous node in the stack</li>
+            <li><strong>Approach 2:</strong> Reverse the linked list, apply the algorithm, then reverse it back</li>
+            <li><strong>Approach 3:</strong> Build a new list by traversing the original list from right to left (requires reversing or using recursion)</li>
+        </ol>
+        <p>We'll implement Approach 1 as it's more straightforward and doesn't require multiple passes.</p>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def removeNodes(head):
+    <span class="comment">"""Remove nodes that have a greater value node to their right.
+    
+    Args:
+        head: The head of the linked list
+        
+    Returns:
+        The head of the modified linked list
+    """</span>
+    stack = []  # Will store (node, prev_node) pairs
+    temp = head
+    prev = None
+    
+    while temp:
+        # While stack is not empty and current node's value is greater than the top node's value
+        while stack and temp.val > stack[-1][0].val:
+            # Pop the node and its previous node from stack
+            node, prev_node = stack.pop()
+            
+            # Remove the node from the linked list
+            if prev_node:
+                prev_node.next = node.next
+            else:  # If removing the head node
+                head = node.next
+                
+            # Update prev to the previous node of the popped node
+            prev = prev_node
+            
+            # Clean up removed node's pointers (optional)
+            node.next = None
+            
+        # Add current node and its previous node to stack
+        stack.append((temp, prev))
+        
+        # Move to the next node
+        prev = temp
+        temp = temp.next
+        
+    return head</pre>
+
+        <h3>Alternative Approach</h3>
+        <pre>
+def removeNodes_alternative(head):
+    <span class="comment">"""Remove nodes that have a greater value node to their right (alternative approach).
+    
+    Args:
+        head: The head of the linked list
+        
+    Returns:
+        The head of the modified linked list
+    """</span>
+    stack = []  # Will store nodes that should remain in the final list
+    current = head
+    
+    while current:
+        # Store the current node and advance to the next one
+        temp = current
+        current = current.next
+        
+        # Pop nodes from stack if they are smaller than the current node
+        while stack and stack[-1].val < temp.val:
+            stack.pop()
+        
+        # Connect the last valid node to the current one
+        if stack:
+            stack[-1].next = temp
+            
+        # Add current node to stack
+        stack.append(temp)
+    
+    # Make sure the last node's next is None
+    if stack:
+        stack[-1].next = None
+        
+    # Return the first node in stack (new head) or None if stack is empty
+    return stack[0] if stack else None</pre>
+
+        <h3>Example Walkthrough</h3>
+        <p>Let's trace through the algorithm for the list 5 -> 3 -> 7 -> 4 -> 2 -> 1:</p>
+        <pre>
+# Initialize empty stack, temp = head (5), prev = None
+
+# Process node 5:
+# - Stack is empty, add (5, None) to stack
+# - stack = [(5, None)], prev = 5, temp = 3
+
+# Process node 3:
+# - Stack is not empty, but 3 < 5, so we don't pop anything
+# - Add (3, 5) to stack
+# - stack = [(5, None), (3, 5)], prev = 3, temp = 7
+
+# Process node 7:
+# - 7 > 3, so pop (3, 5) from stack
+#   - Update 5.next = 7 (removing 3)
+#   - prev = 5
+# - 7 > 5, so pop (5, None) from stack
+#   - Update head = 7 (removing 5)
+#   - prev = None
+# - Add (7, None) to stack
+# - stack = [(7, None)], prev = 7, temp = 4
+
+# Process node 4:
+# - 4 < 7, so we don't pop anything
+# - Add (4, 7) to stack
+# - stack = [(7, None), (4, 7)], prev = 4, temp = 2
+
+# Process node 2:
+# - 2 < 4, so we don't pop anything
+# - Add (2, 4) to stack
+# - stack = [(7, None), (4, 7), (2, 4)], prev = 2, temp = 1
+
+# Process node 1:
+# - 1 < 2, so we don't pop anything
+# - Add (1, 2) to stack
+# - stack = [(7, None), (4, 7), (2, 4), (1, 2)], prev = 1, temp = None
+
+# End of list, return head = 7
+# Final list: 7 -> 4 -> 2 -> 1</pre>
+    </div>
+
+    <div class="section approach">
+        <h2>Time and Space Complexity</h2>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the number of nodes in the linked list. Each node is processed once and can be pushed/popped from the stack at most once.</li>
+            <li><strong>Space Complexity:</strong> O(n) for the stack in the worst case, which could store all nodes if the list is already in decreasing order.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Connection to Monotonic Stack Pattern</h2>
+        <p>This problem illustrates the monotonic stack pattern in the context of linked lists:</p>
+        <ul>
+            <li>We're essentially looking for the next greater element (value) for each node</li>
+            <li>We maintain a monotonic decreasing stack to efficiently identify nodes that should be removed</li>
+            <li>The main adaptation is handling the linked list pointers correctly while removing nodes</li>
+        </ul>
+        <p>The core principle of the monotonic stack remains the same: we pop elements from our stack when we find a larger element, but we've adapted it to maintain the linked list structure.</p>
+    </div>
+</body>
+</html>

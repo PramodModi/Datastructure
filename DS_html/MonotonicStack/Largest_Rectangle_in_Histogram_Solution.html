@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Largest Rectangle in Histogram Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .histogram-container {
+            display: flex;
+            align-items: flex-end;
+            height: 200px;
+            margin: 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid black;
+        }
+        .histogram-bar {
+            background-color: #4682b4;
+            margin-right: 5px;
+            width: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Largest Rectangle in Histogram Solution</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>LeetCode: 84. Largest Rectangle in Histogram</strong></p>
+        <p><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank">https://leetcode.com/problems/largest-rectangle-in-histogram/</a></p>
+        
+        <p>Given an array of integers <code>heights</code> representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2021/01/04/histogram.jpg" alt="Histogram Example">
+            <p><strong>Input:</strong> heights = [2,1,5,6,2,3]</p>
+            <p><strong>Output:</strong> 10</p>
+            <p><strong>Explanation:</strong> The above is a histogram where width of each bar is 1. The largest rectangle has area = 10 units (the rectangle with height 2 and width 5).</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2021/01/04/histogram-1.jpg" alt="Histogram Example 2">
+            <p><strong>Input:</strong> heights = [2,4]</p>
+            <p><strong>Output:</strong> 4</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= heights.length <= 10^5</li>
+            <li>0 <= heights[i] <= 10^4</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we're given a histogram represented by an array of heights, where each bar has a width of 1. We need to find the largest rectangular area that can be formed in the histogram.
+        </p>
+        <p>
+            For each bar in the histogram, we can form a rectangle with that bar's height. The width of this rectangle extends from the bar itself to as far left and right as possible, while maintaining at least the same height. The area of this rectangle is the bar's height multiplied by this width.
+        </p>
+        <p>
+            For example, in the histogram [2,1,5,6,2,3]:
+        </p>
+        
+        <div style="overflow-x: auto;">
+            <div class="histogram-container">
+                <div class="histogram-bar" style="height: 40px;">2</div>
+                <div class="histogram-bar" style="height: 20px;">1</div>
+                <div class="histogram-bar" style="height: 100px;">5</div>
+                <div class="histogram-bar" style="height: 120px;">6</div>
+                <div class="histogram-bar" style="height: 40px;">2</div>
+                <div class="histogram-bar" style="height: 60px;">3</div>
+            </div>
+        </div>
+        
+        <ul>
+            <li>For the bar with height 2 (first bar), the rectangle can extend to the right until it hits a shorter bar (which is the second bar with height 1). So its width is 1, and area is 2 × 1 = 2.</li>
+            <li>For the bar with height 1, the rectangle can extend all the way from the leftmost to the rightmost bar. So its width is 6, and area is 1 × 6 = 6.</li>
+            <li>For the bar with height 5, the rectangle can't extend left (since the bar to its left is shorter), and it can't extend right (since the bar to its right has height 6 > 5). So its width is 1, and area is 5 × 1 = 5.</li>
+            <li>For the bar with height 6, similar to the previous bar, its width is 1, and area is 6 × 1 = 6.</li>
+            <li>For the bar with height 2 (fifth bar), the rectangle can extend left to include the third bar (with height 5) and fourth bar (with height 6), but not further because the second bar has height 1 < 2. It can also extend right to include the sixth bar (with height 3). So its width is 3, and area is 2 × 3 = 6.</li>
+            <li>For the bar with height 3, the rectangle can't extend left (since the bar to its left has height 2 < 3). So its width is 1, and area is 3 × 1 = 3.</li>
+        </ul>
+        
+        <p>
+            The largest rectangle in this example has an area of 10 units, which corresponds to a rectangle with height 2 spanning across bars 3, 4, and 5 (0-indexed).  
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Using Monotonic Stack</h2>
+        <p>
+            The key insight is that for each bar, we need to find the farthest left and right positions to which a rectangle of its height can extend. This is a perfect use case for the monotonic stack pattern.
+        </p>
+        <p>
+            For each bar, we need to find:
+        </p>
+        <ol>
+            <li>The nearest bar to its left that is shorter than it (or the left edge if no such bar exists)</li>
+            <li>The nearest bar to its right that is shorter than it (or the right edge if no such bar exists)</li>
+        </ol>
+        <p>
+            Once we have these boundaries for each bar, we can calculate the maximum area by taking the maximum of (height of the bar × width between the boundaries).
+        </p>
+        <p>
+            We'll use two passes over the array:
+        </p>
+        <ol>
+            <li>First pass (right to left): Find the rightmost boundary for each bar</li>
+            <li>Second pass (left to right): Find the leftmost boundary for each bar</li>
+            <li>Finally, calculate the area for each bar and find the maximum</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization for heights = [2, 1, 5, 6, 2, 3]:</strong></p>
+            <p>First Pass: Finding the right boundary</p>
+            <pre>
+# Initialize right array and stack
+right = [0, 0, 0, 0, 0, 0]
+stack = []
+
+# Process from right to left
+i = 5 (height = 3)
+stack is empty
+right[5] = 5 (no smaller bar to the right)
+stack = [(5, 3)]
+
+i = 4 (height = 2)
+stack contains (5, 3) and 2 < 3
+right[4] = 5 - 1 = 4 (nearest smaller is beyond the right edge)
+stack = [(4, 2)]
+
+i = 3 (height = 6)
+stack contains (4, 2) and 6 > 2
+stack.pop()
+stack is empty
+right[3] = 3 (no smaller bar to the right)
+stack = [(3, 6)]
+
+i = 2 (height = 5)
+stack contains (3, 6) and 5 < 6
+right[2] = 3 - 1 = 2 (nearest smaller is bar 3)
+stack = [(2, 5)]
+
+i = 1 (height = 1)
+stack contains (2, 5) and 1 < 5
+stack.pop()
+stack is empty
+right[1] = 5 (no smaller bar to the right)
+stack = [(1, 1)]
+
+i = 0 (height = 2)
+stack contains (1, 1) and 2 > 1
+stack.pop()
+stack is empty
+right[0] = 0 (no smaller bar to the right)
+stack = [(0, 2)]
+
+right = [0, 5, 2, 3, 4, 5]
+</pre>
+            <p>Second Pass: Finding the left boundary</p>
+            <pre>
+# Initialize left array and reset stack
+left = [0, 0, 0, 0, 0, 0]
+stack = []
+
+# Process from left to right
+i = 0 (height = 2)
+stack is empty
+left[0] = 0 (no smaller bar to the left)
+stack = [(0, 2)]
+
+i = 1 (height = 1)
+stack contains (0, 2) and 1 < 2
+stack.pop()
+stack is empty
+left[1] = 0 (no smaller bar to the left)
+stack = [(1, 1)]
+
+i = 2 (height = 5)
+stack contains (1, 1) and 5 > 1
+stack.pop()
+stack is empty
+left[2] = 2 (no smaller bar to the left)
+stack = [(2, 5)]
+
+i = 3 (height = 6)
+stack contains (2, 5) and 6 > 5
+stack.pop()
+stack is empty
+left[3] = 3 (no smaller bar to the left)
+stack = [(3, 6)]
+
+i = 4 (height = 2)
+stack contains (3, 6) and 2 < 6
+stack.pop()
+stack is empty
+left[4] = 2 (no smaller bar to the left)
+stack = [(4, 2)]
+
+i = 5 (height = 3)
+stack contains (4, 2) and 3 > 2
+stack.pop()
+stack is empty
+left[5] = 5 (no smaller bar to the left)
+stack = [(5, 3)]
+
+left = [0, 0, 2, 3, 2, 5]
+</pre>
+            <p>Calculate areas:</p>
+            <pre>
+For i = 0: area = 2 * (0 - 0 + 1) = 2
+For i = 1: area = 1 * (5 - 0 + 1) = 6
+For i = 2: area = 5 * (2 - 2 + 1) = 5
+For i = 3: area = 6 * (3 - 3 + 1) = 6
+For i = 4: area = 2 * (4 - 2 + 1) = 6
+For i = 5: area = 3 * (5 - 5 + 1) = 3
+
+Maximum area = 6</pre>
+        </div>
+        
+        <p>
+            Wait, that doesn't match our expected output of 10! Let me double-check our calculation...
+        </p>
+        
+        <p>
+            The issue is in our right boundary calculation. Let's reconsider how we define the boundaries:
+        </p>
+        
+        <ul>
+            <li>The right boundary for a bar is the index of the first bar to its right that is shorter than it</li>
+            <li>The left boundary for a bar is the index of the first bar to its left that is shorter than it</li>
+        </ul>
+        
+        <p>
+            With this correction, our right array should actually be:
+        </p>
+        
+        <div class="visualization">
+            <pre>
+right = [1, 6, 3, 4, 6, 6]
+
+And then the area calculations:
+For i = 0: area = 2 * (1 - 0) = 2
+For i = 1: area = 1 * (6 - 0) = 6
+For i = 2: area = 5 * (3 - 2) = 5
+For i = 3: area = 6 * (4 - 3) = 6
+For i = 4: area = 2 * (6 - 2) = 8
+For i = 5: area = 3 * (6 - 5) = 3
+
+Still not 10...
+</pre>
+        </div>
+        
+        <p>
+            The final correction is in how we calculate the area. The width of a rectangle is (right - left - 1), not (right - left). Let's recalculate:
+        </p>
+        
+        <div class="visualization">
+            <pre>
+Using the correct boundaries:
+right = [1, 6, 3, 4, 6, 6] (index where height becomes smaller)
+left = [0, 0, 1, 2, 1, 4] (index where height becomes smaller)
+
+For i = 0: area = 2 * (1 - 0) = 2
+For i = 1: area = 1 * (6 - 0) = 6
+For i = 2: area = 5 * (3 - 1) = 10
+For i = 3: area = 6 * (4 - 2) = 12
+For i = 4: area = 2 * (6 - 1) = 10
+For i = 5: area = 3 * (6 - 4) = 6
+
+Maximum area = 12</pre>
+        </div>
+        
+        <p>
+            Wait, that's not right either. Let's carefully step through the algorithm again with a different understanding:
+        </p>
+        
+        <div class="visualization">
+            <pre>
+For bar at index 0 (height 2):
+- Left boundary: No smaller bar to left, so left[0] = 0
+- Right boundary: Bar at index 1 is smaller, so right[0] = 1
+- Width: right[0] - left[0] = 1 - 0 = 1
+- Area: 2 * 1 = 2
+
+For bar at index 1 (height 1):
+- Left boundary: No smaller bar to left, so left[1] = 0
+- Right boundary: No smaller bar to right, so right[1] = 6 (length of array)
+- Width: right[1] - left[1] = 6 - 0 = 6
+- Area: 1 * 6 = 6
+
+For bar at index 2 (height 5):
+- Left boundary: Bar at index 1 is smaller, so left[2] = 1
+- Right boundary: Bar at index 4 is smaller, so right[2] = 4
+- Width: right[2] - left[2] = 4 - 1 = 3
+- Area: 5 * 3 = 15 (not right!)
+
+Let me rethink this...
+</pre>
+        </div>
+        
+        <p>
+            The issue is in how we're calculating the boundaries. Let me redefine them:
+        </p>
+        
+        <ul>
+            <li>The left boundary is the index just after the nearest smaller bar to the left</li>
+            <li>The right boundary is the index just before the nearest smaller bar to the right</li>
+        </ul>
+        
+        <p>
+            With this definition, for example 1 [2,1,5,6,2,3]:
+        </p>
+        
+        <div class="visualization">
+            <pre>
+right = [0, 5, 3, 3, 5, 5]
+left = [0, 0, 2, 3, 2, 5]
+
+For i = 0 (height 2): area = 2 * (0 - 0 + 1) = 2
+For i = 1 (height 1): area = 1 * (5 - 0 + 1) = 6
+For i = 2 (height 5): area = 5 * (3 - 2 + 1) = 10
+For i = 3 (height 6): area = 6 * (3 - 3 + 1) = 6
+For i = 4 (height 2): area = 2 * (5 - 2 + 1) = 8
+For i = 5 (height 3): area = 3 * (5 - 5 + 1) = 3
+
+Maximum area = 10</pre>
+        </div>
+        
+        <p>
+            This gives us the correct answer of 10.
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Code Implementation</h2>
+        <pre>
+def largestRectangleArea(heights):
+    <span class="comment">"""Find the largest rectangle in the histogram.
+    
+    Args:
+        heights: List of integers representing the histogram bar heights
+        
+    Returns:
+        The area of the largest rectangle
+    """</span>
+    n = len(heights)
+    
+    # Arrays to store the boundaries
+    left = [0] * n   # left[i] is the left boundary of bar i
+    right = [0] * n  # right[i] is the right boundary of bar i
+    
+    # Find right boundaries using a stack (traversing right to left)
+    stack = []
+    for i in range(n-1, -1, -1):
+        h = heights[i]
+        while stack and h <= stack[-1][1]:  # Need to find smaller height towards right
+            stack.pop()
+        if stack:
+            right[i] = stack[-1][0] - 1
+        else:
+            right[i] = n - 1
+        stack.append((i, h))
+    
+    # Find left boundaries using a stack (traversing left to right)
+    stack = []
+    for i in range(n):
+        h = heights[i]
+        while stack and h <= stack[-1][1]:  # Need to find smaller height towards left
+            stack.pop()
+        if stack:
+            left[i] = stack[-1][0] + 1
+        else:
+            left[i] = 0
+        stack.append((i, h))
+    
+    # Calculate the maximum area
+    max_area = 0
+    for i in range(n):
+        h = heights[i]
+        area = h * (right[i] - left[i] + 1)
+        max_area = max(max_area, area)
+    
+    return max_area</pre>
+
+        <h3>One-Pass Solution</h3>
+        <p>
+            There's also a more efficient one-pass solution that uses a single monotonic stack. In this approach, we maintain a stack of indices of bars in increasing order of height. When we encounter a bar shorter than the bar at the top of the stack, we pop the stack and calculate the area with the popped bar as the height.  
+        </p>
+        <pre>
+def largestRectangleArea_onePass(heights):
+    <span class="comment">"""Find the largest rectangle in the histogram using a one-pass solution.
+    
+    Args:
+        heights: List of integers representing the histogram bar heights
+        
+    Returns:
+        The area of the largest rectangle
+    """</span>
+    n = len(heights)
+    stack = []  # Stack of indices
+    max_area = 0
+    
+    for i in range(n + 1):  # We add one extra iteration to handle the end of the array
+        # If we're at the end or current height is smaller than the height at stack top
+        # Process all heights in the stack that are greater than current height
+        h = 0 if i == n else heights[i]  # Use 0 if we're past the end
+        
+        while stack and h < heights[stack[-1]]:
+            height = heights[stack.pop()]  # Height of the rectangle
+            
+            # Width calculation: current position - position after the left boundary - 1
+            width = i - stack[-1] - 1 if stack else i
+            
+            max_area = max(max_area, height * width)
+        
+        stack.append(i)
+    
+    return max_area</pre>
+        
+        <h3>Example Walkthrough</h3>
+        <p>Let's trace through the one-pass algorithm with the input [2,1,5,6,2,3]:</p>
+        <pre>
+# Initialize stack = [], max_area = 0
+
+# i = 0, h = 2
+stack is empty, so we push 0 onto the stack
+stack = [0]
+
+# i = 1, h = 1
+h < heights[stack[-1]] (1 < 2), so we pop from stack
+height = 2, stack is now empty
+width = 1 (since stack is empty)
+area = 2 * 1 = 2
+max_area = 2
+We push 1 onto the stack
+stack = [1]
+
+# i = 2, h = 5
+h > heights[stack[-1]] (5 > 1), so we push 2 onto the stack
+stack = [1, 2]
+
+# i = 3, h = 6
+h > heights[stack[-1]] (6 > 5), so we push 3 onto the stack
+stack = [1, 2, 3]
+
+# i = 4, h = 2
+h < heights[stack[-1]] (2 < 6), so we pop from stack
+height = 6, stack = [1, 2]
+width = 4 - 2 - 1 = 1
+area = 6 * 1 = 6
+max_area = 6
+
+We still have h < heights[stack[-1]] (2 < 5), so we pop again
+height = 5, stack = [1]
+width = 4 - 1 - 1 = 2
+area = 5 * 2 = 10
+max_area = 10
+
+Now h > heights[stack[-1]] (2 > 1), so we push 4 onto the stack
+stack = [1, 4]
+
+# i = 5, h = 3
+h > heights[stack[-1]] (3 > 2), so we push 5 onto the stack
+stack = [1, 4, 5]
+
+# i = 6 (past the end), h = 0
+h < heights[stack[-1]] (0 < 3), so we pop from stack
+height = 3, stack = [1, 4]
+width = 6 - 4 - 1 = 1
+area = 3 * 1 = 3
+max_area = 10
+
+h < heights[stack[-1]] (0 < 2), so we pop again
+height = 2, stack = [1]
+width = 6 - 1 - 1 = 4
+area = 2 * 4 = 8
+max_area = 10
+
+h < heights[stack[-1]] (0 < 1), so we pop again
+height = 1, stack is now empty
+width = 6 (since stack is empty)
+area = 1 * 6 = 6
+max_area = 10
+
+We push 6 onto the stack
+stack = [6]
+
+# Final max_area = 10</pre>
+    </div>
+
+    <div class="section approach">
+        <h2>Time and Space Complexity</h2>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the number of bars in the histogram. Although we have nested loops with the while loop inside the for loop, each bar is pushed and popped from the stack at most once, so the amortized time complexity is O(n).</li>
+            <li><strong>Space Complexity:</strong> O(n) for the stack and the two arrays (left and right) in the two-pass solution, or just O(n) for the stack in the one-pass solution.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Connection to Monotonic Stack Pattern</h2>
+        <p>The Largest Rectangle in Histogram problem is a classic application of the monotonic stack pattern for these reasons:</p>
+        <ul>
+            <li>We need to find the nearest smaller element to the left and right for each bar, which is a perfect use case for monotonic stacks</li>
+            <li>The stack maintains a specific order (increasing height in this case) to efficiently identify boundaries</li>
+            <li>The approach allows us to solve the problem in linear time instead of the naive O(n²) approach of checking every possible rectangle</li>
+        </ul>
+        <p>This problem demonstrates how monotonic stacks can be used to solve problems involving finding the nearest greater/smaller elements efficiently. The key insight is identifying that we need to find the boundaries for each bar where the height starts decreasing, and using a stack to track these boundaries.</p>
+    </div>
+</body>
+</html>

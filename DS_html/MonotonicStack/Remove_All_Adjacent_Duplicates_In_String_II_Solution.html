@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove All Adjacent Duplicates In String II Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Remove All Adjacent Duplicates In String II Solution</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>LeetCode: 1209. Remove All Adjacent Duplicates in String II</strong></p>
+        <p><a href="https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/" target="_blank">https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string-ii/</a></p>
+        
+        <p>You are given a string s and an integer k, a k duplicate removal consists of choosing k adjacent and equal letters from s and removing them, causing the left and the right side of the deleted substring to concatenate together.</p>
+        <p>We repeatedly make k duplicate removals on s until we no longer can.</p>
+        <p>Return the final string after all such duplicate removals have been made. It is guaranteed that the answer is unique.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "abcd", k = 2</p>
+            <p><strong>Output:</strong> "abcd"</p>
+            <p><strong>Explanation:</strong> There's nothing to delete.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = "deeedbbcccbdaa", k = 3</p>
+            <p><strong>Output:</strong> "aa"</p>
+            <p><strong>Explanation:</strong></p>
+            <p>First delete "eee" and "ccc", get "ddbbbdaa"</p>
+            <p>Then delete "bbb", get "dddaa"</p>
+            <p>Finally delete "ddd", get "aa"</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> s = "pbbcggttciiippooaais", k = 2</p>
+            <p><strong>Output:</strong> "ps"</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= s.length <= 10<sup>5</sup></li>
+            <li>2 <= k <= 10<sup>4</sup></li>
+            <li>s only contains lowercase English letters.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to repeatedly remove k adjacent identical characters from a string until no more removals are possible. After removing a set of characters, the remaining parts of the string concatenate together, which could potentially form new sets of adjacent duplicates.
+        </p>
+        <p>
+            Let's understand the process with an example: s = "deeedbbcccbdaa", k = 3
+        </p>
+        <ul>
+            <li>Initial string: "deeedbbcccbdaa"</li>
+            <li>Remove "eee": "ddbbcccbdaa"</li>
+            <li>Remove "ccc": "ddbbbdaa"</li>
+            <li>Remove "bbb": "dddaa"</li>
+            <li>Remove "ddd": "aa"</li>
+            <li>No more removals possible, final result: "aa"</li>
+        </ul>
+        <p>
+            There are several key observations to make:
+        </p>
+        <ol>
+            <li>We need to keep track of the count of consecutive identical characters.</li>
+            <li>When we remove characters, we need to consider that new adjacent duplicates may form.</li>
+            <li>We need to process the string from left to right, but when a removal happens, we might need to go back and check again.</li>
+        </ol>
+        <p>
+            This is a perfect scenario for using a stack-based approach, which is related to the monotonic stack pattern but with a focus on counting identical adjacent elements rather than maintaining a monotonic order.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a modified stack approach where we'll store not just the characters, but also their counts. This allows us to efficiently keep track of adjacent identical characters and quickly remove them when they reach the threshold of k.
+        </p>
+        <p>
+            Here's the step-by-step approach:
+        </p>
+        <ol>
+            <li>Initialize an empty stack that will store pairs of [character, count].</li>
+            <li>For each character in the string:</li>
+            <ul>
+                <li>If the stack is empty or the character is different from the top of the stack, push [character, 1] onto the stack.</li>
+                <li>If the character is the same as the top of the stack, increment the count of the top element.</li>
+                <li>If after incrementing, the count reaches k, pop the element from the stack.</li>
+            </ul>
+            <li>After processing all characters, construct the final string from the remaining elements in the stack.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization for Example 2: s = "deeedbbcccbdaa", k = 3</strong></p>
+            <pre>
+# Initialize stack = []
+
+# Process 'd'
+stack = [[d, 1]]
+
+# Process 'e'
+stack = [[d, 1], [e, 1]]
+
+# Process 'e'
+stack = [[d, 1], [e, 2]]
+
+# Process 'e'
+stack = [[d, 1], [e, 3]]
+count reached k=3, pop [e, 3]
+stack = [[d, 1]]
+
+# Process 'd'
+stack = [[d, 2]]
+
+# Process 'b'
+stack = [[d, 2], [b, 1]]
+
+# Process 'b'
+stack = [[d, 2], [b, 2]]
+
+# Process 'c'
+stack = [[d, 2], [b, 2], [c, 1]]
+
+# Process 'c'
+stack = [[d, 2], [b, 2], [c, 2]]
+
+# Process 'c'
+stack = [[d, 2], [b, 2], [c, 3]]
+count reached k=3, pop [c, 3]
+stack = [[d, 2], [b, 2]]
+
+# Process 'b'
+stack = [[d, 2], [b, 3]]
+count reached k=3, pop [b, 3]
+stack = [[d, 2]]
+
+# Process 'd'
+stack = [[d, 3]]
+count reached k=3, pop [d, 3]
+stack = []
+
+# Process 'a'
+stack = [[a, 1]]
+
+# Process 'a'
+stack = [[a, 2]]
+
+# Final stack = [[a, 2]]
+# Result = "aa"</pre>
+
+            <p><strong>Visualization for Example 3: s = "pbbcggttciiippooaais", k = 2</strong></p>
+            <pre>
+# Initialize stack = []
+
+# Process 'p'
+stack = [[p, 1]]
+
+# Process 'b'
+stack = [[p, 1], [b, 1]]
+
+# Process 'b'
+stack = [[p, 1], [b, 2]]
+count reached k=2, pop [b, 2]
+stack = [[p, 1]]
+
+# Process 'c'
+stack = [[p, 1], [c, 1]]
+
+# Process 'g'
+stack = [[p, 1], [c, 1], [g, 1]]
+
+# Process 'g'
+stack = [[p, 1], [c, 1], [g, 2]]
+count reached k=2, pop [g, 2]
+stack = [[p, 1], [c, 1]]
+
+# Process 't'
+stack = [[p, 1], [c, 1], [t, 1]]
+
+# Process 't'
+stack = [[p, 1], [c, 1], [t, 2]]
+count reached k=2, pop [t, 2]
+stack = [[p, 1], [c, 1]]
+
+# Process 'c'
+stack = [[p, 1], [c, 2]]
+count reached k=2, pop [c, 2]
+stack = [[p, 1]]
+
+# Process 'i'
+stack = [[p, 1], [i, 1]]
+
+# Process 'i'
+stack = [[p, 1], [i, 2]]
+count reached k=2, pop [i, 2]
+stack = [[p, 1]]
+
+# Process 'i'
+stack = [[p, 1], [i, 1]]
+
+# Process 'p'
+stack = [[p, 2], [i, 1]]
+count reached k=2, pop [p, 2]
+stack = [[i, 1]]
+
+# Process 'p'
+stack = [[i, 1], [p, 1]]
+
+# Process 'o'
+stack = [[i, 1], [p, 1], [o, 1]]
+
+# Process 'o'
+stack = [[i, 1], [p, 1], [o, 2]]
+count reached k=2, pop [o, 2]
+stack = [[i, 1], [p, 1]]
+
+# Process 'a'
+stack = [[i, 1], [p, 1], [a, 1]]
+
+# Process 'a'
+stack = [[i, 1], [p, 1], [a, 2]]
+count reached k=2, pop [a, 2]
+stack = [[i, 1], [p, 1]]
+
+# Process 'i'
+stack = [[i, 2], [p, 1]]
+count reached k=2, pop [i, 2]
+stack = [[p, 1]]
+
+# Process 's'
+stack = [[p, 1], [s, 1]]
+
+# Final stack = [[p, 1], [s, 1]]
+# Result = "ps"</pre>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def removeDuplicates(s, k):
+    <span class="comment">"""Remove all adjacent duplicates of size k in the string.
+    
+    Args:
+        s: Input string
+        k: Size of adjacent duplicates to remove
+        
+    Returns:
+        The string after all removals
+    """</span>
+    stack = []
+    
+    for char in s:
+        # If stack is not empty and current char equals the top character in stack
+        if stack and char == stack[-1][0]:
+            # Increment count of the top character
+            stack[-1][1] += 1
+        else:
+            # Add new character with count 1
+            stack.append([char, 1])
+            
+        # If count of the top character reaches k, remove it
+        if stack and stack[-1][1] == k:
+            stack.pop()
+    
+    # Construct the result string from the stack
+    result = ""
+    for char, count in stack:
+        result += char * count
+        
+    return result</pre>
+
+        <h3>Alternative Implementation</h3>
+        <pre>
+def removeDuplicates_optimized(s, k):
+    <span class="comment">"""A more concise implementation using list comprehension for the result.
+    
+    Args:
+        s: Input string
+        k: Size of adjacent duplicates to remove
+        
+    Returns:
+        The string after all removals
+    """</span>
+    stack = []
+    
+    for char in s:
+        if stack and char == stack[-1][0]:
+            stack[-1][1] += 1
+        else:
+            stack.append([char, 1])
+            
+        if stack[-1][1] == k:
+            stack.pop()
+    
+    # Use list comprehension to construct the result
+    return "".join(char * count for char, count in stack)</pre>
+
+        <h3>Testing the Solution</h3>
+        <pre>
+# Example 1
+s = "abcd"
+k = 2
+print(removeDuplicates(s, k))  # Output: "abcd"
+
+# Example 2
+s = "deeedbbcccbdaa"
+k = 3
+print(removeDuplicates(s, k))  # Output: "aa"
+
+# Example 3
+s = "pbbcggttciiippooaais"
+k = 2
+print(removeDuplicates(s, k))  # Output: "ps"
+
+# Additional test case
+s = "bbcggttciiiooisaa"
+k = 2
+print(removeDuplicates(s, k))  # Output: "s"</pre>
+    </div>
+
+    <div class="section approach">
+        <h2>Time and Space Complexity</h2>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the length of the input string. We process each character exactly once and each character is pushed and popped at most once from the stack.</li>
+            <li><strong>Space Complexity:</strong> O(n) for the stack in the worst case (when no characters are removed).</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Connection to Monotonic Stack Pattern</h2>
+        <p>
+            While this problem doesn't use a traditional monotonic stack (where elements are maintained in increasing or decreasing order), it does share key concepts with the monotonic stack pattern:
+        </p>
+        <ul>
+            <li>We use a stack to efficiently process elements and track additional information (character counts) for each element.</li>
+            <li>We make decisions about removing elements based on conditions (count reaching k).</li>
+            <li>The stack helps us handle the dynamic nature of the problem, where removals in one part can affect other parts.</li>
+        </ul>
+        <p>
+            The main difference from a traditional monotonic stack is that instead of maintaining a monotonic order, we're tracking counts of identical adjacent elements. This represents a variation of the stack pattern that focuses on equality rather than comparison for ordering.
+        </p>
+        <p>
+            This problem shows how stack-based approaches can be adapted to various scenarios beyond just maintaining monotonic order, making them versatile tools for string manipulation problems where we need to track and process adjacent elements efficiently.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Key Insights</h2>
+        <p>Some important insights that make this solution efficient:</p>
+        <ol>
+            <li><strong>Character counting:</strong> By storing counts along with characters, we avoid having to push multiple copies of the same character onto the stack.</li>
+            <li><strong>Immediate removal:</strong> By checking and removing characters as soon as their count reaches k, we ensure that the stack always reflects the current state after all possible removals.</li>
+            <li><strong>Efficient construction:</strong> The final string can be efficiently constructed using a single pass through the stack.</li>
+            <li><strong>No backtracking needed:</strong> This approach avoids the need to backtrack in the string when removals happen, which would be inefficient for large strings.</li>
+        </ol>
+        <p>
+            This problem demonstrates how a stack-based approach can elegantly solve string manipulation problems that involve pattern matching and removal based on specific conditions.
+        </p>
+    </div>
+</body>
+</html>

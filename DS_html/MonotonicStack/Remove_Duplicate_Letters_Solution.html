@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove Duplicate Letters Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Remove Duplicate Letters Solution</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>LeetCode: 316. Remove Duplicate Letters</strong></p>
+        <p><a href="https://leetcode.com/problems/remove-duplicate-letters/" target="_blank">https://leetcode.com/problems/remove-duplicate-letters/</a></p>
+        
+        <p>Given a string s, remove duplicate letters so that every letter appears once and only once. You must make sure your result is the smallest in lexicographical order among all possible results.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "bcabc"</p>
+            <p><strong>Output:</strong> "abc"</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = "cbacdcbc"</p>
+            <p><strong>Output:</strong> "acdb"</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= s.length <= 10<sup>4</sup></li>
+            <li>s consists of lowercase English letters.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to do two things:
+        </p>
+        <ol>
+            <li>Remove duplicate letters so that each letter appears exactly once in the result</li>
+            <li>Ensure that the result is lexicographically smallest (dictionary order) among all possible results</li>
+        </ol>
+        <p>
+            For example, with the string "bcabc":
+        </p>
+        <ul>
+            <li>We need to keep one instance of 'b', 'c', and 'a'</li>
+            <li>The smallest lexicographical ordering of these characters would be "abc"</li>
+        </ul>
+        <p>
+            For "cbacdcbc":
+        </p>
+        <ul>
+            <li>We need to keep one instance of 'c', 'b', 'a', and 'd'</li>
+            <li>The smallest lexicographical ordering would be "acdb" (not "abcd" because after placing 'a' and 'c', we can't get a 'b' before 'd' due to their positions in the original string)</li>
+        </ul>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            This problem is a perfect candidate for the monotonic stack pattern. We'll build an increasing monotonic stack to maintain characters in lexicographical order while ensuring every unique character appears in the result.
+        </p>
+        <p>
+            Key insights:
+        </p>
+        <ol>
+            <li>We want to keep characters in lexicographically smallest order (increasing order)</li>
+            <li>When we encounter a character, we must decide whether to use this occurrence or a later one</li>
+            <li>If the current character is smaller than what's on our stack, we might want to remove characters from our stack and use later occurrences instead</li>
+            <li>However, we can only remove a character from our stack if it appears later in the string</li>
+        </ol>
+        
+        <h3>Algorithm:</h3>
+        <ol>
+            <li>Create a map that stores the last occurrence index of each character in the string</li>
+            <li>Initialize an empty stack and a visited set to keep track of characters we've already included</li>
+            <li>For each character in the string:</li>
+            <ul>
+                <li>If we haven't visited this character yet:</li>
+                <li>While our stack is not empty and the current character is lexicographically smaller than the top of the stack, and the character at the top of our stack occurs later in the string (meaning we can safely remove it and add it back later), we pop from our stack</li>
+                <li>Add the current character to our stack and mark it as visited</li>
+            </ul>
+            <li>Return our stack as a string</li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def removeDuplicateLetters(s):
+    <span class="comment">"""Remove duplicate letters to form lexicographically smallest result.
+    
+    Args:
+        s: Input string
+        
+    Returns:
+        String with duplicate letters removed in lexicographically smallest order
+    """</span>
+    # Store the last occurrence of each character
+    last_occurrence = {}
+    for i in range(len(s)):
+        last_occurrence[s[i]] = i
+    
+    stack = []
+    visited = set()
+    
+    for i in range(len(s)):
+        # Skip if we've already added this character
+        if s[i] not in visited:
+            # If current char is smaller than the top of stack,
+            # and the top of stack appears later, we can pop it
+            while stack and s[i] < stack[-1] and last_occurrence[stack[-1]] > i:
+                visited.remove(stack.pop())
+            
+            # Add current character
+            stack.append(s[i])
+            visited.add(s[i])
+    
+    return "".join(stack)</pre>
+
+        <h3>Step-by-Step Example</h3>
+        <p>Let's trace through the algorithm for input s = "cbacdcbc":</p>
+        <pre>
+# First, build last_occurrence map: 
+# {'c': 7, 'b': 6, 'a': 2, 'd': 4}
+
+# Process 'c' (index 0):
+# - Not visited, add to stack
+# - stack = ['c']
+# - visited = {'c'}
+
+# Process 'b' (index 1):
+# - Not visited
+# - 'b' < 'c' and 'c' occurs later at index 3, pop 'c'
+# - stack = ['b']
+# - visited = {'b'}
+
+# Process 'a' (index 2):
+# - Not visited
+# - 'a' < 'b' and 'b' occurs later at index 6, pop 'b'
+# - stack = ['a']
+# - visited = {'a'}
+
+# Process 'c' (index 3):
+# - Not visited, add to stack
+# - stack = ['a', 'c']
+# - visited = {'a', 'c'}
+
+# Process 'd' (index 4):
+# - Not visited, add to stack
+# - stack = ['a', 'c', 'd']
+# - visited = {'a', 'c', 'd'}
+
+# Process 'c' (index 5):
+# - Already visited, skip
+
+# Process 'b' (index 6):
+# - Not visited, add to stack
+# - stack = ['a', 'c', 'd', 'b']
+# - visited = {'a', 'c', 'd', 'b'}
+
+# Process 'c' (index 7):
+# - Already visited, skip
+
+# Return "acdb"</pre>
+    </div>
+
+    <div class="section approach">
+        <h2>Time and Space Complexity</h2>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the length of the string. Each character is processed once and can be pushed/popped from the stack at most once.</li>
+            <li><strong>Space Complexity:</strong> O(k) where k is the number of unique characters in the string (at most 26 for lowercase English letters).</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Connection to Monotonic Stack Pattern</h2>
+        <p>This problem showcases the monotonic stack pattern:</p>
+        <ul>
+            <li>We build a stack that maintains increasing lexicographical order of characters</li>
+            <li>When we find a better option (lexicographically smaller character), we consider removing previously chosen characters if they can be safely added later</li>
+            <li>This approach allows us to greedily build the lexicographically smallest result in one pass through the string</li>
+        </ul>
+        <p>The key insight is balancing the lexicographical order with the constraint of including each unique character exactly once, which is efficiently managed using the monotonic stack pattern.</p>
+    </div>
+</body>
+</html>

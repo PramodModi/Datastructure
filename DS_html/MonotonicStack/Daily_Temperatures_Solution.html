@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Temperatures Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Daily Temperatures Solution</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>LeetCode: 739. Daily Temperatures</strong></p>
+        <p><a href="https://leetcode.com/problems/daily-temperatures/" target="_blank">https://leetcode.com/problems/daily-temperatures/</a></p>
+        
+        <p>Given an array of integers <code>temperatures</code> represents the daily temperatures, return an array <code>answer</code> such that <code>answer[i]</code> is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep <code>answer[i] == 0</code> instead.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> temperatures = [73, 74, 75, 71, 69, 72, 76, 73]</p>
+            <p><strong>Output:</strong> [1, 1, 4, 2, 1, 1, 0, 0]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> temperatures = [30, 40, 50, 60]</p>
+            <p><strong>Output:</strong> [1, 1, 1, 0]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> temperatures = [30, 60, 90]</p>
+            <p><strong>Output:</strong> [1, 1, 0]</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= temperatures.length <= 10<sup>5</sup></li>
+            <li>30 <= temperatures[i] <= 100</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem:
+        </p>
+        <ul>
+            <li>We are given an array of daily temperatures.</li>
+            <li>For each day, we need to find how many days we have to wait to get a warmer temperature.</li>
+            <li>If no warmer temperature is found in the future days, we should return 0 for that day.</li>
+        </ul>
+        <p>
+            For example, with temperatures [73, 74, 75, 71, 69, 72, 76, 73]:
+        </p>
+        <ul>
+            <li>Day 0 (73°): The next warmer day is Day 1 (74°), so we wait 1 day.</li>
+            <li>Day 1 (74°): The next warmer day is Day 2 (75°), so we wait 1 day.</li>
+            <li>Day 2 (75°): The next warmer day is Day 6 (76°), so we wait 4 days.</li>
+            <li>Day 3 (71°): The next warmer day is Day 5 (72°), so we wait 2 days.</li>
+            <li>Day 4 (69°): The next warmer day is Day 5 (72°), so we wait 1 day.</li>
+            <li>Day 5 (72°): The next warmer day is Day 6 (76°), so we wait 1 day.</li>
+            <li>Day 6 (76°): There is no warmer day in the future, so we return 0.</li>
+            <li>Day 7 (73°): There is no warmer day in the future, so we return 0.</li>
+        </ul>
+        <p>
+            This problem is asking us to find, for each element in the array, the distance to the next greater element (or 0 if there is no greater element). This is a classic use case for the Monotonic Stack pattern.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Use a decreasing monotonic stack to efficiently find the next greater temperature for each day.</p>
+        </div>
+        <p>
+            We'll use a monotonic stack to solve this problem. A monotonic stack is a stack where the elements maintain a certain order (either strictly increasing or strictly decreasing). For this problem, we'll use a decreasing monotonic stack.
+        </p>
+        <p>
+            There are two main approaches to solve this problem:
+        </p>
+        <ol>
+            <li><strong>Forward Approach:</strong> Iterate from left to right, and for each element, find the next greater element by popping elements from the stack.</li>
+            <li><strong>Backward Approach:</strong> Iterate from right to left, and for each element, maintain a monotonic stack of future days with warmer temperatures.</li>
+        </ol>
+        <p>
+            We'll use the backward approach in our solution, which is slightly more elegant for this specific problem.
+        </p>
+        
+        <h3>Backward Approach:</h3>
+        <ol>
+            <li>Initialize an array <code>answer</code> of the same size as <code>temperatures</code>, filled with zeros.</li>
+            <li>Initialize an empty stack that will hold pairs of [temperature, index].</li>
+            <li>Iterate through the array from right to left:</li>
+            <ul>
+                <li>While the stack is not empty and the current temperature is greater than or equal to the temperature at the top of the stack, pop the stack.</li>
+                <li>If the stack is not empty after the while loop, it means we found a future day with a warmer temperature. Calculate the waiting days as the difference between the index at the top of the stack and the current index.</li>
+                <li>Push the current [temperature, index] pair onto the stack.</li>
+            </ul>
+            <li>Return the <code>answer</code> array.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the backward approach for temperatures = [73, 74, 75, 71, 69, 72, 76, 73]:</strong></p>
+            <pre>
+# Initialize answer = [0, 0, 0, 0, 0, 0, 0, 0] and stack = []
+
+# Start from the last index (7) and move to the left
+
+# i = 7, temp = 73
+  stack is empty, so no warmer day in the future
+  push (73, 7) onto the stack
+  stack = [(73, 7)]
+  answer = [0, 0, 0, 0, 0, 0, 0, 0]
+
+# i = 6, temp = 76
+  76 > 73 (top of stack), so pop from stack
+  stack is now empty
+  no warmer day in the future
+  push (76, 6) onto the stack
+  stack = [(76, 6)]
+  answer = [0, 0, 0, 0, 0, 0, 0, 0]
+
+# i = 5, temp = 72
+  72 < 76 (top of stack)
+  found a warmer day at index 6
+  waiting days = 6 - 5 = 1
+  push (72, 5) onto the stack
+  stack = [(76, 6), (72, 5)]
+  answer = [0, 0, 0, 0, 0, 1, 0, 0]
+
+# i = 4, temp = 69
+  69 < 72 (top of stack)
+  found a warmer day at index 5
+  waiting days = 5 - 4 = 1
+  push (69, 4) onto the stack
+  stack = [(76, 6), (72, 5), (69, 4)]
+  answer = [0, 0, 0, 0, 1, 1, 0, 0]
+
+# i = 3, temp = 71
+  71 > 69 (top of stack), so pop from stack
+  71 < 72 (new top of stack)
+  found a warmer day at index 5
+  waiting days = 5 - 3 = 2
+  push (71, 3) onto the stack
+  stack = [(76, 6), (72, 5), (71, 3)]
+  answer = [0, 0, 0, 2, 1, 1, 0, 0]
+
+# i = 2, temp = 75
+  75 > 71 (top of stack), so pop from stack
+  75 > 72 (new top of stack), so pop from stack
+  75 < 76 (new top of stack)
+  found a warmer day at index 6
+  waiting days = 6 - 2 = 4
+  push (75, 2) onto the stack
+  stack = [(76, 6), (75, 2)]
+  answer = [0, 0, 4, 2, 1, 1, 0, 0]
+
+# i = 1, temp = 74
+  74 < 75 (top of stack)
+  found a warmer day at index 2
+  waiting days = 2 - 1 = 1
+  push (74, 1) onto the stack
+  stack = [(76, 6), (75, 2), (74, 1)]
+  answer = [0, 1, 4, 2, 1, 1, 0, 0]
+
+# i = 0, temp = 73
+  73 < 74 (top of stack)
+  found a warmer day at index 1
+  waiting days = 1 - 0 = 1
+  push (73, 0) onto the stack
+  stack = [(76, 6), (75, 2), (74, 1), (73, 0)]
+  answer = [1, 1, 4, 2, 1, 1, 0, 0]
+
+# Return answer = [1, 1, 4, 2, 1, 1, 0, 0]</pre>
+        </div>
+        
+        <p>
+            <strong>Time Complexity:</strong> O(n), where n is the length of the temperatures array. Each element is pushed and popped at most once from the stack.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n) for the answer array and the stack. In the worst case, the stack could contain all elements of the temperatures array.
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def dailyTemperatures(temperatures):
+    <span class="comment">"""Find the number of days to wait for a warmer temperature.
+    
+    Args:
+        temperatures: List of daily temperatures
+        
+    Returns:
+        List where each element is the number of days to wait for a warmer temperature
+    """</span>
+    n = len(temperatures)
+    stack = []
+    answer = [0] * n
+    
+    for i in range(n-1, -1, -1):  # Iterate from right to left
+        temp = temperatures[i]
+        
+        # Pop elements from stack if current temperature is higher
+        # This maintains a decreasing monotonic stack
+        while stack and temp >= stack[-1][0]:  
+            stack.pop()
+            
+        # If there's an element in the stack, it's the next warmer day
+        if stack:
+            answer[i] = stack[-1][1] - i
+            
+        # Push current temperature and its index
+        stack.append((temp, i))
+        
+    return answer</pre>
+
+        <h3>Alternative Implementation (Forward Approach)</h3>
+        <pre>
+def dailyTemperatures_forward(temperatures):
+    <span class="comment">"""Find the number of days to wait for a warmer temperature using forward approach.
+    
+    Args:
+        temperatures: List of daily temperatures
+        
+    Returns:
+        List where each element is the number of days to wait for a warmer temperature
+    """</span>
+    n = len(temperatures)
+    answer = [0] * n
+    stack = []  # Stack will store indices
+    
+    for i in range(n):  # Iterate from left to right
+        current_temp = temperatures[i]
+        
+        # While we have elements in stack and current temperature is higher
+        # than the temperature at the index at the top of the stack
+        while stack and current_temp > temperatures[stack[-1]]:
+            prev_idx = stack.pop()
+            answer[prev_idx] = i - prev_idx
+            
+        # Push current index to stack
+        stack.append(i)
+        
+    return answer</pre>
+
+        <h3>Testing the Solution</h3>
+        <pre class="command">
+# Test Example 1
+temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
+print(dailyTemperatures(temperatures))  # Output: [1, 1, 4, 2, 1, 1, 0, 0]
+
+# Test Example 2
+temperatures = [30, 40, 50, 60]
+print(dailyTemperatures(temperatures))  # Output: [1, 1, 1, 0]
+
+# Test Example 3
+temperatures = [30, 60, 90]
+print(dailyTemperatures(temperatures))  # Output: [1, 1, 0]</pre>
+    </div>
+
+    <div class="section approach">
+        <h2>Comparing Approaches</h2>
+        <p>Both the backward and forward approaches have their merits:</p>
+        
+        <h3>Backward Approach (Right to Left):</h3>
+        <ul>
+            <li><strong>Pros:</strong> 
+                <ul>
+                    <li>The logic is slightly more intuitive for this specific problem.</li>
+                    <li>The monotonic stack maintains future days with higher temperatures.</li>
+                </ul>
+            </li>
+            <li><strong>Cons:</strong> 
+                <ul>
+                    <li>The backward traversal may be less familiar to some developers.</li>
+                </ul>
+            </li>
+        </ul>
+        
+        <h3>Forward Approach (Left to Right):</h3>
+        <ul>
+            <li><strong>Pros:</strong> 
+                <ul>
+                    <li>More commonly used in monotonic stack problems.</li>
+                    <li>The stack stores indices for which we haven't found a next greater element yet.</li>
+                </ul>
+            </li>
+            <li><strong>Cons:</strong> 
+                <ul>
+                    <li>The logic may be slightly more complex for understanding.</li>
+                </ul>
+            </li>
+        </ul>
+        
+        <p>Both approaches have the same time and space complexity of O(n).</p>
+    </div>
+    
+    <div class="section understanding">
+        <h2>Connection to Monotonic Stack Pattern</h2>
+        <p>This problem is a classic application of the Monotonic Stack pattern for the following reasons:</p>
+        <ul>
+            <li>We need to find the next greater element for each element in the array.</li>
+            <li>We can use a stack to efficiently track potential next greater elements.</li>
+            <li>By maintaining a decreasing monotonic stack (in the backward approach) or processing elements as we go (in the forward approach), we can achieve linear time complexity.</li>
+        </ul>
+        <p>The Monotonic Stack pattern is particularly useful for problems that involve finding the next greater/smaller element, as it allows us to avoid the naive O(n²) approach of checking each pair of elements.</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monotonic Stack Pattern</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .concept {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .increasing {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .decreasing {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .applications {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code-example {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monotonic Stack Pattern</h1>
+
+    <div class="section concept">
+        <h2>What is a Monotonic Stack?</h2>
+        <p>
+            A <strong>Monotonic Stack</strong> is a special kind of stack data structure that maintains its elements in a specific order (either strictly increasing or strictly decreasing). This pattern is powerful for solving a range of problems that involve finding the next greater or next smaller element in an array.
+        </p>
+        <p>
+            The key property of a monotonic stack is that as you traverse the elements being processed, the stack maintains either an increasing or decreasing order of elements. When a new element violates this order, elements are popped from the stack until the order is restored.
+        </p>
+    </div>
+
+    <div class="section increasing">
+        <h2>Increasing Monotonic Stack</h2>
+        <p>
+            An <strong>Increasing Monotonic Stack</strong> maintains elements in increasing order from the bottom to the top of the stack. When adding a new element, if it's smaller than the top element, we pop elements from the stack until:
+        </p>
+        <ul>
+            <li>The stack becomes empty, or</li>
+            <li>The top element is smaller than or equal to the new element</li>
+        </ul>
+        <p>
+            Then we push the new element onto the stack. This process ensures that the stack always maintains an increasing order.            
+        </p>
+        
+        <div class="example">
+            <h3>Example</h3>
+            <p>Consider the array: [1, 7, 9, 5, 4, 8]</p>
+            <p>The increasing monotonic stack will evolve as follows:</p>
+        </div>
+        
+        <div class="visualization">
+            <p><strong>Visualization of Increasing Monotonic Stack:</strong></p>
+            <pre>
+Process 1: Push 1
+Stack: [1]
+
+Process 7: 7 > 1, so push 7
+Stack: [1, 7]
+
+Process 9: 9 > 7, so push 9
+Stack: [1, 7, 9]
+
+Process 5: 5 < 9, so pop 9
+       5 < 7, so pop 7
+       5 > 1, so push 5
+Stack: [1, 5]
+
+Process 4: 4 < 5, so pop 5
+       4 > 1, so push 4
+Stack: [1, 4]
+
+Process 8: 8 > 4, so push 8
+Stack: [1, 4, 8]
+</pre>
+        </div>
+        
+        <h3>Template for Increasing Monotonic Stack</h3>
+        <pre>
+<span class="comment">// Pseudocode</span>
+function increasingMonotonicStack(arr):
+    stack = []  <span class="comment">// Create an empty stack</span>
+    
+    for each element in arr:
+        while stack is not empty AND top of stack > element:
+            pop from stack
+        
+        push element to stack
+    
+    return stack</pre>
+    </div>
+
+    <div class="section decreasing">
+        <h2>Decreasing Monotonic Stack</h2>
+        <p>
+            A <strong>Decreasing Monotonic Stack</strong> maintains elements in decreasing order from the bottom to the top of the stack. When adding a new element, if it's larger than the top element, we pop elements from the stack until:
+        </p>
+        <ul>
+            <li>The stack becomes empty, or</li>
+            <li>The top element is larger than or equal to the new element</li>
+        </ul>
+        <p>
+            Then we push the new element onto the stack. This process ensures that the stack always maintains a decreasing order.
+        </p>
+        
+        <div class="example">
+            <h3>Example</h3>
+            <p>Consider the array: [6, 3, 1, 5, 6, 2]</p>
+            <p>The decreasing monotonic stack will evolve as follows:</p>
+        </div>
+        
+        <div class="visualization">
+            <p><strong>Visualization of Decreasing Monotonic Stack:</strong></p>
+            <pre>
+Process 6: Push 6
+Stack: [6]
+
+Process 3: 3 < 6, so push 3
+Stack: [6, 3]
+
+Process 1: 1 < 3, so push 1
+Stack: [6, 3, 1]
+
+Process 5: 5 > 1, so pop 1
+       5 > 3, so pop 3
+       5 < 6, so push 5
+Stack: [6, 5]
+
+Process 6: 6 > 5, so pop 5
+       6 = 6, so push 6
+Stack: [6, 6]
+
+Process 2: 2 < 6, so push 2
+Stack: [6, 6, 2]
+</pre>
+        </div>
+        
+        <h3>Template for Decreasing Monotonic Stack</h3>
+        <pre>
+<span class="comment">// Pseudocode</span>
+function decreasingMonotonicStack(arr):
+    stack = []  <span class="comment">// Create an empty stack</span>
+    
+    for each element in arr:
+        while stack is not empty AND top of stack < element:
+            pop from stack
+        
+        push element to stack
+    
+    return stack</pre>
+    </div>
+
+    <div class="section applications">
+        <h2>When to Use Monotonic Stack</h2>
+        <p>
+            The monotonic stack pattern is particularly useful for problems that require finding the next greater or next smaller element in an array. These problems often have a time complexity requirement of O(n), which a monotonic stack can achieve.
+        </p>
+        
+        <p><strong>Common types of problems:</strong></p>
+        <ul>
+            <li>Finding the next greater/smaller element for each element in an array</li>
+            <li>Finding the previous greater/smaller element for each element in an array</li>
+            <li>Computing spans (distance to the previous greater/smaller element)</li>
+            <li>Problems involving histograms or skylines</li>
+            <li>Problems involving temperature or stock prices</li>
+        </ul>
+        
+        <h3>Examples of Problems:</h3>
+        <ul>
+            <li>Daily Temperatures - Find how many days to wait until a warmer temperature</li>
+            <li>Next Greater Element - Find the next greater element for each element in an array</li>
+            <li>Largest Rectangle in Histogram - Find the largest rectangle in a histogram</li>
+            <li>Trapping Rain Water - Calculate how much water can be trapped between bars</li>
+            <li>Remove Duplicate Letters - Remove duplicate letters while maintaining lexicographical order</li>
+            <li>Online Stock Span - Calculate the span of stock's price for each day</li>
+        </ul>
+    </div>
+
+    <div class="section code-example">
+        <h2>Implementation Examples</h2>
+        
+        <h3>Finding Next Greater Element (Python)</h3>
+        <pre>
+def nextGreaterElement(nums):
+    <span class="comment">"""Find the next greater element for each element in the array
+    
+    Args:
+        nums: List of integers
+        
+    Returns:
+        List where each element is the next greater element in the original array
+        or -1 if no greater element exists
+    """</span>
+    n = len(nums)
+    result = [-1] * n  # Initialize with -1 (no greater element)
+    stack = []  # Stack to store indices
+    
+    for i in range(n):
+        <span class="comment"># While stack is not empty and current element is greater than the element at stack's top index</span>
+        while stack and nums[i] > nums[stack[-1]]:
+            <span class="comment"># Pop the top index and update the result for that index</span>
+            prev_idx = stack.pop()
+            result[prev_idx] = nums[i]
+        
+        <span class="comment"># Push current index to the stack</span>
+        stack.append(i)
+    
+    return result</pre>
+        
+        <h3>Finding Next Smaller Element (Python)</h3>
+        <pre>
+def nextSmallerElement(nums):
+    <span class="comment">"""Find the next smaller element for each element in the array
+    
+    Args:
+        nums: List of integers
+        
+    Returns:
+        List where each element is the next smaller element in the original array
+        or -1 if no smaller element exists
+    """</span>
+    n = len(nums)
+    result = [-1] * n  # Initialize with -1 (no smaller element)
+    stack = []  # Stack to store indices
+    
+    for i in range(n):
+        <span class="comment"># While stack is not empty and current element is smaller than the element at stack's top index</span>
+        while stack and nums[i] < nums[stack[-1]]:
+            <span class="comment"># Pop the top index and update the result for that index</span>
+            prev_idx = stack.pop()
+            result[prev_idx] = nums[i]
+        
+        <span class="comment"># Push current index to the stack</span>
+        stack.append(i)
+    
+    return result</pre>
+    </div>
+
+    <div class="section applications">
+        <h2>Time and Space Complexity</h2>
+        <p>
+            <strong>Time Complexity:</strong> O(n) where n is the number of elements in the input array. Although there is a nested loop with the while statement inside the for loop, each element is pushed and popped at most once from the stack, so the amortized time complexity is O(n).
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n) in the worst case, where all elements might be stored in the stack.
+        </p>
+    </div>
+
+    <div class="section concept">
+        <h2>Tips for Solving Monotonic Stack Problems</h2>
+        <ol>
+            <li><strong>Identify the order</strong>: Determine whether you need an increasing or decreasing monotonic stack based on whether you're looking for the next greater or next smaller element.</li>
+            <li><strong>Storing indices vs values</strong>: In many problems, it's more useful to store the indices of elements in the stack rather than the values themselves, especially when you need to calculate distances or ranges.</li>
+            <li><strong>Process direction</strong>: For finding next greater/smaller elements, process the array from left to right. For finding previous greater/smaller elements, process from right to left.</li>
+            <li><strong>Edge cases</strong>: Always consider edge cases like an empty array or an array with duplicate elements.</li>
+            <li><strong>Result initialization</strong>: Initialize your result array appropriately. Often, -1 is used to indicate that no greater/smaller element exists.</li>
+        </ol>
+    </div>
+</body>
+</html>

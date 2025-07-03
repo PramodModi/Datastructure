@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Greater Element Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Next Greater Element Solution</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>LeetCode: 496. Next Greater Element I</strong></p>
+        <p><a href="https://leetcode.com/problems/next-greater-element-i/" target="_blank">https://leetcode.com/problems/next-greater-element-i/</a></p>
+        
+        <p>The next greater element of some element x in an array is the first greater element that is to the right of x in the same array.</p>
+        
+        <p>You are given two distinct 0-indexed integer arrays <code>nums1</code> and <code>nums2</code>, where <code>nums1</code> is a subset of <code>nums2</code>.</p>
+        
+        <p>For each 0 <= i < nums1.length, find the index j such that nums1[i] == nums2[j] and determine the next greater element of nums2[j] in nums2. If there is no next greater element, then the answer for this query is -1.</p>
+        
+        <p>Return an array <code>ans</code> of length nums1.length such that ans[i] is the next greater element as described above.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2]</p>
+            <p><strong>Output:</strong> [-1, 3, -1]</p>
+            <p><strong>Explanation:</strong> The next greater element for each value of nums1 is as follows:</p>
+            <ul>
+                <li>4 is underlined in nums2 = [1, 3, <u>4</u>, 2]. There is no next greater element, so the answer is -1.</li>
+                <li>1 is underlined in nums2 = [<u>1</u>, 3, 4, 2]. The next greater element is 3.</li>
+                <li>2 is underlined in nums2 = [1, 3, 4, <u>2</u>]. There is no next greater element, so the answer is -1.</li>
+            </ul>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums1 = [2, 4], nums2 = [1, 2, 3, 4]</p>
+            <p><strong>Output:</strong> [3, -1]</p>
+            <p><strong>Explanation:</strong> The next greater element for each value of nums1 is as follows:</p>
+            <ul>
+                <li>2 is underlined in nums2 = [1, <u>2</u>, 3, 4]. The next greater element is 3.</li>
+                <li>4 is underlined in nums2 = [1, 2, 3, <u>4</u>]. There is no next greater element, so the answer is -1.</li>
+            </ul>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= nums1.length <= nums2.length <= 1000</li>
+            <li>0 <= nums1[i], nums2[i] <= 10<sup>4</sup></li>
+            <li>All integers in nums1 and nums2 are unique.</li>
+            <li>All the integers of nums1 also appear in nums2.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem:
+        </p>
+        <ul>
+            <li>We have two arrays <code>nums1</code> and <code>nums2</code>, where <code>nums1</code> is a subset of <code>nums2</code>.</li>
+            <li>For each element in <code>nums1</code>, we need to find its next greater element in <code>nums2</code>.</li>
+            <li>The "next greater element" is the first greater element that is to the right of the element's position in <code>nums2</code>.</li>
+            <li>If there is no greater element to the right, we return -1 for that element.</li>
+        </ul>
+        <p>
+            For example, with nums1 = [4, 1, 2] and nums2 = [1, 3, 4, 2]:
+        </p>
+        <ul>
+            <li>For 4 in nums1: The position of 4 in nums2 is at index 2. There is no greater element to the right of index 2 in nums2, so the answer is -1.</li>
+            <li>For 1 in nums1: The position of 1 in nums2 is at index 0. The next greater element to the right is 3, so the answer is 3.</li>
+            <li>For 2 in nums1: The position of 2 in nums2 is at index 3. There is no greater element to the right of index 3 in nums2, so the answer is -1.</li>
+        </ul>
+        <p>
+            This problem is a classic application of the Monotonic Stack pattern, where we need to find the next greater element for each element in an array.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Use a monotonic stack to find the next greater element for each element in nums2, and then use a hashmap to efficiently look up answers for nums1.</p>
+        </div>
+        <p>
+            We'll solve this problem in two steps:
+        </p>
+        <ol>
+            <li>First, we'll find the next greater element for each element in <code>nums2</code> using a monotonic stack.</li>
+            <li>Then, we'll map each element in <code>nums2</code> to its next greater element in a hashmap.</li>
+            <li>Finally, we'll use this hashmap to build our answer array for <code>nums1</code>.</li>
+        </ol>
+        <p>
+            For finding the next greater elements in <code>nums2</code>, we'll use a decreasing monotonic stack and iterate from right to left. This approach allows us to efficiently find the next greater element for each element in <code>nums2</code>.
+        </p>
+        
+        <h3>Detailed Steps:</h3>
+        <ol>
+            <li>Initialize an empty hashmap <code>hashmap</code> to store each element in <code>nums2</code> and its next greater element.</li>
+            <li>Initialize an empty stack <code>stack</code> for our monotonic stack approach.</li>
+            <li>Iterate through <code>nums2</code> from right to left:</li>
+            <ul>
+                <li>While the stack is not empty and the current element is greater than the element at the top of the stack, pop elements from the stack.</li>
+                <li>If the stack is not empty after the while loop, the element at the top of the stack is the next greater element for the current element. Add this mapping to the hashmap.</li>
+                <li>If the stack is empty, there is no next greater element for the current element, so map it to -1.</li>
+                <li>Push the current element onto the stack.</li>
+            </ul>
+            <li>Initialize a result array <code>result</code> of size <code>nums1.length</code>.</li>
+            <li>Iterate through <code>nums1</code> and for each element, lookup its next greater element in the hashmap and store it in the result array.</li>
+            <li>Return the result array.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization for nums1 = [4, 1, 2], nums2 = [1, 3, 4, 2]:</strong></p>
+            <pre>
+# Building the hashmap of next greater elements
+
+# Initialize hashmap = {} and stack = []
+
+# Start from the last element of nums2 and move to the left
+
+# i = 3, nums2[i] = 2
+  stack is empty, so no next greater element
+  hashmap[2] = -1
+  push 2 onto the stack
+  stack = [2]
+  hashmap = {2: -1}
+
+# i = 2, nums2[i] = 4
+  4 > 2 (top of stack), so pop from stack
+  stack is now empty
+  hashmap[4] = -1
+  push 4 onto the stack
+  stack = [4]
+  hashmap = {2: -1, 4: -1}
+
+# i = 1, nums2[i] = 3
+  3 < 4 (top of stack)
+  hashmap[3] = 4
+  push 3 onto the stack
+  stack = [4, 3]
+  hashmap = {2: -1, 4: -1, 3: 4}
+
+# i = 0, nums2[i] = 1
+  1 < 3 (top of stack)
+  hashmap[1] = 3
+  push 1 onto the stack
+  stack = [4, 3, 1]
+  hashmap = {2: -1, 4: -1, 3: 4, 1: 3}
+
+# Now, build the result array for nums1
+
+# result = [0, 0, 0] (initialize)
+
+# Process nums1[0] = 4
+  result[0] = hashmap[4] = -1
+  result = [-1, 0, 0]
+
+# Process nums1[1] = 1
+  result[1] = hashmap[1] = 3
+  result = [-1, 3, 0]
+
+# Process nums1[2] = 2
+  result[2] = hashmap[2] = -1
+  result = [-1, 3, -1]
+
+# Return result = [-1, 3, -1]</pre>
+        </div>
+        
+        <p>
+            <strong>Time Complexity:</strong> O(n + m), where n is the length of nums2 and m is the length of nums1. We iterate through nums2 once to build the hashmap, and then iterate through nums1 once to build the result array. Each element is pushed and popped at most once from the stack.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n), where n is the length of nums2. We use a hashmap and a stack, both of which can contain at most n elements.
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def nextGreaterElement(nums1, nums2):
+    <span class="comment">"""Find the next greater element for each element in nums1 within nums2.
+    
+    Args:
+        nums1: List of integers, a subset of nums2
+        nums2: List of integers
+        
+    Returns:
+        List where each element is the next greater element for the corresponding element in nums1
+    """</span>
+    # Create a hashmap to store each element and its next greater element
+    hashmap = {}
+    stack = []
+    n = len(nums2)
+    
+    # Iterate from right to left through nums2
+    for i in range(n-1, -1, -1):
+        # While stack is not empty and current element is greater than top of stack
+        # Pop elements from the stack
+        while stack and nums2[i] >= stack[-1]:
+            stack.pop()
+        
+        # If stack is not empty, the top element is the next greater element
+        if stack:
+            hashmap[nums2[i]] = stack[-1]
+        else:
+            # If stack is empty, there is no next greater element
+            hashmap[nums2[i]] = -1
+        
+        # Push the current element onto the stack
+        stack.append(nums2[i])
+    
+    # Build the result array for nums1 using the hashmap
+    result = [0] * len(nums1)
+    for j in range(len(nums1)):
+        result[j] = hashmap[nums1[j]]
+    
+    return result</pre>
+
+        <h3>Alternative Implementation (Forward Approach)</h3>
+        <pre>
+def nextGreaterElement_forward(nums1, nums2):
+    <span class="comment">"""Find the next greater element for each element in nums1 within nums2 using forward approach.
+    
+    Args:
+        nums1: List of integers, a subset of nums2
+        nums2: List of integers
+        
+    Returns:
+        List where each element is the next greater element for the corresponding element in nums1
+    """</span>
+    # Create a hashmap to store the indices of elements in nums2
+    index_map = {}
+    for i, num in enumerate(nums2):
+        index_map[num] = i
+    
+    # Create a result array with default values of -1
+    result = [-1] * len(nums1)
+    stack = []
+    
+    # Iterate through nums2 from left to right
+    for i, num in enumerate(nums2):
+        # While the stack is not empty and the current number is greater than the number at the top of the stack
+        while stack and num > nums2[stack[-1]]:
+            # The current number is the next greater element for the number at the top of the stack
+            prev_index = stack.pop()
+            # If the popped element is in nums1, update the result
+            if nums2[prev_index] in index_map:
+                element_value = nums2[prev_index]
+                if element_value in nums1:
+                    element_index = nums1.index(element_value)
+                    result[element_index] = num
+        
+        # Push the current index onto the stack
+        stack.append(i)
+    
+    return result</pre>
+
+        <h3>More Efficient Forward Approach</h3>
+        <pre>
+def nextGreaterElement_efficient(nums1, nums2):
+    <span class="comment">"""Find the next greater element for each element in nums1 within nums2 using a more efficient approach.
+    
+    Args:
+        nums1: List of integers, a subset of nums2
+        nums2: List of integers
+        
+    Returns:
+        List where each element is the next greater element for the corresponding element in nums1
+    """</span>
+    # Create a hashmap to store each element and its next greater element
+    next_greater = {}
+    stack = []
+    
+    # Iterate through nums2 from left to right
+    for num in nums2:
+        # While the stack is not empty and the current number is greater than the number at the top of the stack
+        while stack and num > stack[-1]:
+            # The current number is the next greater element for the number at the top of the stack
+            next_greater[stack.pop()] = num
+        
+        # Push the current number onto the stack
+        stack.append(num)
+    
+    # For elements still in the stack, there is no next greater element
+    for num in stack:
+        next_greater[num] = -1
+    
+    # Build the result array for nums1 using the hashmap
+    return [next_greater[num] for num in nums1]</pre>
+
+        <h3>Testing the Solution</h3>
+        <pre class="command">
+# Test Example 1
+nums1 = [4, 1, 2]
+nums2 = [1, 3, 4, 2]
+print(nextGreaterElement(nums1, nums2))  # Output: [-1, 3, -1]
+
+# Test Example 2
+nums1 = [2, 4]
+nums2 = [1, 2, 3, 4]
+print(nextGreaterElement(nums1, nums2))  # Output: [3, -1]</pre>
+    </div>
+
+    <div class="section approach">
+        <h2>Comparing Approaches</h2>
+        <p>Let's compare the backward and forward approaches:</p>
+        
+        <h3>Backward Approach (Right to Left):</h3>
+        <ul>
+            <li><strong>Pros:</strong> 
+                <ul>
+                    <li>Directly builds a map from each element to its next greater element.</li>
+                    <li>More intuitive for this specific problem.</li>
+                </ul>
+            </li>
+            <li><strong>Cons:</strong> 
+                <ul>
+                    <li>May be less familiar to some developers.</li>
+                </ul>
+            </li>
+        </ul>
+        
+        <h3>Forward Approach (Left to Right):</h3>
+        <ul>
+            <li><strong>Pros:</strong> 
+                <ul>
+                    <li>More commonly used in monotonic stack problems.</li>
+                    <li>Can be more efficient in some variations of the problem.</li>
+                </ul>
+            </li>
+            <li><strong>Cons:</strong> 
+                <ul>
+                    <li>Requires slightly more complex logic to handle the mapping.</li>
+                </ul>
+            </li>
+        </ul>
+        
+        <p>Both approaches have the same time and space complexity of O(n), where n is the length of nums2.</p>
+    </div>
+    
+    <div class="section understanding">
+        <h2>Connection to Monotonic Stack Pattern</h2>
+        <p>This problem is another classic application of the Monotonic Stack pattern for the following reasons:</p>
+        <ul>
+            <li>We need to find the next greater element for each element in an array.</li>
+            <li>We can use a stack to efficiently track potential next greater elements.</li>
+            <li>By maintaining a monotonic stack, we can process each element just once, giving us O(n) time complexity.</li>
+        </ul>
+        <p>The key insight is to use a hashmap to map each element to its next greater element, which allows for efficient lookups when building the result array for nums1.</p>
+    </div>
+</body>
+</html>
