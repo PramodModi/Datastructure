@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Repeating Character Replacement</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Longest Repeating Character Replacement</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Longest Repeating Character Replacement (LeetCode #424)</strong></p>
+        <p><a href="https://leetcode.com/problems/longest-repeating-character-replacement/" target="_blank">https://leetcode.com/problems/longest-repeating-character-replacement/</a></p>
+        <p>
+            You are given a string <code>s</code> and an integer <code>k</code>. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most <code>k</code> times.
+        </p>
+        <p>
+            Return the length of the longest substring containing the same letter you can get after performing the above operations.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "ABAB", k = 2</p>
+            <p><strong>Output:</strong> 4</p>
+            <p><strong>Explanation:</strong> Replace the two 'A's with two 'B's or vice versa.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = "AABABBA", k = 1</p>
+            <p><strong>Output:</strong> 4</p>
+            <p><strong>Explanation:</strong> Replace the one 'A' in the middle with 'B' and form "AABBBBA".
+The substring "BBBB" has the longest repeating letters, which is 4.
+There may exist other ways to achieve this answer too.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= s.length <= 10<sup>5</sup></li>
+            <li>s consists of only uppercase English letters.</li>
+            <li>0 <= k <= s.length</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the longest substring that contains the same letter after replacing at most k characters. Let's break it down:
+        </p>
+        <ul>
+            <li>We have a string of uppercase English letters.</li>
+            <li>We can replace at most k characters with any other uppercase English letter.</li>
+            <li>Our goal is to find the longest substring that contains the same letter after these replacements.</li>
+        </ul>
+        <p>
+            The key insight here is that to maximize the length of the substring with the same letter, we would want to replace characters that are not the most frequent in the current substring. For example, if we have a substring with 3 'A's and 2 'B's, and k = 2, we would replace the 2 'B's with 'A's to get a substring of all 'A's.
+        </p>
+        <p>
+            For a substring to be valid after replacements, the following condition must be true:
+        </p>
+        <p>
+            <code>length_of_substring - count_of_most_frequent_character <= k</code>
+        </p>
+        <p>
+            This means that we can replace at most k characters to make all characters in the substring the same as the most frequent character.
+        </p>
+        <p>
+            Let's analyze the examples to understand better:
+        </p>
+        <ol>
+            <li>
+                <p>For s = "ABAB" and k = 2:</p>
+                <ul>
+                    <li>If we consider the entire string, we have 2 'A's and 2 'B's.</li>
+                    <li>The most frequent character is either 'A' or 'B', both with count 2.</li>
+                    <li>length_of_substring = 4, count_of_most_frequent_character = 2</li>
+                    <li>4 - 2 = 2 <= k, so this is valid.</li>
+                    <li>We can replace the 2 'A's with 'B's to get "BBBB" or vice versa.</li>
+                    <li>The answer is 4.</li>
+                </ul>
+            </li>
+            <li>
+                <p>For s = "AABABBA" and k = 1:</p>
+                <ul>
+                    <li>If we consider the substring "AABB", we have 2 'A's and 2 'B's.</li>
+                    <li>The most frequent character is either 'A' or 'B', both with count 2.</li>
+                    <li>length_of_substring = 4, count_of_most_frequent_character = 2</li>
+                    <li>4 - 2 = 2 > k, so this is not valid.</li>
+                    <li>If we consider the substring "ABBB", we have 1 'A' and 3 'B's.</li>
+                    <li>The most frequent character is 'B' with count 3.</li>
+                    <li>length_of_substring = 4, count_of_most_frequent_character = 3</li>
+                    <li>4 - 3 = 1 <= k, so this is valid.</li>
+                    <li>We can replace the 1 'A' with 'B' to get "BBBB".</li>
+                    <li>The answer is 4.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>
+            Our task is to find the longest substring that satisfies this condition, and we'll do this using the sliding window approach.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use the sliding window technique to solve this problem efficiently.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> For a window to be valid, the condition (window_length - max_frequency_character) <= k must be satisfied, meaning we can replace at most k characters to make all characters in the window the same.</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>Initialize two pointers, left and right, both starting at the beginning of the string.</li>
+            <li>Use a hash map to keep track of the frequency of each character in the current window.</li>
+            <li>Also, keep track of the maximum frequency of any character in the current window.</li>
+            <li>Expand the window by moving the right pointer and updating the hash map and maximum frequency.</li>
+            <li>If the condition (window_length - max_frequency) > k is violated, contract the window from the left until the condition is satisfied.</li>
+            <li>The window length at any point gives the length of a valid substring. Keep track of the maximum window length encountered during this process.</li>
+            <li>Return the maximum window length as the answer.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 2: s = "AABABBA", k = 1</strong></p>
+            <pre>
+Initialize: left = 0, right = 0, maxFreq = 0
+Hash Map: {}
+
+Iteration 1: right = 0, char = 'A'
+  Update map: {'A': 1}
+  maxFreq = 1
+  window_length = 1, condition: 1 - 1 = 0 <= k, valid
+  right++
+
+Iteration 2: right = 1, char = 'A'
+  Update map: {'A': 2}
+  maxFreq = 2
+  window_length = 2, condition: 2 - 2 = 0 <= k, valid
+  right++
+
+Iteration 3: right = 2, char = 'B'
+  Update map: {'A': 2, 'B': 1}
+  maxFreq = 2
+  window_length = 3, condition: 3 - 2 = 1 <= k, valid
+  right++
+
+Iteration 4: right = 3, char = 'A'
+  Update map: {'A': 3, 'B': 1}
+  maxFreq = 3
+  window_length = 4, condition: 4 - 3 = 1 <= k, valid
+  right++
+
+Iteration 5: right = 4, char = 'B'
+  Update map: {'A': 3, 'B': 2}
+  maxFreq = 3
+  window_length = 5, condition: 5 - 3 = 2 > k, invalid
+  Contract window: Remove 'A', update map: {'A': 2, 'B': 2}
+  left++
+  window_length = 4, condition: 4 - max(2, 2) = 2 > k, invalid
+  Contract window: Remove 'A', update map: {'A': 1, 'B': 2}
+  left++
+  window_length = 3, condition: 3 - max(1, 2) = 1 <= k, valid
+  right++
+
+Iteration 6: right = 5, char = 'B'
+  Update map: {'A': 1, 'B': 3}
+  maxFreq = 3
+  window_length = 4, condition: 4 - 3 = 1 <= k, valid
+  right++
+
+Iteration 7: right = 6, char = 'A'
+  Update map: {'A': 2, 'B': 3}
+  maxFreq = 3
+  window_length = 5, condition: 5 - 3 = 2 > k, invalid
+  Contract window: Remove 'B', update map: {'A': 2, 'B': 2}
+  left++
+  window_length = 4, condition: 4 - max(2, 2) = 2 > k, invalid
+  Contract window: Remove 'A', update map: {'A': 1, 'B': 2}
+  left++
+  window_length = 3, condition: 3 - max(1, 2) = 1 <= k, valid
+  right++
+
+Final window_length = right - left = 7 - 4 = 3
+But the maximum valid window_length encountered was 4
+So the answer is 4</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the length of the string. We process each character at most twice (once by the right pointer and once by the left pointer).</li>
+            <li><strong>Space Complexity:</strong> O(1), as the hash map will store at most 26 uppercase English letters.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>Initialize a hash map to store character frequencies.</li>
+                    <li>Initialize left and right pointers to 0.</li>
+                    <li>Initialize maxFreq to 0 to track the maximum frequency of any character in the current window.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Expand the window:</strong>
+                <ul>
+                    <li>While right < length of string:</li>
+                    <li>Add the current character to the hash map and update its frequency.</li>
+                    <li>Update maxFreq to the maximum of maxFreq and the frequency of the current character.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Check the window validity and contract if needed:</strong>
+                <ul>
+                    <li>If (right - left + 1) - maxFreq > k:</li>
+                    <li>Decrement the frequency of the character at the left pointer.</li>
+                    <li>Move the left pointer to the right.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Continue expanding:</strong>
+                <ul>
+                    <li>Move the right pointer to the right and continue the process.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Return (right - left) as the length of the longest valid substring.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def characterReplacement(s, k):
+    <span class="comment">"""Find the length of the longest substring with the same letter after replacing at most k characters.
+    
+    Args:
+        s: Input string
+        k: Maximum number of characters that can be replaced
+        
+    Returns:
+        Length of the longest valid substring
+    """</span>
+    temp = {}  <span class="comment"># Hash map to store character frequencies</span>
+    left, right = 0, 0  <span class="comment"># Initialize two pointers</span>
+    maxFreq = 0  <span class="comment"># Track the maximum frequency of any character in the current window</span>
+    
+    while right < len(s):
+        <span class="comment"># Add current character to the window</span>
+        c = s[right]
+        temp[c] = temp.get(c, 0) + 1
+        
+        <span class="comment"># Update the maximum frequency</span>
+        maxFreq = max(maxFreq, temp[c])
+        
+        <span class="comment"># Check if the window is valid</span>
+        if (right - left + 1) - maxFreq > k:
+            <span class="comment"># Window is invalid, contract it from the left</span>
+            c = s[left]
+            temp[c] -= 1
+            left += 1
+        
+        <span class="comment"># Expand the window</span>
+        right += 1
+    
+    <span class="comment"># Return the length of the longest valid window</span>
+    return right - left</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">s = "ABAB"
+k = 2
+characterReplacement(s, k)  <span class="comment"># Output: 4</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">4</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">s = "AABABBA"
+k = 1
+characterReplacement(s, k)  <span class="comment"># Output: 4</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">4</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Important Implementation Note:</strong></p>
+            <p>You might be wondering why we don't update <code>maxFreq</code> when contracting the window (i.e., when we decrement the frequency of a character). This is because <code>maxFreq</code> represents the historical maximum frequency we've seen, and even if we remove a character that had the maximum frequency, we're still interested in finding a window that can accommodate that maximum frequency.</p>
+            <p>Additionally, reducing <code>maxFreq</code> would potentially allow us to expand the window further, which could lead to a longer valid substring. Since we want to find the longest valid substring, we keep <code>maxFreq</code> as the historical maximum.</p>
+            <p>If the frequency of the most frequent character decreases after contracting the window, it will be updated accordingly when we encounter a character with a higher frequency in future iterations.</p>
+        </div>
+    </div>
+</body>
+</html>

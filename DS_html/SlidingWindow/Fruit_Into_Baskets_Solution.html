@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Into Baskets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fruit Into Baskets</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Fruit Into Baskets (LeetCode #904)</strong></p>
+        <p><a href="https://leetcode.com/problems/fruit-into-baskets/" target="_blank">https://leetcode.com/problems/fruit-into-baskets/</a></p>
+        <p>
+            You are visiting a farm that has a single row of fruit trees arranged from left to right. The trees are represented by an integer array <code>fruits</code> where <code>fruits[i]</code> is the type of fruit the ith tree produces.
+        </p>
+        <p>
+            You want to collect as much fruit as possible. However, the owner has some strict rules that you must follow:
+        </p>
+        <ul>
+            <li>You only have two baskets, and each basket can only hold a single type of fruit. There is no limit on the amount of fruit each basket can hold.</li>
+            <li>Starting from any tree of your choice, you must pick exactly one fruit from every tree (including the start tree) while moving to the right. The picked fruits must fit in one of your baskets.</li>
+            <li>Once you reach a tree with fruit that cannot fit in your baskets, you must stop.</li>
+        </ul>
+        <p>
+            Given the integer array <code>fruits</code>, return the maximum number of fruits you can pick.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> fruits = [1,2,1]</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong> We can pick from all 3 trees.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> fruits = [0,1,2,2]</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong> We can pick from trees [1,2,2]. If we had started at the first tree, we would only pick from trees [0,1].</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> fruits = [1,2,3,2,2]</p>
+            <p><strong>Output:</strong> 4</p>
+            <p><strong>Explanation:</strong> We can pick from trees [2,3,2,2]. If we had started at the first tree, we would only pick from trees [1,2].</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= fruits.length <= 10<sup>5</sup></li>
+            <li>0 <= fruits[i] < fruits.length</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem can be rephrased as: "Find the longest subarray that contains at most 2 distinct elements." Let's break it down:
+        </p>
+        <ul>
+            <li>We have two baskets, each can hold only one type of fruit. This means we can collect at most 2 different types of fruit.</li>
+            <li>We must pick fruit from consecutive trees, moving from left to right. This means we're looking for a contiguous subarray.</li>
+            <li>We want to maximize the number of fruits we pick. This means we want to find the longest valid subarray.</li>
+        </ul>
+        <p>
+            Let's analyze the examples to understand better:
+        </p>
+        <ol>
+            <li>
+                <p>For <code>fruits = [1,2,1]</code>, we can pick all fruits because there are only 2 types (1 and 2). So the answer is 3.</p>
+            </li>
+            <li>
+                <p>For <code>fruits = [0,1,2,2]</code>, we have 3 types (0, 1, 2), so we can't pick from all trees. We need to find the longest subarray with at most 2 distinct elements:</p>
+                <ul>
+                    <li>Subarray [0,1] has 2 types, length 2.</li>
+                    <li>Subarray [1,2,2] has 2 types, length 3.</li>
+                </ul>
+                <p>The longest valid subarray is [1,2,2] with a length of 3.</p>
+            </li>
+            <li>
+                <p>For <code>fruits = [1,2,3,2,2]</code>, we have 3 types (1, 2, 3), so again we need to find the longest subarray with at most 2 distinct elements:</p>
+                <ul>
+                    <li>Subarray [1,2] has 2 types, length 2.</li>
+                    <li>Subarray [2,3] has 2 types, length 2.</li>
+                    <li>Subarray [3,2,2] has 2 types, length 3.</li>
+                    <li>Subarray [2,3,2,2] has 2 types, length 4.</li>
+                </ul>
+                <p>The longest valid subarray is [2,3,2,2] with a length of 4.</p>
+            </li>
+        </ol>
+        <p>
+            So, the problem reduces to finding the longest subarray with at most 2 distinct elements, which is a classic sliding window problem.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use the sliding window pattern to solve this problem efficiently.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> This problem is a special case of the "Longest Substring with K Distinct Characters" problem, where K = 2. We need to find the longest subarray that contains at most 2 distinct fruit types.</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>Use two pointers, left and right, to define the current window.</li>
+            <li>Use a hash map to keep track of the frequency of each fruit type in the current window.</li>
+            <li>Also, maintain a counter for the number of unique fruit types in the current window.</li>
+            <li>Expand the window by moving the right pointer and updating the hash map and unique fruit type count.</li>
+            <li>If the number of unique fruit types exceeds 2, contract the window from the left until we have at most 2 unique fruit types again.</li>
+            <li>Keep track of the maximum window size encountered during this process.</li>
+            <li>Return the maximum window size as the answer.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 3: fruits = [1,2,3,2,2]</strong></p>
+            <pre>
+Initialize: left = 0, right = 0, uniqueFruits = 0, maxFruits = 0
+Hash Map: {}
+
+Iteration 1: right = 0, fruit = 1
+  Add 1 to the map: {1: 1}
+  uniqueFruits = 1
+  uniqueFruits <= 2, so we don't shrink the window
+  Update maxFruits = max(0, 1) = 1
+  right++
+
+Iteration 2: right = 1, fruit = 2
+  Add 2 to the map: {1: 1, 2: 1}
+  uniqueFruits = 2
+  uniqueFruits <= 2, so we don't shrink the window
+  Update maxFruits = max(1, 2) = 2
+  right++
+
+Iteration 3: right = 2, fruit = 3
+  Add 3 to the map: {1: 1, 2: 1, 3: 1}
+  uniqueFruits = 3
+  uniqueFruits > 2, so we shrink the window
+    Remove fruit 1: {1: 0, 2: 1, 3: 1}
+    uniqueFruits = 2
+    left++
+  Update maxFruits = max(2, 2) = 2
+  right++
+
+Iteration 4: right = 3, fruit = 2
+  Update 2 in the map: {1: 0, 2: 2, 3: 1}
+  uniqueFruits still 2
+  uniqueFruits <= 2, so we don't shrink the window
+  Update maxFruits = max(2, 3) = 3
+  right++
+
+Iteration 5: right = 4, fruit = 2
+  Update 2 in the map: {1: 0, 2: 3, 3: 1}
+  uniqueFruits still 2
+  uniqueFruits <= 2, so we don't shrink the window
+  Update maxFruits = max(3, 4) = 4
+  right++
+
+Final maxFruits = 4</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the length of the array. We process each element at most twice (once by the right pointer and once by the left pointer).</li>
+            <li><strong>Space Complexity:</strong> O(1), as the hash map will store at most 3 unique fruit types.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>Initialize a hash map to store fruit type frequencies.</li>
+                    <li>Initialize maxFruits to 0.</li>
+                    <li>Set baskets to 2 (the number of distinct fruit types we can have).</li>
+                    <li>Initialize uniqueFruits to 0 to track the number of unique fruit types.</li>
+                    <li>Initialize left and right pointers to 0.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Expand the window:</strong>
+                <ul>
+                    <li>While right < length of fruits array:</li>
+                    <li>Add the current fruit type to the hash map and update its frequency.</li>
+                    <li>If the frequency becomes 1 (first occurrence), increment uniqueFruits.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Contract the window if needed:</strong>
+                <ul>
+                    <li>While uniqueFruits > baskets (more than 2 types):</li>
+                    <li>Decrement the frequency of the fruit type at the left pointer.</li>
+                    <li>If the frequency becomes 0, decrement uniqueFruits.</li>
+                    <li>Move the left pointer to the right.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Update the maximum fruits:</strong>
+                <ul>
+                    <li>Update maxFruits to the maximum of maxFruits and (right - left + 1).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Continue expanding:</strong>
+                <ul>
+                    <li>Move the right pointer to the right and continue the process.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Return maxFruits as the maximum number of fruits we can pick.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def totalFruit(fruits):
+    <span class="comment">"""Find the maximum number of fruits we can pick with two baskets.
+    
+    Args:
+        fruits: Array of fruit types
+        
+    Returns:
+        Maximum number of fruits we can pick
+    """</span>
+    maxFruits = 0
+    baskets = 2  <span class="comment"># We have 2 baskets, each for a different type</span>
+    uniqueFruits = 0  <span class="comment"># Count of unique fruit types in current window</span>
+    temp = {}  <span class="comment"># Hash map to store fruit type frequencies</span>
+    left, right = 0, 0  <span class="comment"># Initialize two pointers</span>
+    
+    while right < len(fruits):
+        <span class="comment"># Add current fruit to the window</span>
+        fruitType = fruits[right]
+        temp[fruitType] = temp.get(fruitType, 0) + 1
+        if temp[fruitType] == 1:  <span class="comment"># If this is the first fruit of this type</span>
+            uniqueFruits += 1
+        
+        <span class="comment"># If we have more than 2 fruit types, shrink the window</span>
+        while uniqueFruits > baskets:
+            fruitType = fruits[left]
+            if fruitType in temp:
+                temp[fruitType] -= 1
+                if temp[fruitType] == 0:  <span class="comment"># If this type is completely removed</span>
+                    uniqueFruits -= 1
+            left += 1
+            
+        <span class="comment"># Update the maximum fruits we can pick</span>
+        maxFruits = max(maxFruits, right - left + 1)
+        
+        right += 1  <span class="comment"># Expand the window</span>
+        
+    return maxFruits</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">fruits = [1,2,1]
+totalFruit(fruits)  <span class="comment"># Output: 3</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">3</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">fruits = [0,1,2,2]
+totalFruit(fruits)  <span class="comment"># Output: 3</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">3</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">fruits = [1,2,3,2,2]
+totalFruit(fruits)  <span class="comment"># Output: 4</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">4</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Connection to Other Problems:</strong></p>
+            <p>This problem is a special case of the "Longest Substring with K Distinct Characters" problem, where K = 2. It demonstrates how the Sliding Window pattern can be applied to different problems with similar underlying requirements.</p>
+            <p>The key insight is recognizing that we're looking for the longest subarray with at most 2 distinct elements, which is exactly what the sliding window technique helps us efficiently find.</p>
+        </div>
+    </div>
+</body>
+</html>

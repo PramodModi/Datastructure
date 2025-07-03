@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permutation in String</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Permutation in String</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Permutation in String (LeetCode #567)</strong></p>
+        <p><a href="https://leetcode.com/problems/permutation-in-string/" target="_blank">https://leetcode.com/problems/permutation-in-string/</a></p>
+        <p>
+            Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false otherwise.
+        </p>
+        <p>
+            In other words, return true if one of s1's permutations is the substring of s2.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s1 = "ab", s2 = "eidbaooo"</p>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong> s2 contains one permutation of s1 ("ba").</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s1 = "ab", s2 = "eidboaoo"</p>
+            <p><strong>Output:</strong> false</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= s1.length, s2.length <= 10<sup>4</sup></li>
+            <li>s1 and s2 consist of lowercase English letters.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to determine if s2 contains any permutation of s1 as a substring. A permutation means any rearrangement of the characters in s1, where the frequency of each character remains the same.
+        </p>
+        <p>
+            For example, if s1 = "ab", its permutations are "ab" and "ba". We need to check if any of these permutations appears as a substring in s2.
+        </p>
+        <p>
+            Let's analyze the examples to understand better:
+        </p>
+        <ol>
+            <li>
+                <p>For s1 = "ab" and s2 = "eidbaooo":</p>
+                <ul>
+                    <li>s1 has permutations "ab" and "ba".</li>
+                    <li>Looking at s2 = "eidbaooo", we can see that the substring "ba" appears from index 2 to 3.</li>
+                    <li>So, s2 does contain a permutation of s1, and the answer is true.</li>
+                </ul>
+            </li>
+            <li>
+                <p>For s1 = "ab" and s2 = "eidboaoo":</p>
+                <ul>
+                    <li>Again, s1 has permutations "ab" and "ba".</li>
+                    <li>Looking at s2 = "eidboaoo", neither "ab" nor "ba" appears as a contiguous substring.</li>
+                    <li>So, s2 does not contain a permutation of s1, and the answer is false.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>
+            To check if a substring of s2 is a permutation of s1, we need to ensure that the frequency of each character in the substring matches the frequency of each character in s1.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use the sliding window technique combined with a character frequency counter to solve this problem efficiently.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> A substring of s2 is a permutation of s1 if and only if they have the same character frequencies. We can use a sliding window of size equal to the length of s1 to check all possible substrings of s2.</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>If s1 is longer than s2, return false immediately because s2 can't contain a permutation of s1.</li>
+            <li>Create a hash map to store the frequency of each character in s1.</li>
+            <li>Initialize a counter for the number of unique characters in s1. This is equal to the number of keys in the hash map.</li>
+            <li>Use a sliding window approach to process s2:</li>
+            <ul>
+                <li>Expand the window by including the character at the right pointer.</li>
+                <li>If the character is in our hash map, decrement its frequency. If the frequency becomes 0, decrement the unique character counter.</li>
+                <li>If the window size exceeds the length of s1, contract it from the left. If the character leaving the window is in our hash map, increment its frequency. If the frequency becomes 1, increment the unique character counter.</li>
+                <li>If the unique character counter becomes 0, it means we've found a substring that is a permutation of s1, so return true.</li>
+            </ul>
+            <li>If we've processed the entire s2 without finding a permutation, return false.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: s1 = "ab", s2 = "eidbaooo"</strong></p>
+            <pre>
+Initialize: s1 = "ab", s2 = "eidbaooo"
+Hash Map: {'a': 1, 'b': 1}
+uniqueChars = 2 (number of keys in the hash map)
+left = 0, right = 0
+
+Iteration 1: right = 0, s2[0] = 'e'
+  'e' is not in hash map, so do nothing
+  window size = 1, which is less than s1 length, so don't contract
+  uniqueChars still 2
+  right++
+
+Iteration 2: right = 1, s2[1] = 'i'
+  'i' is not in hash map, so do nothing
+  window size = 2, which is equal to s1 length, but uniqueChars is not 0
+  Shrink window: Remove 'e', which is not in hash map
+  left++
+  uniqueChars still 2
+  right++
+
+Iteration 3: right = 2, s2[2] = 'd'
+  'd' is not in hash map, so do nothing
+  window size = 2, which is equal to s1 length, but uniqueChars is not 0
+  Shrink window: Remove 'i', which is not in hash map
+  left++
+  uniqueChars still 2
+  right++
+
+Iteration 4: right = 3, s2[3] = 'b'
+  'b' is in hash map, so temp['b'] = 0
+  uniqueChars = 1
+  window size = 2, which is equal to s1 length, but uniqueChars is not 0
+  Shrink window: Remove 'd', which is not in hash map
+  left++
+  uniqueChars still 1
+  right++
+
+Iteration 5: right = 4, s2[4] = 'a'
+  'a' is in hash map, so temp['a'] = 0
+  uniqueChars = 0
+  We found a permutation!
+
+Return true</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the length of s2. We process each character of s2 at most twice (once by the right pointer and once by the left pointer).</li>
+            <li><strong>Space Complexity:</strong> O(m), where m is the number of unique characters in s1. In the worst case, this is 26 for lowercase English letters.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Validate inputs:</strong>
+                <ul>
+                    <li>If s1 is longer than s2, return false.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Build the character frequency map:</strong>
+                <ul>
+                    <li>Create a hash map to store the frequency of each character in s1.</li>
+                    <li>Initialize uniqueChars as the number of keys in the hash map.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Initialize the sliding window:</strong>
+                <ul>
+                    <li>Set left and right pointers to 0.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Process s2 with the sliding window:</strong>
+                <ul>
+                    <li>Expand the window by moving the right pointer.</li>
+                    <li>If the current character is in the hash map, decrement its frequency and update uniqueChars if needed.</li>
+                    <li>If the window size exceeds the length of s1, contract it from the left and update the hash map and uniqueChars as needed.</li>
+                    <li>If uniqueChars becomes 0, return true as we've found a permutation.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>If we've processed the entire s2 without finding a permutation, return false.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def checkInclusion(s1, s2):
+    <span class="comment">"""Check if s2 contains a permutation of s1.
+    
+    Args:
+        s1: Pattern string
+        s2: Text string
+        
+    Returns:
+        True if s2 contains a permutation of s1, False otherwise
+    """</span>
+    <span class="comment"># Early check: s1 can't be a substring of s2 if it's longer</span>
+    if len(s1) > len(s2):
+        return False
+    
+    <span class="comment"># Create a frequency map for characters in s1</span>
+    temp = {}
+    for c in s1:
+        temp[c] = temp.get(c, 0) + 1
+    
+    <span class="comment"># Track the number of unique characters in s1</span>
+    uniqueChars = len(temp)
+    
+    <span class="comment"># Initialize sliding window</span>
+    left, right = 0, 0
+    
+    while right < len(s2):
+        <span class="comment"># Process the current character</span>
+        c = s2[right]
+        
+        <span class="comment"># If the character is in s1, update its frequency</span>
+        if c in temp:
+            temp[c] -= 1
+            <span class="comment"># If frequency becomes 0, we've matched all occurrences of this character</span>
+            if temp[c] == 0:
+                uniqueChars -= 1
+        
+        <span class="comment"># If the window size exceeds s1's length, shrink from the left</span>
+        while right - left + 1 > len(s1):
+            c = s2[left]
+            if c in temp:
+                <span class="comment"># If frequency is 0 and we're adding it back, increment uniqueChars</span>
+                if temp[c] == 0:
+                    uniqueChars += 1
+                temp[c] += 1
+            left += 1
+        
+        <span class="comment"># If all characters in s1 are matched (with correct frequencies)</span>
+        if uniqueChars == 0:
+            return True
+        
+        <span class="comment"># Expand the window</span>
+        right += 1
+    
+    <span class="comment"># If we haven't found a permutation by the end</span>
+    return False</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">s1 = "ab"
+s2 = "eidbaooo"
+checkInclusion(s1, s2)  <span class="comment"># Output: true</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">true</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">s1 = "ab"
+s2 = "eidboaoo"
+checkInclusion(s1, s2)  <span class="comment"># Output: false</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">false</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Why This Approach Works:</strong></p>
+            <p>The key insight is that a permutation of s1 will have the exact same character frequencies as s1 itself. By using a sliding window of size equal to s1's length, we check all potential substrings of s2 that could be permutations of s1.</p>
+            <p>The uniqueChars counter is a clever optimization that helps us quickly determine if all characters in s1 have been matched correctly in the current window, without having to check the entire hash map every time.</p>
+            <p>When uniqueChars becomes 0, it means all characters in s1 have been matched with their exact frequencies in the current window of s2, which indicates we've found a permutation.</p>
+        </div>
+    </div>
+</body>
+</html>

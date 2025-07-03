@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Substring with Concatenation of All Words</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Substring with Concatenation of All Words</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Substring with Concatenation of All Words (LeetCode #30)</strong></p>
+        <p><a href="https://leetcode.com/problems/substring-with-concatenation-of-all-words/description/" target="_blank">https://leetcode.com/problems/substring-with-concatenation-of-all-words/description/</a></p>
+        <p>
+            You are given a string s and an array of strings words. All the strings of words are of the same length.
+        </p>
+        <p>
+            A concatenated substring in s is a substring that contains all the strings of any permutation of words concatenated.
+        </p>
+        <p>For example, if words = ["ab","cd","ef"], then "abcdef", "abefcd", "cdabef", "cdefab", "efabcd", and "efcdab" are all concatenated strings. "acdbef" is not a concatenated substring because it is not the concatenation of any permutation of words.</p>
+        <p>Return the starting indices of all the concatenated substrings in s. You can return the answer in any order.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "barfoothefoobarman", words = ["foo","bar"]</p>
+            <p><strong>Output:</strong> [0,9]</p>
+            <p><strong>Explanation:</strong> Since words.length == 2 and words[i].length == 3, the concatenated substring has to be of length 6.</p>
+            <p>The substring starting at 0 is "barfoo". It is the concatenation of ["bar","foo"] which is a permutation of words.</p>
+            <p>The substring starting at 9 is "foobar". It is the concatenation of ["foo","bar"] which is a permutation of words.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = "wordgoodgoodgoodbestword", words = ["word","good","best","word"]</p>
+            <p><strong>Output:</strong> []</p>
+            <p><strong>Explanation:</strong> Since words.length == 4 and words[i].length == 4, the concatenated substring has to be of length 16.</p>
+            <p>There is no substring of length 16 in s that is equal to the concatenation of any permutation of words.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> s = "barfoofoobarthefoobarman", words = ["bar","foo","the"]</p>
+            <p><strong>Output:</strong> [6,9,12]</p>
+            <p><strong>Explanation:</strong> Since words.length == 3 and words[i].length == 3, the concatenated substring has to be of length 9.</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find all starting indices of substrings in s that are concatenations of all the words in the words array. Key points to understand:
+        </p>
+        <ul>
+            <li>All words in the words array are of the same length.</li>
+            <li>A valid substring must contain all the words from the words array, in any order.</li>
+            <li>The words should appear exactly once in the substring (unless there are duplicates in the words array).</li>
+            <li>The words must be concatenated without any characters in between.</li>
+        </ul>
+        <p>
+            For example, if words = ["foo", "bar"], then a valid substring must contain both "foo" and "bar" (or both "bar" and "foo"). Since each word has length 3, the valid substring must have length 6. We need to check each possible 6-character substring in s to see if it's a valid concatenation.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We can use a sliding window approach to solve this problem efficiently.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Since all words have the same length, we can iterate through s character by character, and for each position, check if a valid concatenation starts there. We can use a hash map to keep track of the frequencies of words in our current window.</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>Create a hash map to store the frequency of each word in the words array.</li>
+            <li>Calculate the length of a single word (wordLen) and the total length of all words concatenated (totalLen).</li>
+            <li>Iterate through the string s from index 0 to (length of s - totalLen):</li>
+            <li>For each starting index, check if a valid concatenation starts there by:</li>
+            <ul>
+                <li>Making a copy of the original hash map.</li>
+                <li>Iterating through the potential substring, extracting words of length wordLen one by one.</li>
+                <li>For each extracted word, check if it's in our hash map and its frequency is greater than 0.</li>
+                <li>If the word is valid, decrement its frequency in the hash map.</li>
+                <li>If all words are found (all frequencies become 0), add the starting index to our result.</li>
+            </ul>
+            <li>Return the list of starting indices.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Example: s = "barfoothefoobarman", words = ["foo","bar"]</strong></p>
+            <pre>
+wordLen = 3, totalLen = 6
+Original hash map: {"foo": 1, "bar": 1}
+
+Index 0:
+  Copy of hash map: {"foo": 1, "bar": 1}
+  Extract word "bar" -> valid, update hash map to {"foo": 1, "bar": 0}
+  Extract word "foo" -> valid, update hash map to {"foo": 0, "bar": 0}
+  All words found, add index 0 to result.
+
+Index 1:
+  Copy of hash map: {"foo": 1, "bar": 1}
+  Extract word "arf" -> not valid, break.
+
+Index 2:
+  Copy of hash map: {"foo": 1, "bar": 1}
+  Extract word "rfo" -> not valid, break.
+
+...
+
+Index 9:
+  Copy of hash map: {"foo": 1, "bar": 1}
+  Extract word "foo" -> valid, update hash map to {"foo": 0, "bar": 1}
+  Extract word "bar" -> valid, update hash map to {"foo": 0, "bar": 0}
+  All words found, add index 9 to result.
+
+...
+
+Final result: [0, 9]</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O((N-L*M+1)*L*M), where N is the length of s, L is the length of each word, and M is the number of words. For each of the (N-L*M+1) starting positions, we need to check M words of length L each.</li>
+            <li><strong>Space Complexity:</strong> O(M), where M is the number of words in the words array, to store the hash map of word frequencies.</li>
+        </ul>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def findSubstring(s, words):
+    <span class="comment">"""Find all starting indices of substrings that are a concatenation of all words.
+    
+    Args:
+        s: The string to search in
+        words: Array of words to concatenate
+        
+    Returns:
+        List of starting indices
+    """</span>
+    result = []
+    
+    <span class="comment"># Create a frequency map for words</span>
+    temp = {}
+    for w in words:
+        temp[w] = temp.get(w, 0) + 1
+    
+    <span class="comment"># Track the number of unique words</span>
+    uniqueWords = len(temp)
+    
+    <span class="comment"># Calculate word length and total length</span>
+    wordLen = len(words[0])
+    totalChar = wordLen * len(words)
+    
+    <span class="comment"># Iterate through possible starting positions</span>
+    left = 0
+    while left < len(s) - totalChar + 1:
+        <span class="comment"># Initialize right pointer and make a copy of the hash map</span>
+        right = left
+        temp_copy = temp.copy()
+        uniqueWords_copy = uniqueWords
+        
+        <span class="comment"># Check words one by one</span>
+        while right < len(s):
+            <span class="comment"># Extract a word of length wordLen</span>
+            w = s[right : right + wordLen]
+            
+            <span class="comment"># Check if the word is valid</span>
+            if w not in temp_copy or temp_copy[w] == 0:
+                break
+            
+            <span class="comment"># Update word frequency</span>
+            temp_copy[w] -= 1
+            if temp_copy[w] == 0:
+                uniqueWords_copy -= 1
+            
+            <span class="comment"># Move to the next word</span>
+            right = right + wordLen
+        
+        <span class="comment"># If all words are found</span>
+        if uniqueWords_copy == 0:
+            result.append(left)
+        
+        <span class="comment"># Move to the next starting position</span>
+        left += 1
+    
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">s = "barfoothefoobarman"
+words = ["foo","bar"]
+findSubstring(s, words)  <span class="comment"># Output: [0, 9]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">[0, 9]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">s = "aaaaaaaaaa"
+words = ["aa", "aa"]
+findSubstring(s, words)  <span class="comment"># Output: [0, 1, 2, 3, 4, 5, 6]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">[0, 1, 2, 3, 4, 5, 6]</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Optimization Note:</strong></p>
+            <p>A further optimization would be to start the scan at each possible offset within a word. Since all words have the same length wordLen, we only need to start at positions 0, 1, 2, ..., wordLen-1. For each offset, we can use a more efficient sliding window approach. However, the current approach is more straightforward to understand and implement.</p>
+        </div>
+    </div>
+</body>
+</html>

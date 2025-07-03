@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Window Substring</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minimum Window Substring</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Minimum Window Substring (LeetCode #76)</strong></p>
+        <p><a href="https://leetcode.com/problems/minimum-window-substring/description/" target="_blank">https://leetcode.com/problems/minimum-window-substring/description/</a></p>
+        <p>
+            Given two strings s and t of lengths m and n respectively, return the minimum window 
+            substring of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "".
+        </p>
+        <p>
+            The testcases will be generated such that the answer is unique.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "ADOBECODEBANC", t = "ABC"</p>
+            <p><strong>Output:</strong> "BANC"</p>
+            <p><strong>Explanation:</strong> The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = "a", t = "a"</p>
+            <p><strong>Output:</strong> "a"</p>
+            <p><strong>Explanation:</strong> The entire string s is the minimum window.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> s = "a", t = "aa"</p>
+            <p><strong>Output:</strong> ""</p>
+            <p><strong>Explanation:</strong> Both 'a's from t must be included in the window. Since the largest window of s only has one 'a', return empty string.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>m == s.length</li>
+            <li>n == t.length</li>
+            <li>1 <= m, n <= 10<sup>5</sup></li>
+            <li>s and t consist of uppercase and lowercase English letters.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the smallest substring in s that contains all the characters from t, including duplicates. Let's break it down:
+        </p>
+        <ul>
+            <li>We have two strings: s (the source string) and t (the target string).</li>
+            <li>We need to find the minimum window (substring) in s such that it contains all the characters in t, including duplicates.</li>
+            <li>If multiple such windows exist, we return the one with the smallest length.</li>
+            <li>If no such window exists, we return an empty string.</li>
+        </ul>
+        <p>
+            Let's analyze the examples to understand better:
+        </p>
+        <ol>
+            <li>
+                <p>For s = "ADOBECODEBANC" and t = "ABC":</p>
+                <ul>
+                    <li>We need to find the smallest substring in s that contains 'A', 'B', and 'C'.</li>
+                    <li>There are multiple substrings that contain all these characters:</li>
+                    <li>"ADOBEC": Contains 'A', 'B', and 'C'.</li>
+                    <li>"ADOBECODE": Contains 'A', 'B', and 'C'.</li>
+                    <li>"ADOBECODEBA": Contains 'A', 'B', and 'C'.</li>
+                    <li>"ADOBECODEBANC": Contains 'A', 'B', and 'C'.</li>
+                    <li>"DOBECODEBA": Contains 'A', 'B', and 'C'.</li>
+                    <li>"OBECODEBA": Contains 'A', 'B', and 'C'.</li>
+                    <li>"BECODEBA": Contains 'A', 'B', and 'C'.</li>
+                    <li>"ECODEBA": Contains 'A', 'B', and 'C'.</li>
+                    <li>"CODEBA": Contains 'A', 'B', and 'C'.</li>
+                    <li>"ODEBANC": Contains 'A', 'B', and 'C'.</li>
+                    <li>"DEBANC": Contains 'A', 'B', and 'C'.</li>
+                    <li>"EBANC": Contains 'A', 'B', and 'C'.</li>
+                    <li>"BANC": Contains 'A', 'B', and 'C'.</li>
+                    <li>Among all these, "BANC" is the smallest with a length of 4.</li>
+                </ul>
+            </li>
+            <li>
+                <p>For s = "a" and t = "a":</p>
+                <ul>
+                    <li>We need a substring of s that contains one 'a'.</li>
+                    <li>The entire string "a" is the minimum window.</li>
+                </ul>
+            </li>
+            <li>
+                <p>For s = "a" and t = "aa":</p>
+                <ul>
+                    <li>We need a substring of s that contains two 'a's.</li>
+                    <li>However, the entire string s only has one 'a'.</li>
+                    <li>There's no valid window, so we return "".</li>
+                </ul>
+            </li>
+        </ol>
+        <p>
+            This problem requires us to find a window that may not be the same size as t, which is different from finding anagrams. It's also more flexible because the window can contain characters not in t, as long as all the characters in t are included.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We can use the sliding window technique to solve this problem efficiently.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> The sliding window approach allows us to efficiently find the minimum window by expanding the window until it contains all characters from t, then contracting it to minimize the window size while still containing all required characters.</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>If t is longer than s, return an empty string immediately because s can't contain all characters from t.</li>
+            <li>Create a hash map to store the frequency of each character in t.</li>
+            <li>Initialize a counter for the number of unique characters in t. This is equal to the number of keys in the hash map.</li>
+            <li>Initialize variables to track the minimum window: length (initially set to infinity) and the left and right indices of the window.</li>
+            <li>Use a sliding window approach to process s:</li>
+            <ul>
+                <li>Expand the window by including the character at the right pointer.</li>
+                <li>If the character is in our hash map, decrement its frequency. If the frequency becomes 0, decrement the unique character counter.</li>
+                <li>When uniqueChars becomes 0 (meaning all characters from t are included in the current window), try to minimize the window by moving the left pointer.</li>
+                <li>As we contract the window, if we remove a character from t, update its frequency in the hash map and potentially update the uniqueChars counter.</li>
+                <li>If we find a smaller valid window, update our minimum window variables.</li>
+            </ul>
+            <li>Return the minimum window found, or an empty string if no valid window exists.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: s = "ADOBECODEBANC", t = "ABC"</strong></p>
+            <pre>
+Initialize: s = "ADOBECODEBANC", t = "ABC"
+Hash Map: {'A': 1, 'B': 1, 'C': 1}
+uniqueChars = 3 (number of keys in the hash map)
+left = 0, right = 0, length = infinity
+
+Iteration 1: right = 0, s[0] = 'A'
+  'A' is in hash map, so temp['A'] = 0
+  uniqueChars = 2
+  uniqueChars != 0, so continue expanding
+  right++
+
+Iteration 2: right = 1, s[1] = 'D'
+  'D' is not in hash map, so do nothing
+  uniqueChars != 0, so continue expanding
+  right++
+
+Iteration 3: right = 2, s[2] = 'O'
+  'O' is not in hash map, so do nothing
+  uniqueChars != 0, so continue expanding
+  right++
+
+Iteration 4: right = 3, s[3] = 'B'
+  'B' is in hash map, so temp['B'] = 0
+  uniqueChars = 1
+  uniqueChars != 0, so continue expanding
+  right++
+
+Iteration 5: right = 4, s[4] = 'E'
+  'E' is not in hash map, so do nothing
+  uniqueChars != 0, so continue expanding
+  right++
+
+Iteration 6: right = 5, s[5] = 'C'
+  'C' is in hash map, so temp['C'] = 0
+  uniqueChars = 0
+  uniqueChars == 0, so we have a valid window
+  Current window: "ADOBEC"
+  length = 6, leftIndex = 0, rightIndex = 6
+  
+  Now try to minimize the window:
+  s[0] = 'A' is in hash map, so temp['A'] = 1
+  uniqueChars = 1
+  left++
+  uniqueChars != 0, so break inner loop
+
+Iterations continue...Eventually we find that "BANC" is the minimum window with leftIndex = 9 and rightIndex = 13.
+
+Final result = "BANC"</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n+m), where n is the length of s and m is the length of t. We process each character of s at most twice (once by the right pointer and once by the left pointer).</li>
+            <li><strong>Space Complexity:</strong> O(k), where k is the number of unique characters in t. In the worst case, this is 52 for uppercase and lowercase English letters.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Validate inputs:</strong>
+                <ul>
+                    <li>If t is longer than s, return an empty string.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>Create a hash map to store the frequency of each character in t.</li>
+                    <li>Initialize uniqueChars as the number of keys in the hash map.</li>
+                    <li>Initialize left and right pointers to 0.</li>
+                    <li>Initialize variables to track the minimum window: length (set to infinity), leftIndex and rightIndex.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Expand the window:</strong>
+                <ul>
+                    <li>Move the right pointer and update the hash map and uniqueChars as needed.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Contract the window when possible:</strong>
+                <ul>
+                    <li>When uniqueChars becomes 0, try to minimize the window by moving the left pointer.</li>
+                    <li>Update the hash map and uniqueChars as needed.</li>
+                    <li>If a smaller valid window is found, update the minimum window variables.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Return the minimum window substring or an empty string if no valid window exists.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def minWindow(s, t):
+    <span class="comment">"""Find the minimum window substring of s such that every character in t is included.
+    
+    Args:
+        s: Source string
+        t: Target string
+        
+    Returns:
+        The minimum window substring or empty string if no such window exists
+    """</span>
+    <span class="comment"># Early check: t can't be a substring of s if it's longer</span>
+    if len(t) > len(s):
+        return ""
+    
+    <span class="comment"># Initialize indices for the minimum window</span>
+    rightIndex, leftIndex = 0, 0
+    
+    <span class="comment"># Create a frequency map for characters in t</span>
+    temp = {}
+    for c in t:
+        temp[c] = temp.get(c, 0) + 1
+    
+    <span class="comment"># Track the number of unique characters in t</span>
+    uniqueChars = len(temp)
+    
+    <span class="comment"># Initialize sliding window</span>
+    left, right = 0, 0
+    length = float("inf")  <span class="comment"># Initialize to infinity</span>
+    
+    while right < len(s):
+        <span class="comment"># Process the current character</span>
+        c = s[right]
+        
+        <span class="comment"># If the character is in t, update its frequency</span>
+        if c in temp:
+            temp[c] -= 1
+            <span class="comment"># If frequency becomes 0, we've matched all occurrences of this character</span>
+            if temp[c] == 0:
+                uniqueChars -= 1
+        
+        <span class="comment"># When all characters in t are matched</span>
+        while uniqueChars == 0:
+            <span class="comment"># Try to minimize the window</span>
+            c = s[left]
+            if c in temp:
+                temp[c] += 1
+                <span class="comment"># If frequency becomes 1, we need this character again</span>
+                if temp[c] == 1:
+                    uniqueChars += 1
+            
+            <span class="comment"># Update minimum window if current window is smaller</span>
+            if length > right - left + 1:
+                length = right - left + 1
+                leftIndex = left
+                rightIndex = right + 1
+            
+            <span class="comment"># Contract the window</span>
+            left += 1
+        
+        <span class="comment"># Expand the window</span>
+        right += 1
+    
+    <span class="comment"># Return the minimum window substring</span>
+    return s[leftIndex:rightIndex] if length != float("inf") else ""</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">s = "ADOBECODEBANC"
+t = "ABC"
+minWindow(s, t)  <span class="comment"># Output: "BANC"</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">"BANC"</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">s = "a"
+t = "a"
+minWindow(s, t)  <span class="comment"># Output: "a"</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">"a"</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">s = "a"
+t = "aa"
+minWindow(s, t)  <span class="comment"># Output: ""</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">""</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Differences from Other Related Problems:</strong></p>
+            <p>This problem is related to the "Permutation in a String" and "Find All Anagrams in a String" problems, but with a key difference: in those problems, we're looking for exact permutations of the pattern, which means the window size must match the pattern size. In this problem, we're looking for a window that contains all characters from t, but it can be larger than t and can contain additional characters.</p>
+            <p>The main difference in the algorithm is that instead of checking window size against the pattern size, we check if uniqueChars is 0 (all characters from t are included) and then try to minimize the window by shrinking from the left as much as possible while still containing all required characters.</p>
+        </div>
+    </div>
+</body>
+</html>

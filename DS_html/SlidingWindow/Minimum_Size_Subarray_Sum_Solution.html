@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Size Subarray Sum</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minimum Size Subarray Sum</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Minimum Size Subarray Sum (LeetCode #209)</strong></p>
+        <p><a href="https://leetcode.com/problems/minimum-size-subarray-sum/" target="_blank">https://leetcode.com/problems/minimum-size-subarray-sum/</a></p>
+        <p>
+            Given an array of positive integers nums and a positive integer target, return the minimal length of a 
+            subarray whose sum is greater than or equal to target. If there is no such subarray, return 0 instead.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> target = 7, nums = [2,3,1,2,4,3]</p>
+            <p><strong>Output:</strong> 2</p>
+            <p><strong>Explanation:</strong> The subarray [4,3] has the minimal length under the problem constraint.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> target = 4, nums = [1,4,4]</p>
+            <p><strong>Output:</strong> 1</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> target = 11, nums = [1,1,1,1,1,1,1,1]</p>
+            <p><strong>Output:</strong> 0</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the shortest contiguous subarray whose sum is greater than or equal to the target value. If no such subarray exists, we should return 0.
+        </p>
+        <p>
+            For example, with <code>nums = [2,3,1,2,4,3]</code> and <code>target = 7</code>, we have several subarrays with sums ≥ 7:
+        </p>
+        <ul>
+            <li>[2,3,1,2]: Sum = 8, Length = 4</li>
+            <li>[1,2,4]: Sum = 7, Length = 3</li>
+            <li>[4,3]: Sum = 7, Length = 2</li>
+        </ul>
+        <p>The shortest is [4,3] with a length of 2.</p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We can solve this problem efficiently using the Sliding Window pattern with a variable-size window.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Instead of checking all possible subarrays, we can use a sliding window approach. We'll expand the window by adding elements from the right until the sum reaches or exceeds the target. Then we'll contract the window from the left as much as possible while still maintaining a sum that meets the target condition, keeping track of the minimum length along the way.</p>
+        </div>
+        
+        <p>The steps are as follows:</p>
+        <ol>
+            <li>Initialize two pointers, left and right, both starting at the beginning of the array.</li>
+            <li>Expand the window by moving the right pointer and adding the element to the current sum.</li>
+            <li>When the sum becomes greater than or equal to the target, try to minimize the window by moving the left pointer and updating the minimum length.</li>
+            <li>Repeat until the right pointer reaches the end of the array.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization for Example 1: target = 7, nums = [2,3,1,2,4,3]</strong></p>
+            <pre>
+Initialize: left=0, right=0, sum=0, minLength=infinity
+
+Add nums[0]=2: sum=2 < target
+Add nums[1]=3: sum=5 < target
+Add nums[2]=1: sum=6 < target
+Add nums[3]=2: sum=8 >= target
+  - Update minLength=4
+  - Remove nums[0]=2: sum=6 < target
+
+Add nums[4]=4: sum=10 >= target
+  - Update minLength=4
+  - Remove nums[1]=3: sum=7 >= target
+  - Update minLength=3
+  - Remove nums[2]=1: sum=6 < target
+
+Add nums[5]=3: sum=9 >= target
+  - Update minLength=3
+  - Remove nums[3]=2: sum=7 >= target
+  - Update minLength=2
+  - Remove nums[4]=4: sum=3 < target
+
+Final minLength=2</pre>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def minSubArrayLength(target, nums):
+    <span class="comment">"""Find the minimum length of a subarray with sum >= target.
+    
+    Args:
+        target: A positive integer
+        nums: List of positive integers
+        
+    Returns:
+        Minimum length of a subarray with sum >= target, or 0 if none exists
+    """</span>
+    minLength = float("inf")  <span class="comment"># Initialize minimum length to infinity</span>
+    left, right, current_sum = 0, 0, 0  <span class="comment"># Initialize pointers and sum</span>
+    
+    while right < len(nums):
+        <span class="comment"># Expand the window</span>
+        current_sum += nums[right]
+        
+        <span class="comment"># Try to minimize the window</span>
+        while current_sum >= target and left <= right:
+            <span class="comment"># Update minimum length</span>
+            minLength = min(minLength, right - left + 1)
+            
+            <span class="comment"># Contract the window from the left</span>
+            current_sum -= nums[left]
+            left += 1
+        
+        <span class="comment"># Continue expanding the window</span>
+        right += 1
+    
+    <span class="comment"># Return 0 if no valid subarray exists</span>
+    return minLength if minLength != float("inf") else 0</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">target = 7
+nums = [2,3,1,2,4,3]
+minSubArrayLength(target, nums)  <span class="comment"># Output: 2</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">2</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">target = 4
+nums = [1,4,4]
+minSubArrayLength(target, nums)  <span class="comment"># Output: 1</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">1</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">target = 11
+nums = [1,1,1,1,1,1,1,1]
+minSubArrayLength(target, nums)  <span class="comment"># Output: 0</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">0</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Time and Space Complexity:</strong></p>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the length of the array. Each element is processed at most twice.</li>
+                <li><strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

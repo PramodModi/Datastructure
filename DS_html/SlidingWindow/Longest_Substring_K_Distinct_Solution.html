@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Substring with K Distinct Characters</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Longest Substring with K Distinct Characters</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Longest Substring with K Distinct Characters</strong></p>
+        <p><a href="https://www.geeksforgeeks.org/find-the-longest-substring-with-k-unique-characters-in-a-given-string/" target="_blank">https://www.geeksforgeeks.org/find-the-longest-substring-with-k-unique-characters-in-a-given-string/</a></p>
+        <p>
+            Given a string, you need to find the length of the longest possible substring that has exactly K unique characters. If there is more than one substring of the longest possible length, then return the length of any one of them.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> Str = "aabbcc", k = 1</p>
+            <p><strong>Output:</strong> 2</p>
+            <p><strong>Explanation:</strong> Max substring can be any one from {"aa", "bb", "cc"}.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> Str = "aabbcc", k = 2</p>
+            <p><strong>Output:</strong> 4</p>
+            <p><strong>Explanation:</strong> Max substring can be any one from {"aabb", "bbcc"}.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> Str = "aabbcc", k = 3</p>
+            <p><strong>Output:</strong> 6</p>
+            <p><strong>Explanation:</strong> There are substrings with exactly 3 unique characters {"aabbcc", "abbcc", "aabbc", "abbc"}. Max is "aabbcc" with length 6.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 4:</strong></p>
+            <p><strong>Input:</strong> Str = "aaabbb", k = 3</p>
+            <p><strong>Output:</strong> 0</p>
+            <p><strong>Explanation:</strong> There are only two unique characters, thus return 0 as there is no substring with exactly 3 unique characters.</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the length of the longest substring that has exactly K unique (or distinct) characters.
+        </p>
+        <p>
+            Let's break down the examples to understand the problem better:
+        </p>
+        <ol>
+            <li>
+                <p>For the string "aabbcc" with k = 1, we need to find a substring with exactly 1 distinct character:</p>
+                <ul>
+                    <li>"a": 1 distinct character, length 1</li>
+                    <li>"aa": 1 distinct character, length 2</li>
+                    <li>"b": 1 distinct character, length 1</li>
+                    <li>"bb": 1 distinct character, length 2</li>
+                    <li>"c": 1 distinct character, length 1</li>
+                    <li>"cc": 1 distinct character, length 2</li>
+                </ul>
+                <p>The longest substrings with exactly 1 distinct character are "aa", "bb", and "cc", each with a length of 2.</p>
+            </li>
+            <li>
+                <p>For the string "aabbcc" with k = 2, we need to find a substring with exactly 2 distinct characters:</p>
+                <ul>
+                    <li>"aab": 2 distinct characters, length 3</li>
+                    <li>"aabb": 2 distinct characters, length 4</li>
+                    <li>"abb": 2 distinct characters, length 3</li>
+                    <li>"abbc": 3 distinct characters, not valid</li>
+                    <li>"bbc": 2 distinct characters, length 3</li>
+                    <li>"bbcc": 2 distinct characters, length 4</li>
+                </ul>
+                <p>The longest substrings with exactly 2 distinct characters are "aabb" and "bbcc", each with a length of 4.</p>
+            </li>
+            <li>
+                <p>For the string "aabbcc" with k = 3, we need to find a substring with exactly 3 distinct characters:</p>
+                <ul>
+                    <li>"aabbc": 3 distinct characters, length 5</li>
+                    <li>"aabbcc": 3 distinct characters, length 6</li>
+                </ul>
+                <p>The longest substring with exactly 3 distinct characters is "aabbcc" with a length of 6.</p>
+            </li>
+            <li>
+                <p>For the string "aaabbb" with k = 3, there is no substring with exactly 3 distinct characters because the string only has 2 unique characters ('a' and 'b'). So the output is 0.</p>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            This problem can be solved efficiently using the Sliding Window pattern with a dynamic window size.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We'll use a sliding window approach where we expand the window from the right until we have more than K unique characters, then contract it from the left until we have exactly K unique characters again. We'll keep track of the maximum window size that satisfies our condition.</p>
+        </div>
+        
+        <p>The steps are as follows:</p>
+        <ol>
+            <li>Initialize two pointers, left and right, both starting at the beginning of the string.</li>
+            <li>Use a hash map to keep track of the frequency of each character in the current window.</li>
+            <li>Also, maintain a counter for the number of unique characters in the current window.</li>
+            <li>Expand the window by moving the right pointer and updating the hash map and unique character count.</li>
+            <li>If the number of unique characters exceeds K, contract the window from the left until we have exactly K unique characters again.</li>
+            <li>If the number of unique characters equals K, update the maximum length if the current window is longer.</li>
+            <li>Continue this process until the right pointer reaches the end of the string.</li>
+            <li>Return the maximum length found.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 2: Str = "aabbcc", k = 2</strong></p>
+            <pre>
+Initialize: left = 0, right = 0, uniqueChar = 0, maxLength = 0
+Hash Map: {}
+
+Iteration 1: right = 0, char = 'a'
+  Add 'a' to the map: {'a': 1}
+  uniqueChar = 1
+  uniqueChar < k, so we don't shrink the window
+  uniqueChar != k, so we don't update maxLength
+  right++
+
+Iteration 2: right = 1, char = 'a'
+  Update 'a' in the map: {'a': 2}
+  uniqueChar still 1
+  uniqueChar < k, so we don't shrink the window
+  uniqueChar != k, so we don't update maxLength
+  right++
+
+Iteration 3: right = 2, char = 'b'
+  Add 'b' to the map: {'a': 2, 'b': 1}
+  uniqueChar = 2
+  uniqueChar == k, so we update maxLength = 3
+  right++
+
+Iteration 4: right = 3, char = 'b'
+  Update 'b' in the map: {'a': 2, 'b': 2}
+  uniqueChar still 2
+  uniqueChar == k, so we update maxLength = max(3, 4) = 4
+  right++
+
+Iteration 5: right = 4, char = 'c'
+  Add 'c' to the map: {'a': 2, 'b': 2, 'c': 1}
+  uniqueChar = 3
+  uniqueChar > k, so we shrink the window from the left
+    Remove 'a' from the count: {'a': 1, 'b': 2, 'c': 1}
+    left++
+  uniqueChar still 3
+    Remove 'a' from the count: {'a': 0, 'b': 2, 'c': 1}
+    'a' count becomes 0, so uniqueChar = 2
+    left++
+  uniqueChar == k, so we update maxLength = max(4, 3) = 4
+  right++
+
+Iteration 6: right = 5, char = 'c'
+  Update 'c' in the map: {'a': 0, 'b': 2, 'c': 2}
+  uniqueChar still 2
+  uniqueChar == k, so we update maxLength = max(4, 4) = 4
+  right++
+
+Final maxLength = 4</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the length of the string. Each character is processed at most twice (once by the right pointer and once by the left pointer).</li>
+            <li><strong>Space Complexity:</strong> O(k), as the hash map will store at most k+1 unique characters.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>Initialize a hash map to store character frequencies.</li>
+                    <li>Initialize maxLength to 0.</li>
+                    <li>Initialize uniqueChar to 0 to track the number of unique characters.</li>
+                    <li>Initialize left and right pointers to 0.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Expand the window:</strong>
+                <ul>
+                    <li>While right < length of string:</li>
+                    <li>Add the current character to the hash map and update its frequency.</li>
+                    <li>If the frequency becomes 1, increment uniqueChar.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Contract the window if needed:</strong>
+                <ul>
+                    <li>While uniqueChar > k:</li>
+                    <li>Decrement the frequency of the character at the left pointer.</li>
+                    <li>If the frequency becomes 0, decrement uniqueChar.</li>
+                    <li>Move the left pointer to the right.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Update the maximum length:</strong>
+                <ul>
+                    <li>If uniqueChar == k:</li>
+                    <li>Update maxLength to the maximum of maxLength and (right - left + 1).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Continue expanding:</strong>
+                <ul>
+                    <li>Move the right pointer to the right and continue the process.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Return maxLength as the length of the longest substring with exactly k unique characters.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def longestKSubstr(string, k):
+    <span class="comment">"""Find the length of the longest substring with exactly k distinct characters.
+    
+    Args:
+        string: Input string
+        k: Number of distinct characters
+        
+    Returns:
+        Length of the longest substring with exactly k distinct characters
+    """</span>
+    maxLength = 0
+    temp = {}  <span class="comment"># Hash map to store character frequencies</span>
+    uniqueChar = 0  <span class="comment"># Count of unique characters in current window</span>
+    left, right = 0, 0  <span class="comment"># Initialize two pointers</span>
+    
+    while right < len(string):
+        <span class="comment"># Add current character to the window</span>
+        c = string[right]
+        temp[c] = temp.get(c, 0) + 1
+        if temp[c] == 1:  <span class="comment"># If this is the first occurrence of this character</span>
+            uniqueChar += 1
+        
+        <span class="comment"># If window has more than k unique characters, shrink it</span>
+        while uniqueChar > k:
+            c = string[left]
+            if c in temp:
+                temp[c] -= 1
+                if temp[c] == 0:  <span class="comment"># If the character is completely removed</span>
+                    uniqueChar -= 1
+            left += 1
+        
+        <span class="comment"># Update the maximum length if we have exactly k unique characters</span>
+        if uniqueChar == k:
+            maxLength = max(maxLength, right - left + 1)
+        
+        right += 1  <span class="comment"># Expand the window</span>
+    
+    return maxLength</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">string = "aabbcc"
+k = 1
+longestKSubstr(string, k)  <span class="comment"># Output: 2</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">2</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">string = "aabbcc"
+k = 2
+longestKSubstr(string, k)  <span class="comment"># Output: 4</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">4</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">string = "aabbcc"
+k = 3
+longestKSubstr(string, k)  <span class="comment"># Output: 6</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">6</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 4:</strong></p>
+            <pre class="command">string = "aaabbb"
+k = 3
+longestKSubstr(string, k)  <span class="comment"># Output: 0</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 4:</strong></p>
+            <pre class="command">0</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Key Implementation Details:</strong></p>
+            <ul>
+                <li>We use a hash map to efficiently keep track of the frequency of each character in the current window.</li>
+                <li>Instead of counting unique characters by checking the hash map size (which could be expensive), we maintain a separate counter that we increment when a new character is added and decrement when a character is completely removed.</li>
+                <li>We only update the maximum length when we have exactly k unique characters in the window.</li>
+                <li>If the string doesn't have enough unique characters to form a substring with exactly k unique characters, the function will return 0.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

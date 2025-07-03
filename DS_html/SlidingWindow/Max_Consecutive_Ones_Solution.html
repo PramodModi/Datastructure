@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Max Consecutive Ones III</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Max Consecutive Ones III</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Max Consecutive Ones III (LeetCode #1004)</strong></p>
+        <p><a href="https://leetcode.com/problems/max-consecutive-ones-iii/description/" target="_blank">https://leetcode.com/problems/max-consecutive-ones-iii/description/</a></p>
+        <p>
+            Given a binary array <code>nums</code> and an integer <code>k</code>, return the maximum number of consecutive 1's in the array if you can flip at most <code>k</code> 0's.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2</p>
+            <p><strong>Output:</strong> 6</p>
+            <p><strong>Explanation:</strong> [1,1,1,0,0,<strong>1</strong>,1,1,1,1,<strong>1</strong>]</p>
+            <p>Bolded numbers were flipped from 0 to 1. The longest subarray is underlined.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], k = 3</p>
+            <p><strong>Output:</strong> 10</p>
+            <p><strong>Explanation:</strong> [0,0,1,1,<strong>1</strong>,<strong>1</strong>,1,1,1,<strong>1</strong>,1,1,0,0,0,1,1,1,1]</p>
+            <p>Bolded numbers were flipped from 0 to 1. The longest subarray is underlined.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= nums.length <= 10<sup>5</sup></li>
+            <li>nums[i] is either 0 or 1.</li>
+            <li>0 <= k <= nums.length</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the maximum number of consecutive 1's we can have in the array if we're allowed to flip at most k 0's to 1's. Let's break it down:
+        </p>
+        <ul>
+            <li>We have a binary array containing only 0's and 1's.</li>
+            <li>We can flip at most k 0's to 1's.</li>
+            <li>We need to find the longest subarray of consecutive 1's after these flips.</li>
+        </ul>
+        <p>
+            This problem is a variation of the "Longest Substring with same letters after replacement" problem, where instead of replacing any character to make all characters the same, we're specifically replacing 0's with 1's to maximize consecutive 1's.
+        </p>
+        <p>
+            The key insight here is that for a subarray to be valid after flips, it should contain at most k 0's. This is because we can flip at most k 0's to 1's to make the entire subarray consist of consecutive 1's.
+        </p>
+        <p>
+            For example, in [1,1,1,0,0,0,1,1,1,1,0] with k = 2, if we consider the subarray [1,1,1,0,0], it has 2 0's, which we can flip to make it all 1's. However, if we consider the subarray [1,1,1,0,0,0], it has 3 0's, which is more than k = 2, so we can't make it all 1's after flips.
+        </p>
+        <p>
+            Our task is to find the longest subarray that contains at most k 0's, and we'll do this using the sliding window approach.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use the sliding window technique to solve this problem efficiently.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> For a window to be valid, it should contain at most k 0's. This means the condition (window_length - count_of_1's) <= k must be satisfied, where (window_length - count_of_1's) gives the count of 0's in the window.</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>Initialize two pointers, left and right, both starting at the beginning of the array.</li>
+            <li>Keep track of the count of 1's and 0's in the current window.</li>
+            <li>Expand the window by moving the right pointer and updating the counts.</li>
+            <li>If the condition (window_length - count_of_1's) > k is violated (i.e., there are more than k 0's in the window), contract the window from the left until the condition is satisfied.</li>
+            <li>The window length at any point gives the length of a valid subarray. Keep track of the maximum window length encountered during this process.</li>
+            <li>Return the maximum window length as the answer.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2</strong></p>
+            <pre>
+Initialize: left = 0, right = 0, temp = [0, 0] (count of 0's and 1's)
+
+Iteration 1: right = 0, nums[0] = 1
+  Update temp: [0, 1]
+  maxFreq = 1 (count of 1's)
+  window_length = 1, condition: 1 - 1 = 0 <= k, valid
+  right++
+
+Iteration 2: right = 1, nums[1] = 1
+  Update temp: [0, 2]
+  maxFreq = 2
+  window_length = 2, condition: 2 - 2 = 0 <= k, valid
+  right++
+
+Iteration 3: right = 2, nums[2] = 1
+  Update temp: [0, 3]
+  maxFreq = 3
+  window_length = 3, condition: 3 - 3 = 0 <= k, valid
+  right++
+
+Iteration 4: right = 3, nums[3] = 0
+  Update temp: [1, 3]
+  maxFreq = 3
+  window_length = 4, condition: 4 - 3 = 1 <= k, valid
+  right++
+
+Iteration 5: right = 4, nums[4] = 0
+  Update temp: [2, 3]
+  maxFreq = 3
+  window_length = 5, condition: 5 - 3 = 2 <= k, valid
+  right++
+
+Iteration 6: right = 5, nums[5] = 0
+  Update temp: [3, 3]
+  maxFreq = 3
+  window_length = 6, condition: 6 - 3 = 3 > k, invalid
+  Contract window: Remove nums[0] = 1, update temp: [3, 2]
+  left++
+  window_length = 5, condition: 5 - 2 = 3 > k, invalid
+  Contract window: Remove nums[1] = 1, update temp: [3, 1]
+  left++
+  window_length = 4, condition: 4 - 1 = 3 > k, invalid
+  Contract window: Remove nums[2] = 1, update temp: [3, 0]
+  left++
+  window_length = 3, condition: 3 - 0 = 3 > k, invalid
+  Contract window: Remove nums[3] = 0, update temp: [2, 0]
+  left++
+  window_length = 2, condition: 2 - 0 = 2 <= k, valid
+  right++
+
+Continuing through the iterations, we find that the maximum valid window_length is 6.
+This corresponds to the subarray [0,0,1,1,1,1] from indices 3 to 8, where we flip the two 0's to make all 1's.</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the length of the array. We process each element at most twice (once by the right pointer and once by the left pointer).</li>
+            <li><strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>Initialize an array temp = [0, 0] to store the count of 0's and 1's in the current window.</li>
+                    <li>Initialize left and right pointers to 0.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Expand the window:</strong>
+                <ul>
+                    <li>While right < length of array:</li>
+                    <li>Add the current element to the window by updating temp.</li>
+                    <li>Calculate maxFreq as the count of 1's in the window.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Check the window validity and contract if needed:</strong>
+                <ul>
+                    <li>If (right - left + 1) - maxFreq > k:</li>
+                    <li>Decrement the count of the element at the left pointer.</li>
+                    <li>Move the left pointer to the right.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Continue expanding:</strong>
+                <ul>
+                    <li>Move the right pointer to the right and continue the process.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Return (right - left) as the length of the longest valid subarray.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def longestOnes(nums, k):
+    <span class="comment">"""Find the maximum number of consecutive 1's if you can flip at most k 0's.
+    
+    Args:
+        nums: Binary array
+        k: Maximum number of 0's that can be flipped
+        
+    Returns:
+        Maximum number of consecutive 1's after flips
+    """</span>
+    temp = [0, 0]  <span class="comment"># Array to store count of 0's and 1's</span>
+    left, right = 0, 0  <span class="comment"># Initialize two pointers</span>
+    
+    while right < len(nums):
+        <span class="comment"># Add current element to the window</span>
+        temp[nums[right]] += 1
+        
+        <span class="comment"># Calculate maximum frequency of 1's</span>
+        maxFreq = temp[1]
+        
+        <span class="comment"># Check if the window is valid</span>
+        if (right - left + 1) - maxFreq > k:
+            <span class="comment"># Window is invalid, contract it from the left</span>
+            temp[nums[left]] -= 1
+            left += 1
+        
+        <span class="comment"># Expand the window</span>
+        right += 1
+    
+    <span class="comment"># Return the length of the longest valid window</span>
+    return right - left</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">nums = [1,1,1,0,0,0,1,1,1,1,0]
+k = 2
+longestOnes(nums, k)  <span class="comment"># Output: 6</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">6</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">nums = [0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1]
+k = 3
+longestOnes(nums, k)  <span class="comment"># Output: 10</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">10</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Simplified Approach:</strong></p>
+            <p>This problem is a simpler version of the "Longest Repeating Character Replacement" problem, as we're specifically dealing with binary arrays and only replacing 0's with 1's.</p>
+            <p>The core insight is that we want to find the longest subarray where the number of 0's doesn't exceed k. This is equivalent to saying (window_length - count_of_1's) <= k, which is exactly what our code checks for.</p>
+            <p>The sliding window technique is particularly effective here because it allows us to efficiently track the counts of 0's and 1's as we expand and contract the window.</p>
+        </div>
+    </div>
+</body>
+</html>

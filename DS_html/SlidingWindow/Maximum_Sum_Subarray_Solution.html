@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Sum Subarray of Size K</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Maximum Sum Subarray of Size K</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Maximum Sum Subarray of Size K</strong></p>
+        <p><a href="https://www.geeksforgeeks.org/find-maximum-minimum-sum-subarray-size-k/" target="_blank">https://www.geeksforgeeks.org/find-maximum-minimum-sum-subarray-size-k/</a></p>
+        <p>
+            Given an array of integers and a number k, find the maximum sum of a subarray of size k.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> arr = [100, 200, 300, 400], k = 2</p>
+            <p><strong>Output:</strong> 700</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> arr = [1, 4, 2, 10, 23, 3, 1, 0, 20], k = 4</p>
+            <p><strong>Output:</strong> 39</p>
+            <p><strong>Explanation:</strong> We get maximum sum by adding subarray {4, 2, 10, 23} of size 4.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> arr = [2, 3], k = 3</p>
+            <p><strong>Output:</strong> Invalid</p>
+            <p><strong>Explanation:</strong> There is no subarray of size 3 as size of whole array is 2.</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the maximum sum possible from any subarray of size exactly k within a given array of integers.
+        </p>
+        <p>
+            A subarray is a contiguous part of an array. For example, the subarrays of array [1, 2, 3] are [1], [2], [3], [1, 2], [2, 3], and [1, 2, 3].
+        </p>
+        <p>
+            We need to consider all possible subarrays of size k and find the one with the maximum sum. For example, with the array [1, 4, 2, 10, 23, 3, 1, 0, 20] and k = 4, we would consider:
+        </p>
+        <ul>
+            <li>[1, 4, 2, 10] with sum = 17</li>
+            <li>[4, 2, 10, 23] with sum = 39</li>
+            <li>[2, 10, 23, 3] with sum = 38</li>
+            <li>[10, 23, 3, 1] with sum = 37</li>
+            <li>[23, 3, 1, 0] with sum = 27</li>
+            <li>[3, 1, 0, 20] with sum = 24</li>
+        </ul>
+        <p>
+            The subarray [4, 2, 10, 23] has the maximum sum of 39, so that's our answer.
+        </p>
+        <p>
+            If the size of the array is less than k, there is no valid subarray of size k, so we should return "Invalid".
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            This problem can be efficiently solved using the Sliding Window pattern since we're dealing with subarrays of a fixed size.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Instead of recalculating the sum for each subarray from scratch, we can use a sliding window approach. Once we calculate the sum of the first window of size k, we can slide the window by one element and update the sum by adding the new element and subtracting the element that's no longer in the window.</p>
+        </div>
+        
+        <p>The steps are as follows:</p>
+        <ol>
+            <li>First, check if the array size is less than k. If so, return "Invalid".</li>
+            <li>Calculate the sum of the first k elements in the array.</li>
+            <li>Initialize a variable to keep track of the maximum sum seen so far, starting with the sum from step 2.</li>
+            <li>Slide the window by one element at a time (add the next element and subtract the first element of the previous window).</li>
+            <li>Update the maximum sum if the current window's sum is greater.</li>
+            <li>Repeat steps 4-5 until we've processed all possible windows.</li>
+            <li>Return the maximum sum.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 2: arr = [1, 4, 2, 10, 23, 3, 1, 0, 20], k = 4</strong></p>
+            <pre>
+Initial window: [1, 4, 2, 10] with sum = 17
+Current maxSum = 17
+
+Slide window: [4, 2, 10, 23]
+New sum = 17 - 1 + 23 = 39
+Update maxSum = 39
+
+Slide window: [2, 10, 23, 3]
+New sum = 39 - 4 + 3 = 38
+maxSum remains 39
+
+Slide window: [10, 23, 3, 1]
+New sum = 38 - 2 + 1 = 37
+maxSum remains 39
+
+Slide window: [23, 3, 1, 0]
+New sum = 37 - 10 + 0 = 27
+maxSum remains 39
+
+Slide window: [3, 1, 0, 20]
+New sum = 27 - 23 + 20 = 24
+maxSum remains 39
+
+Final maxSum = 39</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the length of the array. We only need to iterate through the array once.</li>
+            <li><strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Check if a valid subarray exists:</strong>
+                <ul>
+                    <li>If the array length is less than k, return "Invalid".</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Initialize the first window:</strong>
+                <ul>
+                    <li>Calculate the sum of the first k elements.</li>
+                    <li>Set this as both the current sum and the maximum sum.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Slide the window and update the sum:</strong>
+                <ul>
+                    <li>For each position from k to n-1:</li>
+                    <li>Add the current element to the sum.</li>
+                    <li>Subtract the element that's now outside the window.</li>
+                    <li>Update the maximum sum if the current sum is greater.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the maximum sum:</strong>
+                <ul>
+                    <li>After processing all windows, return the maximum sum found.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def maxSumOfSubarray(arr, k):
+    <span class="comment">"""Find the maximum sum of a subarray of size k.
+    
+    Args:
+        arr: List of integers
+        k: Size of the subarray
+        
+    Returns:
+        Maximum sum of a subarray of size k or "Invalid" if no such subarray exists
+    """</span>
+    n = len(arr)
+    
+    <span class="comment"># Check if a valid subarray exists</span>
+    if k > n:
+        return "Invalid"
+    
+    <span class="comment"># Calculate the sum of the first window</span>
+    maxSum = s = sum(arr[:k])
+    
+    <span class="comment"># Slide the window</span>
+    left, right = 0, k
+    while right < n:
+        <span class="comment"># Add the new element and remove the element outside the window</span>
+        s += arr[right] - arr[left]
+        
+        <span class="comment"># Update the maximum sum</span>
+        maxSum = max(maxSum, s)
+        
+        <span class="comment"># Move the window</span>
+        right += 1
+        left += 1
+    
+    return maxSum</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">arr = [100, 200, 300, 400]
+k = 2
+maxSumOfSubarray(arr, k)  <span class="comment"># Output: 700</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">700</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">arr = [1, 4, 2, 10, 23, 3, 1, 0, 20]
+k = 4
+maxSumOfSubarray(arr, k)  <span class="comment"># Output: 39</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">39</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">arr = [2, 3]
+k = 3
+maxSumOfSubarray(arr, k)  <span class="comment"># Output: "Invalid"</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">"Invalid"</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Execution for Example 2:</strong>
+        </p>
+        <p>
+            Let's trace through the execution of our algorithm for the array [1, 4, 2, 10, 23, 3, 1, 0, 20] with k = 4:
+        </p>
+        <ol>
+            <li>We check if k > n, which is false (4 <= 9), so we proceed.</li>
+            <li>We calculate the sum of the first window [1, 4, 2, 10], which is 17. We set maxSum = s = 17.</li>
+            <li>We start sliding the window:
+                <ul>
+                    <li>Add arr[4] (23) and subtract arr[0] (1): s = 17 + 23 - 1 = 39. Update maxSum = 39.</li>
+                    <li>Add arr[5] (3) and subtract arr[1] (4): s = 39 + 3 - 4 = 38. maxSum remains 39.</li>
+                    <li>Add arr[6] (1) and subtract arr[2] (2): s = 38 + 1 - 2 = 37. maxSum remains 39.</li>
+                    <li>Add arr[7] (0) and subtract arr[3] (10): s = 37 + 0 - 10 = 27. maxSum remains 39.</li>
+                    <li>Add arr[8] (20) and subtract arr[4] (23): s = 27 + 20 - 23 = 24. maxSum remains 39.</li>
+                </ul>
+            </li>
+            <li>We've processed all windows, so we return maxSum = 39.</li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Key Observations:</strong></p>
+            <ul>
+                <li>The sliding window approach allows us to compute each subsequent window sum in O(1) time, making the overall algorithm very efficient.</li>
+                <li>We only need to keep track of the current window sum and the maximum sum seen so far, which makes the space complexity O(1).</li>
+                <li>This approach is much more efficient than recalculating the sum for each window from scratch, which would result in O(n*k) time complexity.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
