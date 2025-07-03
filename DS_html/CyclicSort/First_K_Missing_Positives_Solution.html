@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the First K Missing Positive Numbers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find the First K Missing Positive Numbers</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Find the First K Missing Positive Numbers</strong></p>
+        <p>
+            Given an unsorted array containing numbers and a number 'k', find the first 'k' missing positive numbers in the array.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [3, -1, 4, 5, 5], k = 3</p>
+            <p><strong>Output:</strong> [1, 2, 6]</p>
+            <p><strong>Explanation:</strong> The smallest missing positive numbers are 1, 2 and 6.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [2, 3, 4], k = 3</p>
+            <p><strong>Output:</strong> [1, 5, 6]</p>
+            <p><strong>Explanation:</strong> The smallest missing positive numbers are 1, 5 and 6.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> nums = [-2, -3, 4], k = 2</p>
+            <p><strong>Output:</strong> [1, 2]</p>
+            <p><strong>Explanation:</strong> The smallest missing positive numbers are 1 and 2.</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the first k positive integers that are missing from the given array. The array can contain any integers, including negative numbers, zeros, duplicates, and numbers that are larger than the array size.
+        </p>
+        <p>
+            Let's analyze the examples to better understand the problem:
+        </p>
+        <ol>
+            <li>
+                <p><strong>Example 1:</strong> nums = [3, -1, 4, 5, 5], k = 3</p>
+                <ul>
+                    <li>The positive integers in the array are 3, 4, 5 (appearing twice).</li>
+                    <li>The missing positive integers are 1, 2, 6, 7, 8, ...</li>
+                    <li>Since k = 3, we return the first three missing positive integers: [1, 2, 6].</li>
+                </ul>
+            </li>
+            <li>
+                <p><strong>Example 2:</strong> nums = [2, 3, 4], k = 3</p>
+                <ul>
+                    <li>The positive integers in the array are 2, 3, 4.</li>
+                    <li>The missing positive integers are 1, 5, 6, 7, ...</li>
+                    <li>Since k = 3, we return the first three missing positive integers: [1, 5, 6].</li>
+                </ul>
+            </li>
+            <li>
+                <p><strong>Example 3:</strong> nums = [-2, -3, 4], k = 2</p>
+                <ul>
+                    <li>The only positive integer in the array is 4.</li>
+                    <li>The missing positive integers are 1, 2, 3, 5, 6, ...</li>
+                    <li>Since k = 2, we return the first two missing positive integers: [1, 2].</li>
+                </ul>
+            </li>
+        </ol>
+        <p>
+            The key insight is that for an array of length n, the first n positive integers that should be present are 1 to n. If any of these integers are missing, they will be part of our result. If we need more missing integers after checking these, we can start checking from n+1 onwards.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            This problem can be effectively solved using the Cyclic Sort pattern, with additional steps to find all k missing numbers.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> After applying Cyclic Sort, all positive numbers in the range [1, n] will be at their correct positions (if they exist in the array). Then, we can easily identify the missing numbers by iterating through the array and checking which indices don't have their correct values.</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>Use Cyclic Sort to sort the array, but only consider positive numbers in the range [1, n], where n is the length of the array.</li>
+            <li>After sorting, iterate through the array. For each index i, if nums[i] != i + 1, then i + 1 is a missing positive number.</li>
+            <li>Add these missing numbers to our result list until we've found k missing numbers or we've gone through the entire array.</li>
+            <li>If we haven't found k missing numbers after checking the range [1, n], we need to check higher numbers.</li>
+            <li>We need to be careful about numbers greater than n that are present in the array. These numbers could potentially be in our result if we start checking beyond n.</li>
+            <li>To handle this, we keep track of all the extra numbers (those that are greater than n) and ensure we don't include them in our result.</li>
+            <li>Continue checking numbers beyond n until we've found all k missing numbers.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: nums = [3, -1, 4, 5, 5], k = 3</strong></p>
+            <pre>
+Initial array: [3, -1, 4, 5, 5]
+
+Step 1: Apply Cyclic Sort
+
+Iteration 1: i = 0, value = 3
+  Correct index for 3 is 3-1 = 2
+  Swap 3 with element at index 2 (which is 4)
+  Array becomes: [4, -1, 3, 5, 5]
+
+Iteration 1 (continued): i = 0, value = 4
+  Correct index for 4 is 4-1 = 3
+  Swap 4 with element at index 3 (which is 5)
+  Array becomes: [5, -1, 3, 4, 5]
+
+Iteration 1 (continued): i = 0, value = 5
+  Correct index for 5 is 5-1 = 4
+  Swap 5 with element at index 4 (which is 5)
+  Array becomes: [5, -1, 3, 4, 5]
+  Since the element is the same, move to next index
+  i = 1
+
+Iteration 2: i = 1, value = -1
+  -1 is negative, so it's out of our range of interest
+  Move to next index
+  i = 2
+
+Iteration 3: i = 2, value = 3
+  Correct index for 3 is 3-1 = 2
+  Element is already at correct position, move to next index
+  i = 3
+
+Iteration 4: i = 3, value = 4
+  Correct index for 4 is 4-1 = 3
+  Element is already at correct position, move to next index
+  i = 4
+
+Iteration 5: i = 4, value = 5
+  Correct index for 5 is 5-1 = 4
+  Element is already at correct position, move to next index
+  i = 5 (out of bounds, sorting complete)
+
+Sorted array: [5, -1, 3, 4, 5]
+
+Step 2: Find the missing positive numbers
+
+Index 0: value = 5, expected = 1, mismatch! Add 1 to result.
+Index 1: value = -1, expected = 2, mismatch! Add 2 to result.
+Index 2: value = 3, expected = 3, match ✓
+Index 3: value = 4, expected = 4, match ✓
+Index 4: value = 5, expected = 5, match ✓
+
+Result so far: [1, 2]
+
+We need one more missing number to reach k = 3. Let's check beyond n = 5.
+
+We need to track the extra numbers in our array that are greater than n:
+- 5 is not greater than n, so it's not an extra number.
+
+Check if 6 is missing: 6 is not in the set of extra numbers, so add it to result.
+
+Final result: [1, 2, 6]</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n + k), where n is the size of the array and k is the number of missing positives we need to find. The Cyclic Sort takes O(n) time, and finding the additional missing numbers beyond n may take up to O(k) time in the worst case.</li>
+            <li><strong>Space Complexity:</strong> O(k) for the result array and O(n) for the set used to track extra numbers. Overall, it's O(n).</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>i = 0 (pointer for iterating through the array)</li>
+                    <li>n = length of the array</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Apply Cyclic Sort with modifications:</strong>
+                <ul>
+                    <li>While i < n:</li>
+                    <li>Calculate the correct index j for the current element: j = nums[i] - 1</li>
+                    <li>If nums[i] > 0 and nums[i] <= n and nums[i] != nums[j]:</li>
+                    <ul>
+                        <li>Swap nums[i] and nums[j]</li>
+                    </ul>
+                    <li>Else:</li>
+                    <ul>
+                        <li>Move to the next element: i++</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Find the missing positive numbers:</strong>
+                <ul>
+                    <li>Initialize an empty result array</li>
+                    <li>Initialize a set to keep track of extra numbers (those greater than n)</li>
+                    <li>Iterate through the array with index i from 0 to n-1:</li>
+                    <li>If nums[i] != i + 1:</li>
+                    <ul>
+                        <li>Add i + 1 to the result array</li>
+                        <li>Add nums[i] to the set of extra numbers</li>
+                    </ul>
+                    <li>If the result array has reached size k, return it</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Find additional missing numbers beyond n:</strong>
+                <ul>
+                    <li>Initialize j = n + 1</li>
+                    <li>While the result array size is less than k:</li>
+                    <ul>
+                        <li>If j is not in the set of extra numbers:</li>
+                        <li>Add j to the result array</li>
+                        <li>Increment j</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the result:</strong>
+                <ul>
+                    <li>Return the array containing the first k missing positive numbers</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def findFirstKMissingPositive(nums, k):
+    <span class="comment">"""Find the first k missing positive numbers in an unsorted array.
+    
+    Args:
+        nums: List of integers
+        k: Number of missing positives to find
+        
+    Returns:
+        List of the first k missing positive integers
+    """</span>
+    i = 0
+    n = len(nums)
+    
+    <span class="comment"># Apply cyclic sort (only for positive integers within range)</span>
+    while i < n:
+        <span class="comment"># Calculate the correct index for the current element</span>
+        j = nums[i] - 1
+        
+        <span class="comment"># If the current element is positive, within range, and not at its correct position</span>
+        if nums[i] > 0 and nums[i] <= n and nums[i] != nums[j]:
+            <span class="comment"># Swap the current element with the element at its correct position</span>
+            nums[i], nums[j] = nums[j], nums[i]
+        else:
+            <span class="comment"># Move to the next element</span>
+            i += 1
+    
+    <span class="comment"># Find the missing positive numbers</span>
+    result = []
+    numbers = set()  <span class="comment"># To keep track of numbers that are greater than n</span>
+    
+    <span class="comment"># Check for missing numbers in the range 1 to n</span>
+    for i in range(n):
+        if nums[i] != i + 1:
+            <span class="comment"># If we haven't found k missing numbers yet</span>
+            if len(result) < k:
+                result.append(i + 1)  <span class="comment"># Add the missing number</span>
+                numbers.add(nums[i])  <span class="comment"># Remember the number that took its place</span>
+    
+    <span class="comment"># If we still need more missing numbers, look beyond n</span>
+    j = n + 1
+    while len(result) < k:
+        <span class="comment"># If the number is not in our set of extra numbers</span>
+        if j not in numbers:
+            result.append(j)  <span class="comment"># Add it to our result</span>
+            numbers.add(j)  <span class="comment"># Mark it as seen</span>
+        j += 1
+    
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">nums = [3, -1, 4, 5, 5]
+k = 3
+findFirstKMissingPositive(nums, k)  <span class="comment"># Output: [1, 2, 6]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">[1, 2, 6]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">nums = [2, 3, 4]
+k = 3
+findFirstKMissingPositive(nums, k)  <span class="comment"># Output: [1, 5, 6]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">[1, 5, 6]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">nums = [-2, -3, 4]
+k = 2
+findFirstKMissingPositive(nums, k)  <span class="comment"># Output: [1, 2]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">[1, 2]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 4:</strong></p>
+            <pre class="command">nums = [2, 1, 3, 6, 5]
+k = 2
+findFirstKMissingPositive(nums, k)  <span class="comment"># Output: [4, 7]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 4:</strong></p>
+            <pre class="command">[4, 7]</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Key Implementation Details:</strong></p>
+            <p>The main challenge in this problem is efficiently handling numbers outside the range [1, n] and ensuring we don't include them in our result if they already exist in the array. Here's how we address this:</p>
+            <ol>
+                <li>We use Cyclic Sort to place all positive numbers in the range [1, n] at their correct positions.</li>
+                <li>After sorting, we check each index to see if it contains the correct value. If not, the expected value at that index is missing.</li>
+                <li>We keep track of all the "extra" numbers in the array (those that couldn't be placed at their correct positions during sorting) in a set.</li>
+                <li>When looking for missing numbers beyond n, we check if each number is in this set before adding it to our result.</li>
+            </ol>
+            <p>This problem combines elements from "Find the Missing Number" and "First Missing Positive" but extends them to find multiple missing numbers, making it a more complex application of the Cyclic Sort pattern.</p>
+            <p>The solution has a time complexity of O(n + k) and a space complexity of O(n), making it quite efficient for the given constraints.</p>
+        </div>
+    </div>
+</body>
+</html>

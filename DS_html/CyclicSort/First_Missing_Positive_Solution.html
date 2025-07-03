@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Smallest Missing Positive Number</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find the Smallest Missing Positive Number</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: First Missing Positive (LeetCode #41)</strong></p>
+        <p><a href="https://leetcode.com/problems/first-missing-positive/description/" target="_blank">https://leetcode.com/problems/first-missing-positive/description/</a></p>
+        <p>
+            Given an unsorted integer array nums, return the smallest missing positive integer.
+        </p>
+        <p>
+            You must implement an algorithm that runs in O(n) time and uses O(1) auxiliary space.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [1,2,0]</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong> The numbers in the range [1,2] are all in the array.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [3,4,-1,1]</p>
+            <p><strong>Output:</strong> 2</p>
+            <p><strong>Explanation:</strong> 1 is in the array but 2 is missing.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> nums = [7,8,9,11,12]</p>
+            <p><strong>Output:</strong> 1</p>
+            <p><strong>Explanation:</strong> The smallest positive integer 1 is missing.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= nums.length <= 10^5</li>
+            <li>-2^31 <= nums[i] <= 2^31 - 1</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the smallest positive integer that is missing from the given array. The array can contain any integers, including negative numbers, zeros, and numbers that are larger than the array size.
+        </p>
+        <p>
+            Let's analyze the examples to better understand the problem:
+        </p>
+        <ol>
+            <li>
+                <p><strong>Example 1:</strong> nums = [1,2,0]</p>
+                <ul>
+                    <li>The positive integers in the array are 1 and 2.</li>
+                    <li>The smallest positive integer is 1, which is present.</li>
+                    <li>The next positive integer is 2, which is also present.</li>
+                    <li>The next positive integer is 3, which is missing. So, the answer is 3.</li>
+                </ul>
+            </li>
+            <li>
+                <p><strong>Example 2:</strong> nums = [3,4,-1,1]</p>
+                <ul>
+                    <li>The positive integers in the array are 1, 3, and 4.</li>
+                    <li>The smallest positive integer is 1, which is present.</li>
+                    <li>The next positive integer is 2, which is missing. So, the answer is 2.</li>
+                </ul>
+            </li>
+            <li>
+                <p><strong>Example 3:</strong> nums = [7,8,9,11,12]</p>
+                <ul>
+                    <li>The positive integers in the array are 7, 8, 9, 11, and 12.</li>
+                    <li>The smallest positive integer is 1, which is missing. So, the answer is 1.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>
+            The key insight is that for an array of length n, the smallest missing positive integer must be in the range [1, n+1]. If all integers from 1 to n are present in the array, then the answer is n+1. Otherwise, there must be a missing positive integer in the range [1, n].
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            This problem is a perfect fit for the Cyclic Sort pattern, with some additional considerations for handling numbers outside the valid range.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> For an array of length n, the smallest missing positive integer must be in the range [1, n+1]. We can use Cyclic Sort to place each positive number in the range [1, n] at its correct position, where the correct position for a number num is the index (num - 1).</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>Use Cyclic Sort to sort the array, but with a modification: only consider positive numbers in the range [1, n], where n is the length of the array.</li>
+            <li>After sorting, iterate through the array. The first index i where nums[i] != i + 1 gives us the smallest missing positive integer, which is i + 1.</li>
+            <li>If all indices have their correct values, the smallest missing positive integer is n + 1.</li>
+        </ol>
+        
+        <p><strong>Key Considerations:</strong></p>
+        <ul>
+            <li>We only care about positive integers in the range [1, n] for Cyclic Sort.</li>
+            <li>Negative numbers, zeros, and numbers greater than n can be ignored during sorting, as they cannot be placed at their correct positions within the array.</li>
+        </ul>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 2: [3,4,-1,1]</strong></p>
+            <pre>
+Initial array: [3,4,-1,1]
+
+Iteration 1: i = 0, value = 3
+  Correct index for 3 is 3-1 = 2
+  Swap 3 with element at index 2 (which is -1)
+  Array becomes: [-1,4,3,1]
+
+Iteration 1 (continued): i = 0, value = -1
+  -1 is negative, so it's out of our range of interest
+  Move to next index
+  i = 1
+
+Iteration 2: i = 1, value = 4
+  Correct index for 4 is 4-1 = 3
+  Swap 4 with element at index 3 (which is 1)
+  Array becomes: [-1,1,3,4]
+
+Iteration 2 (continued): i = 1, value = 1
+  Correct index for 1 is 1-1 = 0
+  Swap 1 with element at index 0 (which is -1)
+  Array becomes: [1,-1,3,4]
+
+Iteration 2 (continued): i = 1, value = -1
+  -1 is negative, so it's out of our range of interest
+  Move to next index
+  i = 2
+
+Iteration 3: i = 2, value = 3
+  Correct index for 3 is 3-1 = 2
+  Element is already at correct position, move to next index
+  i = 3
+
+Iteration 4: i = 3, value = 4
+  Correct index for 4 is 4-1 = 3
+  Element is already at correct position, move to next index
+  i = 4 (out of bounds, sorting complete)
+
+Sorted array: [1,-1,3,4]
+
+Now we check each index to find where the value doesn't match (index + 1):
+Index 0: value = 1, expected = 1, match ✓
+Index 1: value = -1, expected = 2, mismatch! The smallest missing positive integer is 2.
+
+Result: 2</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the size of the array. The Cyclic Sort takes O(n) time, and the subsequent iteration to find the smallest missing positive integer also takes O(n) time.</li>
+            <li><strong>Space Complexity:</strong> O(1), as we're sorting in-place without any extra space.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>i = 0 (pointer for iterating through the array)</li>
+                    <li>n = length of the array</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Apply Cyclic Sort with modifications:</strong>
+                <ul>
+                    <li>While i < n:</li>
+                    <li>Calculate the correct index j for the current element: j = nums[i] - 1</li>
+                    <li>If nums[i] > 0 and nums[i] <= n and nums[i] != nums[j]:</li>
+                    <ul>
+                        <li>Swap nums[i] and nums[j]</li>
+                    </ul>
+                    <li>Else:</li>
+                    <ul>
+                        <li>Move to the next element: i++</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Find the smallest missing positive integer:</strong>
+                <ul>
+                    <li>Iterate through the array with index i from 0 to n-1:</li>
+                    <li>If nums[i] != i + 1:</li>
+                    <ul>
+                        <li>Return i + 1 as the smallest missing positive integer</li>
+                    </ul>
+                    <li>If all indices have their correct values, return n + 1</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def firstMissingPositive(nums):
+    <span class="comment">"""Find the smallest missing positive integer in an unsorted array.
+    
+    Args:
+        nums: List of integers
+        
+    Returns:
+        The smallest missing positive integer
+    """</span>
+    i = 0
+    n = len(nums)
+    
+    <span class="comment"># Apply cyclic sort (only for positive integers within range)</span>
+    while i < n:
+        <span class="comment"># Calculate the correct index for the current element</span>
+        j = nums[i] - 1
+        
+        <span class="comment"># If the current element is positive, within range, and not at its correct position</span>
+        if nums[i] > 0 and nums[i] <= n and nums[i] != nums[j]:
+            <span class="comment"># Swap the current element with the element at its correct position</span>
+            nums[i], nums[j] = nums[j], nums[i]
+        else:
+            <span class="comment"># Move to the next element</span>
+            i += 1
+    
+    <span class="comment"># Find the first index where the value doesn't match the expected value</span>
+    for i in range(n):
+        if nums[i] != i + 1:
+            return i + 1
+    
+    <span class="comment"># If all indices match their values, the smallest missing positive integer is n+1</span>
+    return n + 1</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">nums = [1,2,0]
+firstMissingPositive(nums)  <span class="comment"># Output: 3</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">3</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">nums = [3,4,-1,1]
+firstMissingPositive(nums)  <span class="comment"># Output: 2</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">2</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">nums = [7,8,9,11,12]
+firstMissingPositive(nums)  <span class="comment"># Output: 1</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">1</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Key Implementation Details:</strong></p>
+            <p>The key insight in this implementation is the modification to the Cyclic Sort algorithm to handle the specific requirements of this problem:</p>
+            <ol>
+                <li>We only sort positive integers in the range [1, n] and ignore all other numbers.</li>
+                <li>After sorting, we check each index to find the first position where the value doesn't match the expected value (i+1).</li>
+                <li>If all indices have their correct values, the smallest missing positive integer is n+1.</li>
+            </ol>
+            <p>This problem is considered hard because of the constraints:</p>
+            <ul>
+                <li>O(n) time complexity</li>
+                <li>O(1) space complexity</li>
+            </ul>
+            <p>The Cyclic Sort pattern provides an elegant solution that meets both constraints. Without this pattern, the problem becomes significantly more challenging to solve optimally.</p>
+            <p>Alternative approaches:</p>
+            <ul>
+                <li><strong>Using a Hash Set:</strong> Store all positive integers in a hash set, then check integers from 1 to n+1 to find the first missing one. This has O(n) time complexity but O(n) space complexity, which doesn't meet the constant space requirement.</li>
+                <li><strong>Using Array as Hash Table:</strong> Mark the presence of each positive integer by negating the value at the corresponding index. This approach also uses O(n) time and O(1) space but requires careful handling of edge cases.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

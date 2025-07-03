@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find All Missing Numbers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find All Missing Numbers</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Find All Numbers Disappeared in an Array (LeetCode #448)</strong></p>
+        <p><a href="https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/" target="_blank">https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/</a></p>
+        <p>
+            Given an array nums of n integers where nums[i] is in the range [1, n], return an array of all the integers in the range [1, n] that do not appear in nums.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [4,3,2,7,8,2,3,1]</p>
+            <p><strong>Output:</strong> [5,6]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [1,1]</p>
+            <p><strong>Output:</strong> [2]</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>n == nums.length</li>
+            <li>1 <= n <= 10^5</li>
+            <li>1 <= nums[i] <= n</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we're given an array of n integers, where each integer is in the range [1, n]. Some numbers in this range might be missing from the array, while others might appear multiple times. Our task is to find all the numbers in the range [1, n] that are missing from the array.
+        </p>
+        <p>
+            For example, if nums = [4,3,2,7,8,2,3,1], the array has length n = 8, so the range of integers should be [1, 2, 3, 4, 5, 6, 7, 8]. However, 5 and 6 don't appear in the array, so our output should be [5, 6].
+        </p>
+        <p>
+            Similarly, if nums = [1,1], the array has length n = 2, so the range of integers should be [1, 2]. Since 2 doesn't appear in the array, our output should be [2].
+        </p>
+        <p>
+            Note that in this problem, unlike the "Find the Missing Number" problem, the numbers are in the range [1, n] (not [0, n]), which aligns perfectly with the Cyclic Sort pattern.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We can use the Cyclic Sort pattern to efficiently solve this problem.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> In an array containing numbers from 1 to n, each number should be at the index (number - 1) in the correctly sorted array. For example, the number 1 should be at index 0, the number 2 at index 1, and so on.</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>Use Cyclic Sort to sort the array so that each number is at its correct position, where the correct position for a number num is the index (num - 1).</li>
+            <li>After sorting, iterate through the array. If the number at index i is not equal to i + 1, then i + 1 is a missing number.</li>
+            <li>Collect all such missing numbers and return them as the result.</li>
+        </ol>
+        
+        <p><strong>Handling Duplicates:</strong> If there are duplicates in the array, some numbers will be missing. During the Cyclic Sort, when we encounter a duplicate (i.e., nums[i] == nums[nums[i] - 1]), we move on to the next element instead of swapping.</p>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: [4,3,2,7,8,2,3,1]</strong></p>
+            <pre>
+Initial array: [4,3,2,7,8,2,3,1]
+
+Iteration 1: i = 0, value = 4
+  Correct index for 4 is 4-1 = 3
+  Swap 4 with element at index 3 (which is 7)
+  Array becomes: [7,3,2,4,8,2,3,1]
+
+Iteration 1 (continued): i = 0, value = 7
+  Correct index for 7 is 7-1 = 6
+  Swap 7 with element at index 6 (which is 3)
+  Array becomes: [3,3,2,4,8,2,7,1]
+
+Iteration 1 (continued): i = 0, value = 3
+  Correct index for 3 is 3-1 = 2
+  Swap 3 with element at index 2 (which is 2)
+  Array becomes: [2,3,3,4,8,2,7,1]
+
+Iteration 1 (continued): i = 0, value = 2
+  Correct index for 2 is 2-1 = 1
+  Swap 2 with element at index 1 (which is 3)
+  Array becomes: [3,2,3,4,8,2,7,1]
+
+Iteration 1 (continued): i = 0, value = 3
+  Correct index for 3 is 3-1 = 2
+  Since element at index 2 is also 3, move to next iteration
+  i = 1
+
+... (continuing the sorting process) ...
+
+Final sorted array: [1,2,3,4,3,2,7,8]
+
+Now we check each index to find where the value doesn't match (index + 1):
+
+Index 0: value = 1, expected = 1, match ✓
+Index 1: value = 2, expected = 2, match ✓
+Index 2: value = 3, expected = 3, match ✓
+Index 3: value = 4, expected = 4, match ✓
+Index 4: value = 3, expected = 5, mismatch! Add 5 to result.
+Index 5: value = 2, expected = 6, mismatch! Add 6 to result.
+Index 6: value = 7, expected = 7, match ✓
+Index 7: value = 8, expected = 8, match ✓
+
+Result: [5, 6]</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the size of the array. The Cyclic Sort takes O(n) time, and the subsequent iteration to find all missing numbers also takes O(n) time.</li>
+            <li><strong>Space Complexity:</strong> O(1) for the algorithm itself, excluding the space required for the output array. The sorting is done in-place, and the only extra space used is for the result array, which could be up to O(n) in the worst case.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>n = length of the array</li>
+                    <li>i = 0 (pointer for iterating through the array)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Apply Cyclic Sort:</strong>
+                <ul>
+                    <li>While i < n:</li>
+                    <li>Calculate the correct index j for the current element: j = nums[i] - 1</li>
+                    <li>If nums[i] != nums[j]:</li>
+                    <ul>
+                        <li>Swap nums[i] and nums[j]</li>
+                    </ul>
+                    <li>Else:</li>
+                    <ul>
+                        <li>Move to the next element: i++</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Find all missing numbers:</strong>
+                <ul>
+                    <li>Initialize an empty result array</li>
+                    <li>Iterate through the array with index i from 0 to n-1:</li>
+                    <li>If nums[i] != i + 1, add i + 1 to the result array</li>
+                    <li>Return the result array</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def findDisappearedNumbers(nums):
+    <span class="comment">"""Find all numbers from 1 to n that are missing in the array.
+    
+    Args:
+        nums: List of integers in the range [1, n]
+        
+    Returns:
+        List of all missing integers in the range [1, n]
+    """</span>
+    n = len(nums)
+    i = 0
+    
+    <span class="comment"># Apply cyclic sort</span>
+    while i < n:
+        <span class="comment"># Calculate the correct index for the current element</span>
+        j = nums[i] - 1
+        
+        <span class="comment"># If the current element is not at its correct position</span>
+        if nums[i] != nums[j]:
+            <span class="comment"># Swap the current element with the element at its correct position</span>
+            nums[i], nums[j] = nums[j], nums[i]
+        else:
+            <span class="comment"># Move to the next element</span>
+            i += 1
+    
+    <span class="comment"># Find all indices where the value doesn't match the expected value</span>
+    result = []
+    for i in range(n):
+        <span class="comment"># If the value at index i is not equal to i + 1, then i + 1 is missing</span>
+        if nums[i] != i + 1:
+            result.append(i + 1)
+    
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">nums = [4,3,2,7,8,2,3,1]
+findDisappearedNumbers(nums)  <span class="comment"># Output: [5,6]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">[5, 6]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">nums = [1,1]
+findDisappearedNumbers(nums)  <span class="comment"># Output: [2]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">[2]</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Difference from the "Find the Missing Number" Problem:</strong></p>
+            <p>This problem is similar to the "Find the Missing Number" problem, but with a few key differences:</p>
+            <ol>
+                <li>In the "Find the Missing Number" problem, the range of numbers is [0, n], while in this problem, the range is [1, n].</li>
+                <li>In the "Find the Missing Number" problem, exactly one number is missing, while in this problem, multiple numbers can be missing.</li>
+                <li>In the "Find the Missing Number" problem, there are no duplicates, while in this problem, there can be duplicates to compensate for the missing numbers.</li>
+            </ol>
+            <p>Despite these differences, the Cyclic Sort pattern still works effectively for both problems with slight modifications to the implementation.</p>
+            <p>An alternative approach to solve this problem without modifying the input array is to mark the presence of numbers by negating the values at their respective indices. However, the Cyclic Sort approach is more intuitive and follows the same pattern as other problems in this category.</p>
+        </div>
+    </div>
+</body>
+</html>

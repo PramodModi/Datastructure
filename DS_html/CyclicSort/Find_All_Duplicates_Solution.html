@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find All Duplicates in an Array</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find All Duplicates in an Array</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Find All Duplicates in an Array (LeetCode #442)</strong></p>
+        <p><a href="https://leetcode.com/problems/find-all-duplicates-in-an-array/description/" target="_blank">https://leetcode.com/problems/find-all-duplicates-in-an-array/description/</a></p>
+        <p>
+            Given an integer array nums of length n where all the integers of nums are in the range [1, n] and each integer appears once or twice, return an array of all the integers that appears twice.
+        </p>
+        <p>
+            You must write an algorithm that runs in O(n) time and uses only constant extra space.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> nums = [4,3,2,7,8,2,3,1]</p>
+            <p><strong>Output:</strong> [2,3]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [1,1,2]</p>
+            <p><strong>Output:</strong> [1]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> nums = [1]</p>
+            <p><strong>Output:</strong> []</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>n == nums.length</li>
+            <li>1 <= n <= 10^5</li>
+            <li>1 <= nums[i] <= n</li>
+            <li>Each element in nums appears once or twice</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we're given an array of n integers, where each integer is in the range [1, n]. Each integer appears either once or twice in the array, and we need to find all the integers that appear twice.
+        </p>
+        <p>
+            For example, if nums = [4,3,2,7,8,2,3,1], the array has length n = 8, and the numbers range from 1 to 8. In this array, 2 and 3 both appear twice, so our output should be [2,3].
+        </p>
+        <p>
+            The key constraints are:
+        </p>
+        <ol>
+            <li>The algorithm must run in O(n) time.</li>
+            <li>The algorithm must use only constant extra space.</li>
+        </ol>
+        <p>
+            This means we can't use a hash set or a frequency counter to keep track of duplicates, as that would require O(n) extra space. We need to be more clever and use the array itself to track duplicates.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            The Cyclic Sort pattern is perfectly suited for this problem, as we know all numbers are in the range [1, n].
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> After placing each number at its correct position (index = number - 1), any number that appears twice will end up at a position where it doesn't belong, because its correct position is already occupied by its first occurrence.</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>Use Cyclic Sort to sort the array so that each number is at its correct position, where the correct position for a number num is the index (num - 1).</li>
+            <li>If a number is already at its correct position during sorting, it means we've already seen this number before, so it must be a duplicate.</li>
+            <li>After sorting, iterate through the array again. For each position, if the number at that position doesn't match its expected value (i+1), it must be a duplicate.</li>
+            <li>Collect all such numbers and return them as the result.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: [4,3,2,7,8,2,3,1]</strong></p>
+            <pre>
+Initial array: [4,3,2,7,8,2,3,1]
+
+Iteration 1: i = 0, value = 4
+  Correct index for 4 is 4-1 = 3
+  Swap 4 with element at index 3 (which is 7)
+  Array becomes: [7,3,2,4,8,2,3,1]
+
+Iteration 1 (continued): i = 0, value = 7
+  Correct index for 7 is 7-1 = 6
+  Swap 7 with element at index 6 (which is 3)
+  Array becomes: [3,3,2,4,8,2,7,1]
+
+Iteration 1 (continued): i = 0, value = 3
+  Correct index for 3 is 3-1 = 2
+  Swap 3 with element at index 2 (which is 2)
+  Array becomes: [2,3,3,4,8,2,7,1]
+
+Iteration 1 (continued): i = 0, value = 2
+  Correct index for 2 is 2-1 = 1
+  Swap 2 with element at index 1 (which is 3)
+  Array becomes: [3,2,3,4,8,2,7,1]
+
+Iteration 1 (continued): i = 0, value = 3
+  Correct index for 3 is 3-1 = 2
+  Since element at index 2 is also 3, move to next iteration
+  i = 1
+
+... (continuing the sorting process) ...
+
+After sorting, the array becomes: [1,2,3,4,3,2,7,8]
+
+Now we check each position to find duplicates:
+Index 0: value = 1, expected = 1, match ✓
+Index 1: value = 2, expected = 2, match ✓
+Index 2: value = 3, expected = 3, match ✓
+Index 3: value = 4, expected = 4, match ✓
+Index 4: value = 3, expected = 5, mismatch! 3 is a duplicate.
+Index 5: value = 2, expected = 6, mismatch! 2 is a duplicate.
+Index 6: value = 7, expected = 7, match ✓
+Index 7: value = 8, expected = 8, match ✓
+
+Result: [3, 2]</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the size of the array. The Cyclic Sort takes O(n) time, and the subsequent iteration to find all duplicates also takes O(n) time.</li>
+            <li><strong>Space Complexity:</strong> O(1) for the algorithm itself, excluding the space required for the output array. The sorting is done in-place, and the only extra space used is for the result array, which could be up to O(n/2) in the worst case if half the elements are duplicates.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize variables:</strong>
+                <ul>
+                    <li>i = 0 (pointer for iterating through the array)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Apply Cyclic Sort:</strong>
+                <ul>
+                    <li>While i < length of the array:</li>
+                    <li>Calculate the correct index j for the current element: j = nums[i] - 1</li>
+                    <li>If nums[i] != nums[j]:</li>
+                    <ul>
+                        <li>Swap nums[i] and nums[j]</li>
+                    </ul>
+                    <li>Else:</li>
+                    <ul>
+                        <li>Move to the next element: i++</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Find all duplicates:</strong>
+                <ul>
+                    <li>Initialize an empty result array</li>
+                    <li>Iterate through the array with index i from 0 to n-1:</li>
+                    <li>If nums[i] != i + 1, add nums[i] to the result array</li>
+                    <li>Return the result array</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def findDuplicates(nums):
+    <span class="comment">"""Find all duplicates in an array where each integer appears once or twice.
+    
+    Args:
+        nums: List of integers in the range [1, n]
+        
+    Returns:
+        List of all integers that appear twice
+    """</span>
+    i = 0
+    
+    <span class="comment"># Apply cyclic sort</span>
+    while i < len(nums):
+        <span class="comment"># Calculate the correct index for the current element</span>
+        j = nums[i] - 1
+        
+        <span class="comment"># If the current element is not at its correct position</span>
+        if nums[i] != nums[j]:
+            <span class="comment"># Swap the current element with the element at its correct position</span>
+            nums[i], nums[j] = nums[j], nums[i]
+        else:
+            <span class="comment"># Move to the next element</span>
+            i += 1
+    
+    <span class="comment"># Find all duplicates</span>
+    result = []
+    i = 0
+    while i < len(nums):
+        <span class="comment"># If the value at index i is not equal to i + 1, it's a duplicate</span>
+        if nums[i] != i + 1:
+            result.append(nums[i])
+        i += 1
+    
+    return result</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">nums = [4,3,2,7,8,2,3,1]
+findDuplicates(nums)  <span class="comment"># Output: [3, 2]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">[3, 2]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">nums = [1,1,2]
+findDuplicates(nums)  <span class="comment"># Output: [1]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">[1]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">nums = [1]
+findDuplicates(nums)  <span class="comment"># Output: []</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">[]</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Understanding the Solution:</strong></p>
+            <p>The key to this solution is understanding what happens during the Cyclic Sort process:</p>
+            <ol>
+                <li>For each number in the array, we try to place it at its correct index (number - 1).</li>
+                <li>If the number is already at its correct position or if there's already a copy of this number at its correct position, we skip it and move to the next number.</li>
+                <li>After the sorting process, each number should be at its correct position (index = number - 1), unless it's a duplicate.</li>
+                <li>Since a number that appears twice can only be placed at its correct position once, the second occurrence will end up at a position where it doesn't belong.</li>
+                <li>By checking each position after sorting, we can identify all duplicates as those numbers that are not at their correct positions.</li>
+            </ol>
+            <p>Alternative approaches to solve this problem:</p>
+            <ul>
+                <li><strong>Marking with Negation:</strong> Traverse the array once and for each element nums[i], flip the sign of the element at index abs(nums[i])-1 to negative. If the element at index abs(nums[i])-1 is already negative, it means abs(nums[i]) appears twice. This approach also has O(n) time complexity and O(1) space complexity.</li>
+                <li><strong>Using a Hash Set:</strong> Traverse the array once and for each element, check if it's already in the hash set. If it is, it's a duplicate. Otherwise, add it to the hash set. This approach has O(n) time complexity but O(n) space complexity, which doesn't meet the constant extra space requirement.</li>
+            </ul>
+            <p>The Cyclic Sort approach is elegant and efficient for this problem, as it leverages the constraints of the problem (integers in the range [1, n]) to solve it with optimal time and space complexity.</p>
+        </div>
+    </div>
+</body>
+</html>
