@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Depth of Binary Tree Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tree-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        .tree-node.leaf {
+            background-color: #2ecc71;
+            border: 2px solid #27ae60;
+        }
+        .empty-node {
+            width: 40px;
+            height: 0;
+            margin: 0 10px;
+        }
+        .connector {
+            position: relative;
+            height: 20px;
+        }
+        .connector::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 20px;
+            width: 2px;
+            background-color: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minimum Depth of a Binary Tree</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given a binary tree, find its minimum depth.
+        </p>
+        <p>
+            The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.
+        </p>
+        <p>
+            <strong>Note:</strong> A leaf is a node with no children.
+        </p>
+        
+        <div class="example">
+            <h3>Example 1:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node">3</div>
+                </div>
+                <div class="connector"></div>
+                <div class="tree-level">
+                    <div class="tree-node leaf">9</div>
+                    <div class="tree-node">20</div>
+                </div>
+                <div class="connector"></div>
+                <div class="tree-level">
+                    <div class="empty-node"></div>
+                    <div class="empty-node"></div>
+                    <div class="tree-node">15</div>
+                    <div class="tree-node">7</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [3,9,20,null,null,15,7]</p>
+            <p><strong>Output:</strong> 2</p>
+            <p><strong>Explanation:</strong> The minimum depth is 2. Node 9 is a leaf with a depth of 2.</p>
+        </div>
+        
+        <div class="example">
+            <h3>Example 2:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node">2</div>
+                </div>
+                <div class="connector"></div>
+                <div class="tree-level">
+                    <div class="empty-node"></div>
+                    <div class="tree-node">3</div>
+                </div>
+                <div class="connector"></div>
+                <div class="tree-level">
+                    <div class="empty-node"></div>
+                    <div class="empty-node"></div>
+                    <div class="tree-node">4</div>
+                </div>
+                <div class="connector"></div>
+                <div class="tree-level">
+                    <div class="empty-node"></div>
+                    <div class="empty-node"></div>
+                    <div class="empty-node"></div>
+                    <div class="tree-node">5</div>
+                </div>
+                <div class="connector"></div>
+                <div class="tree-level">
+                    <div class="empty-node"></div>
+                    <div class="empty-node"></div>
+                    <div class="empty-node"></div>
+                    <div class="empty-node"></div>
+                    <div class="tree-node leaf">6</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [2,null,3,null,4,null,5,null,6]</p>
+            <p><strong>Output:</strong> 5</p>
+            <p><strong>Explanation:</strong> The minimum depth is 5. Node 6 is a leaf with a depth of 5.</p>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>The number of nodes in the tree is in the range [0, 10<sup>5</sup>].</li>
+            <li>-1000 <= Node.val <= 1000</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to find the minimum depth of a binary tree. The minimum depth is the number of nodes in the shortest path from the root node to the nearest leaf node.
+        </p>
+        <p>
+            A leaf node is a node that has no children (no left or right child).
+        </p>
+        <p>
+            For example, in Example 1, node 9 is a leaf node that's at depth 2, while nodes 15 and 7 are leaf nodes at depth 3. Since node 9 is at a shallower depth, the minimum depth of the tree is 2.
+        </p>
+        <p>
+            Similarly, in Example 2, we have a right-skewed tree where node 6 is the only leaf node at depth 5. Therefore, the minimum depth of this tree is 5.
+        </p>
+        <p>
+            It's important to understand the distinction between the minimum depth and the minimum height of a tree. The minimum depth is the length of the shortest path from the root to any leaf node, while the minimum height would be the length of the shortest path from the root to any node (leaf or non-leaf).
+        </p>
+        <p>
+            For this problem, we specifically need to find the shortest path to a leaf node (a node with no children).
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Breadth-First Search (BFS)</h2>
+        <p>
+            We'll use a Breadth-First Search (BFS) approach to solve this problem efficiently. BFS is perfect for this problem because:
+        </p>
+        <ol>
+            <li>BFS explores nodes level by level, starting from the root.</li>
+            <li>Since we're looking for the minimum depth, once we encounter the first leaf node during our level-by-level traversal, we can immediately return that depth, as it's guaranteed to be the minimum.</li>
+        </ol>
+        <p>
+            Here's the step-by-step approach:
+        </p>
+        <ol>
+            <li>If the root is null, return 0 (an empty tree has a depth of 0).</li>
+            <li>Initialize a queue with the root node.</li>
+            <li>Initialize a depth counter to 1 (for the root level).</li>
+            <li>While the queue is not empty:</li>
+            <ul>
+                <li>Increment the depth counter for each new level.</li>
+                <li>Process all nodes at the current level:</li>
+                <ul>
+                    <li>For each node, check if it's a leaf node (no left and right children).</li>
+                    <li>If it is a leaf node, return the current depth (we've found the minimum depth).</li>
+                    <li>If it's not a leaf node, add its children to the queue for the next level's processing.</li>
+                </ul>
+            </ul>
+            <li>Return the final depth (though we should have returned earlier if we found a leaf node).</li>
+        </ol>
+        
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>Let's trace through the algorithm using Example 1:</p>
+            <pre>
+Tree structure:
+    3
+   / \
+  9  20
+    /  \
+   15   7
+
+Initialize: queue = [3], depth = 1
+
+Iteration 1: Process level 1
+  Queue: [3]
+  Check node 3: Not a leaf (has children), so add children to queue
+  Queue after: [9, 20]
+  Increment depth: depth = 2
+
+Iteration 2: Process level 2
+  Queue: [9, 20]
+  Check node 9: It's a leaf! Return depth = 2
+
+Final result: 2</pre>
+
+            <p>Now let's trace through Example 2:</p>
+            <pre>
+Tree structure:
+    2
+     \
+      3
+       \
+        4
+         \
+          5
+           \
+            6
+
+Initialize: queue = [2], depth = 1
+
+Iteration 1: Process level 1
+  Queue: [2]
+  Check node 2: Not a leaf (has a right child), add it to queue
+  Queue after: [3]
+  Increment depth: depth = 2
+
+Iteration 2: Process level 2
+  Queue: [3]
+  Check node 3: Not a leaf, add right child to queue
+  Queue after: [4]
+  Increment depth: depth = 3
+
+Iteration 3: Process level 3
+  Queue: [4]
+  Check node 4: Not a leaf, add right child to queue
+  Queue after: [5]
+  Increment depth: depth = 4
+
+Iteration 4: Process level 4
+  Queue: [5]
+  Check node 5: Not a leaf, add right child to queue
+  Queue after: [6]
+  Increment depth: depth = 5
+
+Iteration 5: Process level 5
+  Queue: [6]
+  Check node 6: It's a leaf! Return depth = 5
+
+Final result: 5</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the BFS approach for finding the minimum depth:
+        </p>
+        
+        <pre>
+from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def minDepth(root):
+    <span class="comment">"""Find the minimum depth of a binary tree.
+    
+    Args:
+        root: Root node of the binary tree
+        
+    Returns:
+        The minimum depth (number of nodes in the shortest path from root to any leaf)
+    """</span>
+    # Handle edge case: empty tree
+    if not root:
+        return 0
+        
+    # Initialize queue with root
+    queue = deque([root])
+    depth = 0
+    
+    # BFS traversal
+    while queue:
+        depth += 1  # Increment depth for current level
+        
+        # Process all nodes at the current level
+        level_size = len(queue)
+        for _ in range(level_size):
+            node = queue.popleft()
+            
+            # Check if this is a leaf node
+            if not node.left and not node.right:
+                return depth  # Found a leaf, this is the minimum depth
+            
+            # Add children to the queue
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+    
+    # Should not reach here if tree is not empty
+    return depth</pre>
+
+        <h3>Time Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n) in the worst case, where n is the number of nodes in the tree. In the best case (where the root or a node in the first level is a leaf), it could be O(1).
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(w) where w is the maximum width of the tree, which in the worst case could be n/2 for a complete binary tree. This is because the queue would hold at most all the nodes at the deepest level.
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Approach: Recursive DFS</h2>
+        <p>
+            Although the BFS approach is more efficient for this specific problem (since it can return early when it finds the first leaf), we can also solve this using a Depth-First Search (DFS) recursive approach for completeness.
+        </p>
+        
+        <pre>
+def minDepthDFS(root):
+    <span class="comment">"""Find the minimum depth using recursive DFS.
+    
+    Args:
+        root: Root node of the binary tree
+        
+    Returns:
+        The minimum depth
+    """</span>
+    # Base case: empty tree
+    if not root:
+        return 0
+    
+    # If it's a leaf node
+    if not root.left and not root.right:
+        return 1
+    
+    # If only left subtree exists
+    if not root.right:
+        return 1 + minDepthDFS(root.left)
+    
+    # If only right subtree exists
+    if not root.left:
+        return 1 + minDepthDFS(root.right)
+    
+    # Both left and right subtrees exist, take the minimum
+    return 1 + min(minDepthDFS(root.left), minDepthDFS(root.right))</pre>
+
+        <p>
+            The DFS approach is a bit more complex to understand but also works correctly. It recursively explores all paths and returns the minimum depth. However, unlike BFS, it cannot stop early when it finds the first leaf node, so it may explore more nodes than necessary.
+        </p>
+        <p>
+            <strong>Time Complexity for DFS:</strong> O(n) in the worst case, as it might need to visit all nodes.
+        </p>
+        <p>
+            <strong>Space Complexity for DFS:</strong> O(h) where h is the height of the tree, due to the recursive call stack. In the worst case (skewed tree), this could be O(n).
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples provided in the problem:
+        </p>
+        
+        <pre>
+# Example 1
+root1 = TreeNode(3)
+root1.left = TreeNode(9)
+root1.right = TreeNode(20)
+root1.right.left = TreeNode(15)
+root1.right.right = TreeNode(7)
+
+print(minDepth(root1))  # Output: 2
+
+# Example 2
+root2 = TreeNode(2)
+root2.right = TreeNode(3)
+root2.right.right = TreeNode(4)
+root2.right.right.right = TreeNode(5)
+root2.right.right.right.right = TreeNode(6)
+
+print(minDepth(root2))  # Output: 5
+
+# Edge cases
+root3 = None
+print(minDepth(root3))  # Output: 0
+
+root4 = TreeNode(1)
+print(minDepth(root4))  # Output: 1</pre>
+
+        <h3>Edge Cases</h3>
+        <p>
+            There are a few edge cases to consider:
+        </p>
+        <ul>
+            <li><strong>Empty Tree:</strong> If the root is null, the depth is 0.</li>
+            <li><strong>Single Node Tree:</strong> If the tree has only the root node, the depth is 1.</li>
+            <li><strong>Skewed Tree:</strong> If the tree is completely skewed (like a linked list), the minimum depth is the height of the tree.</li>
+            <li><strong>Unbalanced Tree:</strong> The minimum depth might be significantly less than the maximum depth.</li>
+        </ul>
+        <p>
+            Our implementation correctly handles all these edge cases.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>BFS vs. DFS for This Problem</h2>
+        <p>
+            For the specific problem of finding the minimum depth, BFS is generally the preferred approach because:
+        </p>
+        <ul>
+            <li>BFS explores the tree level by level, so as soon as we find a leaf node, we can return the current depth.</li>
+            <li>This means BFS can terminate early, potentially without exploring the entire tree.</li>
+            <li>In contrast, DFS would typically explore all paths in the tree before determining the minimum depth.</li>
+        </ul>
+        <p>
+            However, there are scenarios where DFS might be more space-efficient, such as in trees with high branching factors where the BFS queue could become very large. It's important to consider the specific characteristics of the input data when choosing an algorithm.
+        </p>
+    </div>
+</body>
+</html>

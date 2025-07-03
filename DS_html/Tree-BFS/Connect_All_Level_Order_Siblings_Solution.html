@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect All Level Order Siblings Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+            position: relative;
+        }
+        .tree-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 10px;
+            font-weight: bold;
+            position: relative;
+        }
+        .node-connection {
+            position: absolute;
+            top: 20px;
+            width: 20px;
+            height: 2px;
+            background-color: #ff0000;
+            transform: rotate(0deg);
+        }
+        .down-connection {
+            position: absolute;
+            width: 2px;
+            height: 30px;
+            background-color: #ff0000;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .linked-list {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .linked-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 5px;
+            font-weight: bold;
+        }
+        .linked-arrow {
+            width: 20px;
+            height: 2px;
+            background-color: #ff0000;
+            position: relative;
+        }
+        .linked-arrow::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-left: 8px solid #ff0000;
+            border-bottom: 5px solid transparent;
+        }
+    </style>
+</head>
+<body>
+    <h1>Connect All Level Order Siblings</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given a binary tree, connect each node with its level order successor. The last node of each level should point to the first node of the next level. The last node in the tree should point to null.
+        </p>
+        
+        <div class="example">
+            <h3>Example:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node">2</div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node">7</div>
+                    <div class="tree-node">1</div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node">9</div>
+                    <div class="tree-node">10</div>
+                    <div class="tree-node">5</div>
+                </div>
+            </div>
+
+            <p><strong>Level Order Traversal:</strong> 2, 7, 1, 9, 10, 5</p>
+            
+            <p><strong>After Connecting:</strong></p>
+            <div class="linked-list">
+                <div class="linked-node">2</div>
+                <div class="linked-arrow"></div>
+                <div class="linked-node">7</div>
+                <div class="linked-arrow"></div>
+                <div class="linked-node">1</div>
+                <div class="linked-arrow"></div>
+                <div class="linked-node">9</div>
+                <div class="linked-arrow"></div>
+                <div class="linked-node">10</div>
+                <div class="linked-arrow"></div>
+                <div class="linked-node">5</div>
+                <div class="linked-arrow"></div>
+                <span>NULL</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            This problem is an extension of the "Connect Level Order Siblings" problem. Instead of connecting nodes at the same level, we need to connect all nodes in level-order sequence, regardless of their level.
+        </p>
+        <p>
+            In a level-order traversal, we visit all nodes at level 0, then all nodes at level 1, and so on. This problem asks us to connect each node to the next node in this traversal. Specifically:
+        </p>
+        <ul>
+            <li>Connect the last node of level 0 to the first node of level 1</li>
+            <li>Connect the last node of level 1 to the first node of level 2</li>
+            <li>And so on...</li>
+            <li>The last node of the last level points to NULL</li>
+        </ul>
+        <p>
+            After these connections, all nodes in the tree form a single linked list in the order of the level-order traversal.
+        </p>
+        <p>
+            For example, in the given tree, the level-order traversal is: 2, 7, 1, 9, 10, 5. After connecting, the nodes form a linked list: 2 -> 7 -> 1 -> 9 -> 10 -> 5 -> NULL.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Level Order Traversal (BFS)</h2>
+        <p>
+            To solve this problem, we'll use a standard level-order traversal (BFS) approach with a queue. The key difference is that we'll keep track of the previous node in the traversal and connect it to the current node.
+        </p>
+        <p>
+            Here's the step-by-step approach:
+        </p>
+        <ol>
+            <li>If the root is null, return null.</li>
+            <li>Initialize a queue with the root node.</li>
+            <li>Initialize a variable <code>prevNode</code> to track the previous node in the traversal.</li>
+            <li>While the queue is not empty:</li>
+            <ul>
+                <li>Dequeue a node (currentNode).</li>
+                <li>If prevNode is not null, set prevNode.next to currentNode.</li>
+                <li>Update prevNode to currentNode.</li>
+                <li>Add the left and right children of the current node to the queue (if they exist).</li>
+            </ul>
+            <li>Return the root.</li>
+        </ol>
+        
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>Let's trace through the algorithm using the given example:</p>
+            <pre>
+Tree:
+    2
+   / \
+  7   1
+ / \   \
+9  10   5
+
+Start with root node 2 in the queue: [2]
+prevNode = null
+
+Iteration 1:
+  Dequeue 2
+  prevNode is null, so no connection is made
+  Set prevNode = 2
+  Add 2's children to the queue: [7, 1]
+
+Iteration 2:
+  Dequeue 7
+  Connect prevNode(2) to 7: 2 -> 7
+  Set prevNode = 7
+  Add 7's children to the queue: [1, 9, 10]
+
+Iteration 3:
+  Dequeue 1
+  Connect prevNode(7) to 1: 7 -> 1
+  Set prevNode = 1
+  Add 1's children to the queue: [9, 10, 5]
+
+Iteration 4:
+  Dequeue 9
+  Connect prevNode(1) to 9: 1 -> 9
+  Set prevNode = 9
+  Add 9's children to the queue: [10, 5] (none in this case)
+
+Iteration 5:
+  Dequeue 10
+  Connect prevNode(9) to 10: 9 -> 10
+  Set prevNode = 10
+  Add 10's children to the queue: [5] (none in this case)
+
+Iteration 6:
+  Dequeue 5
+  Connect prevNode(10) to 5: 10 -> 5
+  Set prevNode = 5
+  Add 5's children to the queue: [] (none in this case)
+
+Queue is empty, end of traversal.
+
+Final linked list: 2 -> 7 -> 1 -> 9 -> 10 -> 5 -> NULL</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the approach to connect all level order siblings:
+        </p>
+        
+        <pre>
+from collections import deque
+
+class Node:
+    def __init__(self, val=0, left=None, right=None, next=None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.next = next
+
+def connectAllSiblings(root):
+    <span class="comment">"""Connect each node with its level order successor.
+    
+    Args:
+        root: The root of the binary tree
+        
+    Returns:
+        The root of the modified tree with next pointers set
+    """</span>
+    if not root:
+        return None
+    
+    # Use a queue for level order traversal
+    queue = deque([root])
+    prev_node = None
+    
+    while queue:
+        # Get the current node from the front of the queue
+        current_node = queue.popleft()
+        
+        # Connect the previous node to the current node
+        if prev_node:
+            prev_node.next = current_node
+        
+        # Update prev_node to the current node
+        prev_node = current_node
+        
+        # Add children to the queue
+        if current_node.left:
+            queue.append(current_node.left)
+        if current_node.right:
+            queue.append(current_node.right)
+    
+    return root</pre>
+
+        <p>
+            We can also add a helper function to print the connected nodes as a linked list to verify our solution:
+        </p>
+        
+        <pre>
+def printTree(root):
+    <span class="comment">"""Print the tree nodes as a linked list.
+    
+    Args:
+        root: The root of the modified binary tree
+    """</span>
+    if not root:
+        return
+    
+    current = root
+    while current.next:
+        print(current.val, end="->")
+        current = current.next
+    print(current.val)  # Print the last node</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n) where n is the number of nodes in the binary tree. We visit each node exactly once during the BFS traversal.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(w) where w is the maximum width of the tree. In the worst case, the queue can contain all nodes at the last level of a perfect binary tree, which is approximately n/2 nodes.
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the provided example:
+        </p>
+        
+        <pre>
+# Create the binary tree from the example
+root = Node(2)
+root.left = Node(7)
+root.right = Node(1)
+root.left.left = Node(9)
+root.left.right = Node(10)
+root.right.right = Node(5)
+
+# Print the level order traversal of the tree
+print("Level order traversal:")
+levelOrder(root)  # Output: 2 7 1 9 10 5
+
+# Connect all siblings
+root = connectAllSiblings(root)
+
+# Print the connected nodes as a linked list
+print("\nAfter connecting all siblings:")
+printTree(root)  # Output: 2->7->1->9->10->5</pre>
+
+        <h3>Edge Cases</h3>
+        <p>
+            The implementation handles these edge cases correctly:
+        </p>
+        <ul>
+            <li><strong>Empty tree:</strong> Returns null.</li>
+            <li><strong>Single node tree:</strong> Node's next pointer remains null.</li>
+            <li><strong>Tree with multiple levels:</strong> Correctly connects nodes across levels.</li>
+            <li><strong>Tree with missing nodes:</strong> Skips over missing nodes and maintains correct level-order connections.</li>
+        </ul>
+    </div>
+
+    <div class="section approach">
+        <h2>Comparison with "Connect Level Order Siblings"</h2>
+        <p>
+            This problem is an extension of the "Connect Level Order Siblings" problem. Let's compare the two:
+        </p>
+        <table>
+            <tr>
+                <th>Feature</th>
+                <th>Connect Level Order Siblings</th>
+                <th>Connect All Level Order Siblings</th>
+            </tr>
+            <tr>
+                <td>Connection Scope</td>
+                <td>Nodes within the same level</td>
+                <td>All nodes in level-order traversal</td>
+            </tr>
+            <tr>
+                <td>Last Node in Level</td>
+                <td>Points to NULL</td>
+                <td>Points to first node of next level</td>
+            </tr>
+            <tr>
+                <td>Result</td>
+                <td>Multiple linked lists (one per level)</td>
+                <td>Single linked list containing all nodes</td>
+            </tr>
+            <tr>
+                <td>Implementation Complexity</td>
+                <td>Requires tracking level boundaries</td>
+                <td>Simpler, just track the previous node</td>
+            </tr>
+        </table>
+        <p>
+            While both problems use a similar BFS approach, the "Connect All Level Order Siblings" problem has a simpler implementation because we don't need to detect level boundaries. We simply connect each node to the next node in the BFS traversal order.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Applications and Related Problems</h2>
+        <p>
+            Connecting nodes in a binary tree has several practical applications:
+        </p>
+        <ul>
+            <li><strong>Efficient Tree Traversal:</strong> Once the connections are established, we can traverse the tree without using a queue or recursion.</li>
+            <li><strong>Memory-Efficient Tree Representation:</strong> With the next pointers set, we can represent the tree structure more compactly.</li>
+            <li><strong>Tree Serialization:</strong> Connected nodes can be serialized more efficiently.</li>
+        </ul>
+        <p>
+            Related problems include:
+        </p>
+        <ul>
+            <li><strong>Connect Level Order Siblings:</strong> Connect nodes within the same level.</li>
+            <li><strong>Flatten Binary Tree to Linked List:</strong> Convert a binary tree to a linked list preserving pre-order traversal.</li>
+            <li><strong>Populate Next Right Pointers in Each Node:</strong> Connect nodes at the same level, specifically for perfect binary trees.</li>
+        </ul>
+        <p>
+            Understanding these connection patterns helps in solving more complex tree transformation problems and provides alternative ways to traverse and process tree structures.
+        </p>
+    </div>
+</body>
+</html>

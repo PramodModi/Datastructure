@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Tree Level Order Traversal Reverse Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-visualization {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .tree-row {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tree-node {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Binary Tree Level Order Traversal II (Bottom-Up Level Order Traversal)</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given the root of a binary tree, return the bottom-up level order traversal of its nodes' values. (i.e., from left to right, level by level from leaf to root).
+        </p>
+        
+        <div class="example">
+            <h3>Example 1:</h3>
+            <div class="tree-visualization">
+                <div class="tree-row">
+                    <div class="tree-node">3</div>
+                </div>
+                <div class="tree-row">
+                    <div class="tree-node">9</div>
+                    <div class="tree-node">20</div>
+                </div>
+                <div class="tree-row">
+                    <div style="width: 40px;"></div>
+                    <div class="tree-node">15</div>
+                    <div class="tree-node">7</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [3,9,20,null,null,15,7]</p>
+            <p><strong>Output:</strong> [[15,7],[9,20],[3]]</p>
+            <p><strong>Explanation:</strong> The output is the reverse of the regular level order traversal, starting from the bottom level.</p>
+        </div>
+        
+        <div class="example">
+            <h3>Example 2:</h3>
+            <p><strong>Input:</strong> root = [1]</p>
+            <p><strong>Output:</strong> [[1]]</p>
+        </div>
+        
+        <div class="example">
+            <h3>Example 3:</h3>
+            <p><strong>Input:</strong> root = []</p>
+            <p><strong>Output:</strong> []</p>
+        </div>
+        
+        <h3>Constraints:</h3>
+        <ul>
+            <li>The number of nodes in the tree is in the range [0, 2000].</li>
+            <li>-1000 <= Node.val <= 1000</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we are asked to perform a level order traversal of a binary tree, but in reverse order - from bottom to top. This is also known as a bottom-up level order traversal.
+        </p>
+        <p>
+            For example, in the tree given in Example 1:
+        </p>
+        <ul>
+            <li>Level 0 (root level): [3]</li>
+            <li>Level 1: [9, 20]</li>
+            <li>Level 2 (bottom level): [15, 7]</li>
+        </ul>
+        <p>
+            A regular level order traversal would return: [[3], [9, 20], [15, 7]]<br>
+            But for this problem, we need to return the levels in reverse order: [[15, 7], [9, 20], [3]]
+        </p>
+        <p>
+            Each level should still maintain the left-to-right order of nodes within that level.
+        </p>
+        <p>
+            Like the regular level order traversal, this problem is also solved using Breadth-First Search (BFS) with a queue. The only difference is that we need to reverse the final result before returning it.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Modified Breadth-First Search</h2>
+        <p>
+            We'll use the same BFS approach as in the regular level order traversal, but with a slight modification at the end to reverse the order of levels.
+        </p>
+        <p>
+            Here's the step-by-step approach:
+        </p>
+        <ol>
+            <li>Start by checking if the root is null. If it is, return an empty list.</li>
+            <li>Initialize a queue and add the root node to it.</li>
+            <li>Initialize a result list to store the level order traversal.</li>
+            <li>While the queue is not empty:
+                <ul>
+                    <li>Determine the number of nodes at the current level (the size of the queue).</li>
+                    <li>Create a temporary list to store the values of nodes at the current level.</li>
+                    <li>Process all nodes at the current level by dequeuing them one by one.</li>
+                    <li>For each dequeued node, add its value to the temporary list and enqueue its left and right children if they exist.</li>
+                    <li>After processing all nodes at the current level, add the temporary list to the result list.</li>
+                </ul>
+            </li>
+            <li>Reverse the result list to get the bottom-up level order traversal.</li>
+            <li>Return the reversed result list.</li>
+        </ol>
+        
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <pre>
+Example: root = [3,9,20,null,null,15,7]
+
+Initialize: queue = [3], result = []
+
+Iteration 1: Process level 0
+  Current queue size = 1 (one node at level 0)
+  Dequeue 3, add to current level: [3]
+  Enqueue left child (9) and right child (20): queue = [9, 20]
+  Add current level to result: result = [[3]]
+
+Iteration 2: Process level 1
+  Current queue size = 2 (two nodes at level 1)
+  Dequeue 9, add to current level: [9]
+  9 has no children, so no enqueuing
+  Dequeue 20, add to current level: [9, 20]
+  Enqueue left child (15) and right child (7): queue = [15, 7]
+  Add current level to result: result = [[3], [9, 20]]
+
+Iteration 3: Process level 2
+  Current queue size = 2 (two nodes at level 2)
+  Dequeue 15, add to current level: [15]
+  15 has no children, so no enqueuing
+  Dequeue 7, add to current level: [15, 7]
+  7 has no children, so no enqueuing
+  Add current level to result: result = [[3], [9, 20], [15, 7]]
+
+Queue is now empty, so we exit the loop.
+
+Reverse the result: [[15, 7], [9, 20], [3]]
+
+Final result: [[15, 7], [9, 20], [3]]</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the implementation of the bottom-up level order traversal algorithm using Python:
+        </p>
+        
+        <pre>
+from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def levelOrderBottom(root):
+    <span class="comment">"""Return the bottom-up level order traversal of a binary tree
+    
+    Args:
+        root: The root of the binary tree
+        
+    Returns:
+        A list of lists, where each inner list contains the values at one level,
+        ordered from bottom to top
+    """</span>
+    if not root:
+        return []
+        
+    # Initialize a queue with the root node
+    queue = deque([root])
+    # Initialize the result list
+    result = []
+    
+    # Process nodes level by level
+    while queue:
+        # Get the number of nodes at the current level
+        level_size = len(queue)
+        # Create a list to store values at current level
+        current_level = []
+        
+        # Process all nodes at the current level
+        for _ in range(level_size):
+            # Dequeue a node
+            node = queue.popleft()
+            # Add its value to current level list
+            current_level.append(node.val)
+            
+            # Enqueue the node's children
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        
+        # Add the current level to the result
+        result.append(current_level)
+    
+    # Reverse the result to get bottom-up order
+    return result[::-1]</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n) where n is the number of nodes in the tree. We visit each node exactly once and the reversal operation at the end takes O(h) time where h is the height of the tree (which is less than n).
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n) in the worst case. This happens when the tree is completely unbalanced (e.g., a linked list). In a balanced tree, the maximum number of nodes at any level is n/2, which is still O(n).
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementations</h2>
+        <p>
+            Here are two alternative implementations for the bottom-up level order traversal:
+        </p>
+        
+        <h3>1. Using the list.reverse() method</h3>
+        <pre>
+def levelOrderBottom_alt1(root):
+    <span class="comment">"""Using list.reverse() method to reverse the result
+    
+    Args:
+        root: The root of the binary tree
+        
+    Returns:
+        Bottom-up level order traversal
+    """</span>
+    if not root:
+        return []
+    
+    queue = deque([root])
+    result = []
+    
+    while queue:
+        level_values = []
+        level_size = len(queue)
+        
+        for _ in range(level_size):
+            node = queue.popleft()
+            level_values.append(node.val)
+            
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        
+        result.append(level_values)
+    
+    # Using list.reverse() method
+    result.reverse()
+    return result</pre>
+        
+        <h3>2. Building the result by inserting at the beginning</h3>
+        <pre>
+def levelOrderBottom_alt2(root):
+    <span class="comment">"""Building the result by inserting at the beginning of the list
+    
+    Args:
+        root: The root of the binary tree
+        
+    Returns:
+        Bottom-up level order traversal
+    """</span>
+    if not root:
+        return []
+    
+    queue = deque([root])
+    result = []
+    
+    while queue:
+        level_values = []
+        level_size = len(queue)
+        
+        for _ in range(level_size):
+            node = queue.popleft()
+            level_values.append(node.val)
+            
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        
+        # Insert at the beginning of the result list
+        result.insert(0, level_values)
+    
+    return result</pre>
+
+        <p>
+            The third approach (inserting at the beginning) might be less efficient for large trees since inserting at the beginning of a list in Python is an O(n) operation, but it avoids the need for an explicit reversal step at the end.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples provided in the problem:
+        </p>
+        
+        <pre>
+# Example 1
+root = TreeNode(3)
+root.left = TreeNode(9)
+root.right = TreeNode(20)
+root.right.left = TreeNode(15)
+root.right.right = TreeNode(7)
+
+print(levelOrderBottom(root))  # Output: [[15, 7], [9, 20], [3]]
+
+# Example 2
+root = TreeNode(1)
+print(levelOrderBottom(root))  # Output: [[1]]
+
+# Example 3
+root = None
+print(levelOrderBottom(root))  # Output: []</pre>
+
+        <h3>Related Problems</h3>
+        <p>
+            This problem is a variation of the standard level order traversal. Here are some related problems:
+        </p>
+        <ul>
+            <li>Binary Tree Level Order Traversal (top-down)</li>
+            <li>Binary Tree Zigzag Level Order Traversal</li>
+            <li>Average of Levels in Binary Tree</li>
+            <li>N-ary Tree Level Order Traversal</li>
+        </ul>
+        <p>
+            Understanding this bottom-up level order traversal helps reinforce the concept of BFS and shows how simple modifications to the standard algorithm can solve different variations of the same problem.
+        </p>
+    </div>
+</body>
+</html>

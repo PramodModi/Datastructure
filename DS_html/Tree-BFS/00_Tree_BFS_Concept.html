@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breadth First Search (BFS) in Trees</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .concept {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .applications {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .implementation {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .examples {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code-example {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .tree-node {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Breadth First Search in Trees (Level Order Traversal)</h1>
+
+    <div class="section concept">
+        <h2>Concept</h2>
+        <p>
+            Breadth First Search (BFS) is a tree traversal algorithm that visits all nodes at a given level before moving on to the next level. This traversal method is also known as Level Order Traversal because it processes the tree level by level, starting from the root.
+        </p>
+        <p>
+            The key characteristics of BFS are:
+        </p>
+        <ul>
+            <li>It starts at the root node of the tree</li>
+            <li>It explores all nodes at the current level before moving to nodes at the next level</li>
+            <li>It uses a queue data structure to keep track of nodes to visit next</li>
+            <li>It guarantees that nodes at the same level are visited before moving to the next level</li>
+        </ul>
+        
+        <h3>How BFS Works:</h3>
+        <ol>
+            <li>Start by adding the root node to a queue</li>
+            <li>While the queue is not empty:</li>
+            <ul>
+                <li>Dequeue a node and process it</li>
+                <li>Enqueue all of the node's children (left to right for binary trees)</li>
+            </ul>
+            <li>Continue until the queue is empty</li>
+        </ol>
+        
+        <div class="tree-container">
+            <div class="tree-level">
+                <div class="tree-node">1</div>
+            </div>
+            <div class="tree-level">
+                <div class="tree-node">2</div>
+                <div class="tree-node">3</div>
+            </div>
+            <div class="tree-level">
+                <div class="tree-node">4</div>
+                <div class="tree-node">5</div>
+                <div class="tree-node">6</div>
+                <div class="tree-node">7</div>
+            </div>
+        </div>
+        
+        <p>
+            For the tree above, BFS would visit the nodes in this order: 1, 2, 3, 4, 5, 6, 7
+        </p>
+        
+        <div class="visualization">
+            <p><strong>BFS Traversal Visualization:</strong></p>
+            <pre>
+Starting BFS traversal...
+
+Queue: [1]               | Visited: []
+Dequeue: 1               | Visited: [1]
+Enqueue children: 2, 3   | Queue: [2, 3]
+
+Queue: [2, 3]            | Visited: [1]
+Dequeue: 2               | Visited: [1, 2]
+Enqueue children: 4, 5   | Queue: [3, 4, 5]
+
+Queue: [3, 4, 5]         | Visited: [1, 2]
+Dequeue: 3               | Visited: [1, 2, 3]
+Enqueue children: 6, 7   | Queue: [4, 5, 6, 7]
+
+Queue: [4, 5, 6, 7]      | Visited: [1, 2, 3]
+Dequeue: 4               | Visited: [1, 2, 3, 4]
+No children to enqueue   | Queue: [5, 6, 7]
+
+Queue: [5, 6, 7]         | Visited: [1, 2, 3, 4]
+Dequeue: 5               | Visited: [1, 2, 3, 4, 5]
+No children to enqueue   | Queue: [6, 7]
+
+Queue: [6, 7]            | Visited: [1, 2, 3, 4, 5]
+Dequeue: 6               | Visited: [1, 2, 3, 4, 5, 6]
+No children to enqueue   | Queue: [7]
+
+Queue: [7]               | Visited: [1, 2, 3, 4, 5, 6]
+Dequeue: 7               | Visited: [1, 2, 3, 4, 5, 6, 7]
+No children to enqueue   | Queue: []
+
+Queue is empty. BFS traversal complete.
+
+BFS Traversal Order: 1, 2, 3, 4, 5, 6, 7</pre>
+        </div>
+    </div>
+
+    <div class="section applications">
+        <h2>Applications of BFS in Trees</h2>
+        <p>
+            BFS is a versatile algorithm with many practical applications in tree traversal problems:
+        </p>
+        <ol>
+            <li><strong>Level Order Traversal:</strong> Getting all nodes in level order</li>
+            <li><strong>Right View/Left View of a Binary Tree:</strong> Finding the rightmost/leftmost node at each level</li>
+            <li><strong>Connect Level Order Siblings:</strong> Connecting nodes at the same level</li>
+            <li><strong>Minimum Depth of a Binary Tree:</strong> Finding the shortest path from root to any leaf</li>
+            <li><strong>Vertical Order Display of a Binary Tree:</strong> Organizing nodes by vertical distance from root</li>
+            <li><strong>Zig-Zag (Spiral) Traversal:</strong> Traversing levels in alternating directions</li>
+            <li><strong>Level Averages:</strong> Finding the average value of nodes at each level</li>
+            <li><strong>Finding Level Order Successor:</strong> Finding the node that would come after a given node in level order</li>
+            <li><strong>Checking if a Binary Tree is Complete:</strong> Verifying that a binary tree is filled from left to right</li>
+            <li><strong>Finding All Nodes at a Given Distance:</strong> Locating all nodes that are a certain distance from a target node</li>
+        </ol>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            BFS can be implemented using a queue data structure. Here's a basic implementation in Python:
+        </p>
+        
+        <pre>
+def level_order_traversal(root):
+    <span class="comment">"""Perform BFS (level order traversal) on a binary tree.
+    
+    Args:
+        root: The root node of the binary tree
+        
+    Returns:
+        A list of values in level order
+    """</span>
+    if not root:
+        return []
+        
+    result = []  # To store the traversal result
+    queue = [root]  # Initialize queue with the root
+    
+    while queue:
+        current = queue.pop(0)  # Dequeue
+        result.append(current.val)  # Process node
+        
+        # Enqueue children
+        if current.left:
+            queue.append(current.left)
+        if current.right:
+            queue.append(current.right)
+            
+    return result</pre>
+        
+        <p>
+            To track the levels explicitly (useful for many level-based problems):
+        </p>
+        
+        <pre>
+def level_by_level_traversal(root):
+    <span class="comment">"""Perform BFS with level tracking on a binary tree.
+    
+    Args:
+        root: The root node of the binary tree
+        
+    Returns:
+        A list of lists where each inner list contains the values at one level
+    """</span>
+    if not root:
+        return []
+        
+    result = []  # To store the traversal result by level
+    queue = [root]  # Initialize queue with the root
+    
+    while queue:
+        level_size = len(queue)  # Number of nodes at current level
+        current_level = []  # To store nodes at current level
+        
+        for _ in range(level_size):
+            current = queue.pop(0)  # Dequeue
+            current_level.append(current.val)  # Process node
+            
+            # Enqueue children
+            if current.left:
+                queue.append(current.left)
+            if current.right:
+                queue.append(current.right)
+                
+        result.append(current_level)  # Add the current level to the result
+            
+    return result</pre>
+    </div>
+
+    <div class="section examples">
+        <h2>Common Patterns in BFS Problems</h2>
+        <div class="example">
+            <h3>Pattern 1: Basic Level Order Traversal</h3>
+            <p>Most BFS tree problems follow this basic pattern:</p>
+            <ol>
+                <li>Initialize a queue with the root node</li>
+                <li>While the queue is not empty:</li>
+                <ul>
+                    <li>Get the size of the queue (number of nodes at the current level)</li>
+                    <li>Process all nodes at the current level</li>
+                    <li>Add their children to the queue</li>
+                </ul>
+            </ol>
+        </div>
+        
+        <div class="example">
+            <h3>Pattern 2: Level-Specific Operations</h3>
+            <p>Many problems require performing specific operations based on the level:</p>
+            <ul>
+                <li><strong>Right/Left View:</strong> Keeping track of the first/last node at each level</li>
+                <li><strong>Zig-Zag Traversal:</strong> Alternating between left-to-right and right-to-left traversal</li>
+                <li><strong>Level Averages:</strong> Computing the average of all nodes at each level</li>
+            </ul>
+        </div>
+        
+        <div class="example">
+            <h3>Pattern 3: Node Connections</h3>
+            <p>Some problems involve connecting nodes at the same level:</p>
+            <ul>
+                <li><strong>Connect Level Order Siblings:</strong> Creating next pointers between nodes at the same level</li>
+                <li><strong>Connect All Level Order Siblings:</strong> Creating a linked list of all nodes in level order</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code-example">
+        <h2>Complexity Analysis</h2>
+        <p><strong>Time Complexity:</strong> O(n) where n is the number of nodes in the tree. Each node is processed exactly once.</p>
+        <p><strong>Space Complexity:</strong> O(n) in the worst case, where n is the number of nodes in the tree. This happens in a completely unbalanced tree. In the best case (a completely balanced tree), the space complexity is O(w) where w is the maximum width of the tree.</p>
+        
+        <h3>Advantages of BFS:</h3>
+        <ul>
+            <li>Guaranteed to find the shortest path in an unweighted graph/tree</li>
+            <li>Well-suited for level-oriented tree problems</li>
+            <li>More memory-efficient than DFS for shallow, wide trees</li>
+        </ul>
+        
+        <h3>Disadvantages of BFS:</h3>
+        <ul>
+            <li>Uses more memory than DFS for deep trees</li>
+            <li>Not as suitable for problems that require exploring paths to leaves</li>
+        </ul>
+    </div>
+</body>
+</html>

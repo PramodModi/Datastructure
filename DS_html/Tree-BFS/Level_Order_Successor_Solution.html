@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Order Successor Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .tree-level {
+            display: flex;
+            margin: 15px 0;
+        }
+        .tree-node {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+        .tree-node.target {
+            background-color: #e74c3c;
+            border: 2px solid #c0392b;
+        }
+        .tree-node.successor {
+            background-color: #2ecc71;
+            border: 2px solid #27ae60;
+        }
+        .empty-node {
+            width: 40px;
+            height: 0;
+            margin: 0 10px;
+        }
+        .connector {
+            position: relative;
+            height: 20px;
+            width: 100%;
+        }
+        .connector::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 20px;
+            width: 2px;
+            background-color: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Level Order Successor in a Binary Tree</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p>
+            Given a binary tree and a node in the binary tree, find the Level Order Successor of the given node. The Level Order Successor is the node that appears immediately after the given node in the level order traversal of the tree.
+        </p>
+        <p>
+            Note: The task is not just to return the value of the node, but the complete node from the tree.
+        </p>
+        <div class="example">
+            <p><strong>Example:</strong></p>
+            <p>Consider the following binary tree:</p>
+            <pre>
+                  20            
+               /      \         
+              10       26       
+             /  \     /   \     
+           4     18  24    27   
+                /  \
+               14   19
+              /  \
+             13  15
+            </pre>
+            <p>Level Order Traversal of the tree:</p>
+            <p>20, 10, 26, 4, 18, 24, 27, 14, 19, 13, 15</p>
+
+            <p><strong>Input:</strong> node with value 24</p>
+            <p><strong>Output:</strong> node with value 27</p>
+            <p><strong>Explanation:</strong> In the level order traversal, 27 appears after 24.</p>
+
+            <p><strong>Input:</strong> node with value 4</p>
+            <p><strong>Output:</strong> node with value 18</p>
+            <p><strong>Explanation:</strong> In the level order traversal, 18 appears after 4.</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            The Level Order Traversal (also known as Breadth-First Search or BFS) of a tree visits nodes level by level, from left to right. In this traversal, we start from the root node, then visit all nodes at the next level, and so on.
+        </p>
+        <p>
+            The Level Order Successor of a node is simply the node that comes immediately after it in this traversal. For example, in the level order traversal of the above tree, the successor of node with value 24 is the node with value 27.
+        </p>
+        <p>
+            To solve this problem, we need to:
+        </p>
+        <ol>
+            <li>Perform a level order traversal of the tree.</li>
+            <li>Find the given node in the traversal.</li>
+            <li>Return the next node in the traversal (if it exists).</li>
+        </ol>
+        <p>
+            A key insight is that we don't need to perform the entire traversal first and then find the successor. We can optimize by returning the successor as soon as we find the target node.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use the standard BFS approach with a queue to traverse the tree in level order. The key steps are:
+        </p>
+        <ol>
+            <li>Start with the root node and add it to the queue.</li>
+            <li>While the queue is not empty:
+                <ul>
+                    <li>Remove a node from the front of the queue.</li>
+                    <li>Check if this node is the target node (the node we're looking for).</li>
+                    <li>If it is, the next node in the queue (if exists) is the successor.</li>
+                    <li>If it's not the target node, add its left and right children to the queue (if they exist).</li>
+                </ul>
+            </li>
+            <li>If we've processed all nodes without finding the target, return null (no successor).</li>
+        </ol>
+        <p>
+            This approach works because in a level order traversal, the queue contains nodes in the exact order they would appear in the traversal. So, once we find the target node, the next node in the queue is naturally the successor.
+        </p>
+
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>Let's visualize this with the example where we're looking for the successor of node with value 4:</p>
+            <pre>
+Start with root in queue: [20]
+
+Iteration 1:
+Dequeue: 20
+Enqueue children: [10, 26]
+Is 20 the target? No, continue.
+
+Iteration 2:
+Dequeue: 10
+Enqueue children: [26, 4, 18]
+Is 10 the target? No, continue.
+
+Iteration 3:
+Dequeue: 26
+Enqueue children: [4, 18, 24, 27]
+Is 26 the target? No, continue.
+
+Iteration 4:
+Dequeue: 4
+Enqueue children: [18, 24, 27]
+Is 4 the target? Yes!
+The next node in the queue is 18, so 18 is the successor.
+</pre>
+            <p>Now, let's try with the example where we're looking for the successor of node with value 24:</p>
+            <pre>
+... (previous iterations) ...
+
+Iteration 7:
+Dequeue: 24
+Enqueue children: [14, 19] (assuming 24 had no children in our example)
+Is 24 the target? Yes!
+The next node in the queue is 27, so 27 is the successor.
+</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the implementation of the Level Order Successor algorithm in Python:
+        </p>
+        
+        <pre>
+from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def levelOrderSuccessor(root, key):
+    <span class="comment">"""Find the level order successor of a node with the given key value.
+    
+    Args:
+        root: The root of the binary tree
+        key: The value of the target node
+        
+    Returns:
+        The level order successor node, or None if no successor exists
+    """</span>
+    if not root:
+        return None
+    
+    # Initialize queue with root
+    queue = deque([root])
+    
+    while queue:
+        # Remove the front node
+        current = queue.popleft()
+        
+        # Add children to queue
+        if current.left:
+            queue.append(current.left)
+        if current.right:
+            queue.append(current.right)
+        
+        # Check if current node is the target
+        if current.val == key:
+            # If queue is not empty, return the front node as successor
+            if queue:
+                return queue[0]
+            else:
+                # No successor exists (target is the last node in traversal)
+                return None
+    
+    # Target node not found in the tree
+    return None</pre>
+
+        <p>
+            This implementation has the following characteristics:
+        </p>
+        <ul>
+            <li>It uses a queue (implemented as a deque in Python) to perform the level order traversal.</li>
+            <li>It processes nodes one by one, adding their children to the queue.</li>
+            <li>When it finds the target node, it returns the next node in the queue as the successor.</li>
+            <li>If the queue is empty after finding the target node, it means the target node is the last node in the level order traversal, so there's no successor.</li>
+            <li>If it processes the entire tree without finding the target node, it returns None.</li>
+        </ul>
+    </div>
+
+    <div class="section code">
+        <h2>Complexity Analysis</h2>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the number of nodes in the tree. In the worst case, we might need to visit all nodes before finding the target node.</li>
+            <li><strong>Space Complexity:</strong> O(w) where w is the maximum width of the tree. In the worst case, the queue might contain all nodes at the level with maximum width, which is O(n/2) ≈ O(n) for a complete binary tree.</li>
+        </ul>
+        
+        <h3>Alternative Approach</h3>
+        <p>
+            An alternative approach would be to perform a complete level order traversal first, build an array of nodes, find the index of the target node, and then return the node at the next index (if it exists). However, this would be less efficient as it requires traversing the entire tree even if the target node is found early.
+        </p>
+        
+        <pre>
+def levelOrderSuccessor_alternative(root, key):
+    <span class="comment">"""Find the level order successor using a complete traversal.
+    
+    This approach is less efficient but more straightforward.
+    
+    Args:
+        root: The root of the binary tree
+        key: The value of the target node
+        
+    Returns:
+        The level order successor node, or None if no successor exists
+    """</span>
+    if not root:
+        return None
+    
+    # Perform complete level order traversal
+    queue = deque([root])
+    traversal = []
+    
+    while queue:
+        current = queue.popleft()
+        traversal.append(current)
+        
+        if current.left:
+            queue.append(current.left)
+        if current.right:
+            queue.append(current.right)
+    
+    # Find the target node in the traversal
+    for i in range(len(traversal) - 1):
+        if traversal[i].val == key:
+            return traversal[i + 1]
+    
+    return None  # No successor found</pre>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples provided in the problem:
+        </p>
+        
+        <pre>
+# Create the binary tree from the example
+root = TreeNode(20)
+root.left = TreeNode(10)
+root.right = TreeNode(26)
+root.left.left = TreeNode(4)
+root.left.right = TreeNode(18)
+root.right.left = TreeNode(24)
+root.right.right = TreeNode(27)
+root.left.right.left = TreeNode(14)
+root.left.right.right = TreeNode(19)
+root.left.right.left.left = TreeNode(13)
+root.left.right.left.right = TreeNode(15)
+
+# Test case 1: Find successor of node with value 24
+successor1 = levelOrderSuccessor(root, 24)
+print("Successor of 24:", successor1.val if successor1 else None)  # Should print 27
+
+# Test case 2: Find successor of node with value 4
+successor2 = levelOrderSuccessor(root, 4)
+print("Successor of 4:", successor2.val if successor2 else None)  # Should print 18
+
+# Test case 3: Find successor of node with value 15 (the last node in traversal)
+successor3 = levelOrderSuccessor(root, 15)
+print("Successor of 15:", successor3.val if successor3 else None)  # Should print None</pre>
+
+        <h3>Edge Cases</h3>
+        <p>The implementation handles the following edge cases:</p>
+        <ul>
+            <li><strong>Empty tree:</strong> If the root is null, the function returns null.</li>
+            <li><strong>Target node is the last node:</strong> If the target node is the last node in the level order traversal, the function returns null as there's no successor.</li>
+            <li><strong>Target node doesn't exist:</strong> If the target node doesn't exist in the tree, the function returns null.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Summary</h2>
+        <p>
+            The Level Order Successor problem is a specific application of the Breadth-First Search (BFS) algorithm. The key insight is that in a BFS traversal, nodes are processed in the exact order they appear in the level order traversal. Therefore, once we find the target node, the next node in the queue is naturally its successor.
+        </p>
+        <p>
+            This problem demonstrates how BFS can be used not just for traversing a tree but also for solving more specific problems related to the ordering of nodes in the traversal.
+        </p>
+    </div>
+</body>
+</html>

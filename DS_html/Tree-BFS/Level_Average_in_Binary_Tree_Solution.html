@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Average in Binary Tree Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-visualization {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .tree-row {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tree-node {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Average of Levels in Binary Tree</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given the root of a binary tree, return the average value of the nodes on each level in the form of an array.
+        </p>
+        
+        <div class="example">
+            <h3>Example 1:</h3>
+            <div class="tree-visualization">
+                <div class="tree-row">
+                    <div class="tree-node">3</div>
+                </div>
+                <div class="tree-row">
+                    <div class="tree-node">9</div>
+                    <div class="tree-node">20</div>
+                </div>
+                <div class="tree-row">
+                    <div style="width: 40px;"></div>
+                    <div class="tree-node">15</div>
+                    <div class="tree-node">7</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [3,9,20,null,null,15,7]</p>
+            <p><strong>Output:</strong> [3.00000,14.50000,11.00000]</p>
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>The average value of nodes on level 0 is 3.</li>
+                <li>The average value of nodes on level 1 is (9 + 20) / 2 = 14.5.</li>
+                <li>The average value of nodes on level 2 is (15 + 7) / 2 = 11.</li>
+            </ul>
+        </div>
+        
+        <div class="example">
+            <h3>Example 2:</h3>
+            <div class="tree-visualization">
+                <div class="tree-row">
+                    <div class="tree-node">3</div>
+                </div>
+                <div class="tree-row">
+                    <div class="tree-node">9</div>
+                    <div class="tree-node">20</div>
+                </div>
+                <div class="tree-row">
+                    <div class="tree-node">15</div>
+                    <div class="tree-node">7</div>
+                    <div class="tree-node">2</div>
+                    <div class="tree-node">9</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [3,9,20,15,7,2,9]</p>
+            <p><strong>Output:</strong> [3.00000,14.50000,8.25000]</p>
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>The average value of nodes on level 0 is 3.</li>
+                <li>The average value of nodes on level 1 is (9 + 20) / 2 = 14.5.</li>
+                <li>The average value of nodes on level 2 is (15 + 7 + 2 + 9) / 4 = 8.25.</li>
+            </ul>
+        </div>
+        
+        <h3>Constraints:</h3>
+        <ul>
+            <li>The number of nodes in the tree is in the range [1, 10<sup>4</sup>].</li>
+            <li>-2<sup>31</sup> <= Node.val <= 2<sup>31</sup> - 1</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to calculate the average value of nodes at each level of a binary tree. A level in a binary tree is a set of nodes that are at the same distance from the root node.
+        </p>
+        <p>
+            For example, in a binary tree:
+        </p>
+        <ul>
+            <li>Level 0 contains only the root node.</li>
+            <li>Level 1 contains the children of the root node.</li>
+            <li>Level 2 contains the grandchildren of the root node, and so on.</li>
+        </ul>
+        <p>
+            We need to return an array where the i-th element represents the average value of all nodes at the i-th level of the tree.
+        </p>
+        <p>
+            This problem is a perfect fit for a Breadth-First Search (BFS) approach, as BFS traverses the tree level by level. We'll use a queue to keep track of nodes at each level and calculate the average as we go.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Level Order Traversal (BFS)</h2>
+        <p>
+            To solve this problem, we'll use a Breadth-First Search (BFS) approach to traverse the tree level by level.
+        </p>
+        <p>
+            Here's the step-by-step approach:
+        </p>
+        <ol>
+            <li>Initialize an empty array called <code>averages</code> to store the average value at each level.</li>
+            <li>Initialize a queue with the root node.</li>
+            <li>While the queue is not empty:
+                <ul>
+                    <li>Get the size of the queue, which represents the number of nodes at the current level.</li>
+                    <li>Initialize a sum variable to 0 to store the sum of values at the current level.</li>
+                    <li>Process all nodes at the current level by dequeuing them one by one.</li>
+                    <li>For each dequeued node, add its value to the sum and enqueue its left and right children if they exist.</li>
+                    <li>After processing all nodes at the current level, calculate the average by dividing the sum by the number of nodes at that level.</li>
+                    <li>Add the average to the <code>averages</code> array.</li>
+                </ul>
+            </li>
+            <li>Return the <code>averages</code> array.</li>
+        </ol>
+        
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <pre>
+Example: root = [3,9,20,null,null,15,7]
+
+Initialize: queue = [3], averages = []
+
+Iteration 1: Process level 0
+  Current queue size = 1 (one node at level 0)
+  Sum = 3
+  Dequeue 3, add to sum: sum = 3
+  Enqueue children: queue = [9, 20]
+  Average = 3 / 1 = 3
+  Add to averages: averages = [3]
+
+Iteration 2: Process level 1
+  Current queue size = 2 (two nodes at level 1)
+  Sum = 0
+  Dequeue 9, add to sum: sum = 9
+  9 has no children
+  Dequeue 20, add to sum: sum = 29
+  Enqueue children: queue = [15, 7]
+  Average = 29 / 2 = 14.5
+  Add to averages: averages = [3, 14.5]
+
+Iteration 3: Process level 2
+  Current queue size = 2 (two nodes at level 2)
+  Sum = 0
+  Dequeue 15, add to sum: sum = 15
+  15 has no children
+  Dequeue 7, add to sum: sum = 22
+  7 has no children
+  Average = 22 / 2 = 11
+  Add to averages: averages = [3, 14.5, 11]
+
+Queue is now empty, so we exit the loop.
+
+Final result: [3, 14.5, 11]</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the implementation of the algorithm using Python:
+        </p>
+        
+        <pre>
+from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def averageOfLevels(root):
+    <span class="comment">"""Calculate the average value of nodes at each level in a binary tree.
+    
+    Args:
+        root: The root of the binary tree
+        
+    Returns:
+        A list of average values, where the i-th element is the average of level i
+    """</span>
+    if not root:
+        return []
+    
+    # Initialize the result list and queue for BFS
+    averages = []
+    queue = deque([root])
+    
+    # Process level by level
+    while queue:
+        level_size = len(queue)  # Number of nodes at current level
+        level_sum = 0            # Sum of values at current level
+        
+        # Process all nodes at the current level
+        for _ in range(level_size):
+            node = queue.popleft()
+            level_sum += node.val
+            
+            # Add children to the queue for next level processing
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        
+        # Calculate average and add to result
+        level_average = level_sum / level_size
+        averages.append(level_average)
+    
+    return averages</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n) where n is the number of nodes in the tree. We visit each node exactly once.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(m) where m is the maximum number of nodes at any level in the input tree. In the worst case, this could be n/2 for a complete binary tree, which simplifies to O(n).
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation</h2>
+        <p>
+            Here's an alternative implementation that uses a more concise approach with the same underlying logic:
+        </p>
+        
+        <pre>
+def averageOfLevels_alternative(root):
+    <span class="comment">"""A more concise implementation to calculate level averages.
+    
+    Args:
+        root: The root of the binary tree
+        
+    Returns:
+        A list of average values for each level
+    """</span>
+    if not root:
+        return []
+    
+    averages = []
+    current_level = [root]
+    
+    while current_level:
+        # Calculate sum of node values at current level
+        level_sum = sum(node.val for node in current_level)
+        level_size = len(current_level)
+        
+        # Add average to result
+        averages.append(level_sum / level_size)
+        
+        # Build next level
+        next_level = []
+        for node in current_level:
+            if node.left:
+                next_level.append(node.left)
+            if node.right:
+                next_level.append(node.right)
+        
+        # Move to next level
+        current_level = next_level
+    
+    return averages</pre>
+
+        <p>
+            This alternative implementation uses a list to store the nodes at the current level rather than a queue. It calculates the sum of values using a list comprehension and then builds the next level from the current level. The logic is the same, but it's a slightly different way of implementing the level-by-level traversal.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Handling Edge Cases and Potential Issues</h2>
+        <p>Some edge cases and issues to consider:</p>
+        <ul>
+            <li><strong>Empty tree:</strong> If the root is null, we return an empty array.</li>
+            <li><strong>Single node tree:</strong> If there's only one node (the root), we return an array with a single element containing the value of the root.</li>
+            <li><strong>Integer overflow:</strong> The problem states that node values can be as large as 2<sup>31</sup>-1 or as small as -2<sup>31</sup>. If we're concerned about integer overflow when calculating the sum, we could use a language that handles large integers automatically (like Python) or use a long integer type.</li>
+            <li><strong>Precision issues:</strong> When calculating averages, we might get floating-point values. Depending on the requirements, we might need to format the output with a specific precision.</li>
+        </ul>
+        <p>Our implementation handles all these cases correctly.</p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples provided in the problem statement:
+        </p>
+        
+        <pre>
+# Example 1
+root1 = TreeNode(3)
+root1.left = TreeNode(9)
+root1.right = TreeNode(20)
+root1.right.left = TreeNode(15)
+root1.right.right = TreeNode(7)
+
+print(averageOfLevels(root1))  # Output: [3.0, 14.5, 11.0]
+
+# Example 2
+root2 = TreeNode(3)
+root2.left = TreeNode(9)
+root2.right = TreeNode(20)
+root2.left.left = TreeNode(15)
+root2.left.right = TreeNode(7)
+root2.right.left = TreeNode(2)
+root2.right.right = TreeNode(9)
+
+print(averageOfLevels(root2))  # Output: [3.0, 14.5, 8.25]</pre>
+
+        <h3>Related Problems</h3>
+        <p>
+            This problem is a variation of level order traversal. Similar problems include:
+        </p>
+        <ul>
+            <li>Binary Tree Level Order Traversal</li>
+            <li>Binary Tree Zigzag Level Order Traversal</li>
+            <li>Find Largest Value in Each Tree Row</li>
+            <li>Binary Tree Right Side View</li>
+        </ul>
+        <p>
+            Understanding how to perform level-by-level traversal of a tree is a fundamental technique that can be applied to solve many tree-related problems.
+        </p>
+    </div>
+</body>
+</html>

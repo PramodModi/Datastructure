@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Right View of Binary Tree Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tree-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        .tree-node.visible {
+            background-color: #e74c3c;
+            border: 2px solid #c0392b;
+        }
+        .tree-node.hidden {
+            background-color: #7f8c8d;
+            border: 2px solid #34495e;
+        }
+        .empty-node {
+            width: 40px;
+            height: 0;
+            margin: 0 10px;
+        }
+        .connector {
+            position: relative;
+            height: 20px;
+        }
+        .connector::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 20px;
+            width: 2px;
+            background-color: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Right View of Binary Tree</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given the root of a binary tree, imagine yourself standing on the right side of it. Return the values of the nodes you can see ordered from top to bottom.
+        </p>
+        
+        <div class="example">
+            <h3>Example 1:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node visible">1</div>
+                </div>
+                <div class="connector"></div>
+                <div class="tree-level">
+                    <div class="tree-node hidden">2</div>
+                    <div class="tree-node visible">3</div>
+                </div>
+                <div class="connector"></div>
+                <div class="tree-level">
+                    <div class="empty-node"></div>
+                    <div class="tree-node hidden">5</div>
+                    <div class="empty-node"></div>
+                    <div class="tree-node visible">4</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [1,2,3,null,5,null,4]</p>
+            <p><strong>Output:</strong> [1,3,4]</p>
+            <p><strong>Explanation:</strong> If you're standing on the right side of the tree, you can see nodes 1, 3, and 4.</p>
+        </div>
+        
+        <div class="example">
+            <h3>Example 2:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node visible">1</div>
+                </div>
+                <div class="connector"></div>
+                <div class="tree-level">
+                    <div class="empty-node"></div>
+                    <div class="tree-node visible">3</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [1,null,3]</p>
+            <p><strong>Output:</strong> [1,3]</p>
+            <p><strong>Explanation:</strong> If you're standing on the right side of the tree, you can see nodes 1 and 3.</p>
+        </div>
+        
+        <div class="example">
+            <h3>Example 3:</h3>
+            <p><strong>Input:</strong> root = []</p>
+            <p><strong>Output:</strong> []</p>
+            <p><strong>Explanation:</strong> The tree is empty.</p>
+        </div>
+        
+        <h3>Constraints:</h3>
+        <ul>
+            <li>The number of nodes in the tree is in the range [0, 100].</li>
+            <li>-100 <= Node.val <= 100</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to return the nodes that would be visible if we were standing to the right side of the binary tree and looking towards the left. 
+        </p>
+        <p>
+            The right view of a binary tree includes:
+        </p>
+        <ul>
+            <li>The rightmost node at each level of the tree</li>
+            <li>Nodes that are visible when viewing the tree from the right side</li>
+        </ul>
+        <p>
+            For example, in the first example:
+        </p>
+        <ul>
+            <li>At the top level (level 0), we can see node 1.</li>
+            <li>At the second level (level 1), we can see node 3 (as it's the rightmost node at this level).</li>
+            <li>At the third level (level 2), we can see node 4 (as it's the rightmost node at this level).</li>
+        </ul>
+        <p>
+            So the right view is [1, 3, 4].
+        </p>
+        <p>
+            This problem is an extension of the level order traversal of a binary tree. We need to find the rightmost node at each level.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Breadth-First Search (BFS)</h2>
+        <p>
+            We can solve this problem using a Breadth-First Search (BFS) approach to traverse the tree level by level. The key insight is that for each level, the rightmost node is the last node we process in our level-order traversal.
+        </p>
+        <p>
+            Here's the step-by-step approach:
+        </p>
+        <ol>
+            <li>If the root is null, return an empty list.</li>
+            <li>Initialize a queue with the root node.</li>
+            <li>Initialize an empty list to store the right view nodes.</li>
+            <li>While the queue is not empty:</li>
+            <ul>
+                <li>Get the size of the current level.</li>
+                <li>Process all nodes at the current level.</li>
+                <li>For each node in the current level, add its children to the queue.</li>
+                <li>When we process the last node in the current level, add its value to our result list (this is the rightmost node at the current level).</li>
+            </ul>
+            <li>Return the result list.</li>
+        </ol>
+        
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>Let's trace through the algorithm for the first example:</p>
+            <pre>
+Tree structure:
+    1
+   / \
+  2   3
+   \   \
+    5   4
+
+Initialize: queue = [1], result = []
+
+Iteration 1: Process level 0
+  Queue: [1]
+  Last node at this level is 1, add to result
+  Add children of 1 to queue: queue = [2, 3]
+  Result after level 0: [1]
+
+Iteration 2: Process level 1
+  Queue: [2, 3]
+  Process node 2: Add its child to queue: queue = [3, 5]
+  Process node 3: Add its child to queue: queue = [5, 4]
+  Last node at this level is 3, add to result
+  Result after level 1: [1, 3]
+
+Iteration 3: Process level 2
+  Queue: [5, 4]
+  Process node 5: No children
+  Process node 4: No children
+  Last node at this level is 4, add to result
+  Result after level 2: [1, 3, 4]
+
+Queue is empty, exit loop
+Final result: [1, 3, 4]</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the right view of a binary tree using the BFS approach:
+        </p>
+        
+        <pre>
+from collections import deque
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def rightSideView(root):
+    <span class="comment">"""Return the right view of a binary tree.
+    
+    Args:
+        root: The root of the binary tree
+        
+    Returns:
+        A list containing the values of the nodes visible from the right side
+    """</span>
+    if not root:
+        return []
+        
+    result = []  # To store the right view nodes
+    queue = deque([root])
+    
+    while queue:
+        level_size = len(queue)
+        
+        # Process all nodes at the current level
+        for i in range(level_size):
+            node = queue.popleft()
+            
+            # If this is the last node of the current level, add it to result
+            if i == level_size - 1:
+                result.append(node.val)
+            
+            # Add children to the queue
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+    
+    return result</pre>
+
+        <h3>Alternative Implementation</h3>
+        <p>
+            Another approach to solve this problem is to simply keep track of the last node we process at each level:
+        </p>
+        
+        <pre>
+from collections import deque
+
+def rightSideView_alt(root):
+    <span class="comment">"""Return the right view of a binary tree (alternative approach).
+    
+    Args:
+        root: The root of the binary tree
+        
+    Returns:
+        A list containing the values of the nodes visible from the right side
+    """</span>
+    result = []
+    if not root:
+        return result
+    
+    queue = deque([root])
+    
+    while queue:
+        level_size = len(queue)
+        current_val = None  # Value of the rightmost node at current level
+        
+        for _ in range(level_size):
+            node = queue.popleft()
+            current_val = node.val  # Update current_val with each node's value
+            
+            # Add children to the queue
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        
+        # After processing all nodes at this level, current_val will be the value of the rightmost node
+        result.append(current_val)
+    
+    return result</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n) where n is the number of nodes in the binary tree. We visit each node exactly once during the BFS traversal.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(w) where w is the maximum width of the tree. In the worst case, the queue might contain all nodes at the level with maximum width, which is O(n/2) ≈ O(n) for a complete binary tree.
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Depth-First Search (DFS) Approach</h2>
+        <p>
+            We can also solve this problem using a Depth-First Search (DFS) approach. The idea is to prioritize the right side by traversing the tree in a right-to-left, level-by-level manner.
+        </p>
+        
+        <pre>
+def rightSideView_dfs(root):
+    <span class="comment">"""Return the right view of a binary tree using DFS.
+    
+    Args:
+        root: The root of the binary tree
+        
+    Returns:
+        A list containing the values of the nodes visible from the right side
+    """</span>
+    result = []
+    
+    def dfs(node, level):
+        if not node:
+            return
+        
+        # If this is the first node we're visiting at this level
+        if level == len(result):
+            result.append(node.val)
+        
+        # Visit right child first, then left child
+        if node.right:
+            dfs(node.right, level + 1)
+        if node.left:
+            dfs(node.left, level + 1)
+    
+    dfs(root, 0)
+    return result</pre>
+
+        <p>
+            In this DFS approach:
+        </p>
+        <ol>
+            <li>We use a recursive function that takes a node and its level as arguments.</li>
+            <li>We traverse the tree in a pre-order fashion but prioritize the right subtree (right-to-left).</li>
+            <li>For each level, we only add the first node we encounter to our result list, which will be the rightmost node due to our traversal order.</li>
+        </ol>
+        <p>
+            <strong>Time Complexity:</strong> O(n) where n is the number of nodes in the binary tree. We visit each node exactly once.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(h) where h is the height of the tree, due to the recursive call stack. In the worst case (skewed tree), this could be O(n).
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples provided in the problem:
+        </p>
+        
+        <pre>
+# Example 1
+root1 = TreeNode(1)
+root1.left = TreeNode(2)
+root1.right = TreeNode(3)
+root1.left.right = TreeNode(5)
+root1.right.right = TreeNode(4)
+
+print(rightSideView(root1))  # Output: [1, 3, 4]
+
+# Example 2
+root2 = TreeNode(1)
+root2.right = TreeNode(3)
+
+print(rightSideView(root2))  # Output: [1, 3]
+
+# Example 3
+root3 = None
+print(rightSideView(root3))  # Output: []</pre>
+
+        <h3>Edge Cases</h3>
+        <p>
+            The implementation handles these edge cases correctly:
+        </p>
+        <ul>
+            <li><strong>Empty tree:</strong> Returns an empty list.</li>
+            <li><strong>Single node tree:</strong> Returns a list with just the root value.</li>
+            <li><strong>Skewed tree:</strong> Returns the rightmost nodes at each level.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Comparison of BFS vs DFS for This Problem</h2>
+        <p>
+            Both BFS and DFS can effectively solve this problem, but they have different characteristics:
+        </p>
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <tr style="background-color: #f2f2f2;">
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">BFS Approach</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">DFS Approach</th>
+            </tr>
+            <tr>
+                <td style="border: 1px solid #ddd; padding: 8px;">
+                    <ul>
+                        <li>Processes the tree level by level</li>
+                        <li>More intuitive for this problem as we're looking for the rightmost node at each level</li>
+                        <li>Requires a queue data structure</li>
+                        <li>Space complexity is proportional to the maximum width of the tree</li>
+                    </ul>
+                </td>
+                <td style="border: 1px solid #ddd; padding: 8px;">
+                    <ul>
+                        <li>Traverses the tree recursively with a right-first approach</li>
+                        <li>Elegant solution with fewer lines of code</li>
+                        <li>Uses the call stack for recursion</li>
+                        <li>Space complexity is proportional to the height of the tree</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>
+        <p>
+            For most balanced binary trees, both approaches would have similar performance. For very wide trees, DFS might be more space-efficient, while for very deep trees, BFS would be more space-efficient.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Related Problems</h2>
+        <p>
+            Similar problems that use tree traversal techniques include:
+        </p>
+        <ul>
+            <li><strong>Left View of Binary Tree:</strong> Similar to the right view but from the left side. To solve it, you can either modify the right view algorithm to prioritize left nodes or reverse the result of a modified right view algorithm.</li>
+            <li><strong>Top View of Binary Tree:</strong> Nodes visible from the top of the tree.</li>
+            <li><strong>Bottom View of Binary Tree:</strong> Nodes visible from the bottom of the tree.</li>
+            <li><strong>Boundary Traversal of Binary Tree:</strong> Traversal of boundary nodes (leftmost, leaves, and rightmost).</li>
+            <li><strong>Vertical Order Traversal:</strong> Nodes organized by their horizontal distance from the root.</li>
+        </ul>
+        <p>
+            Understanding tree traversal algorithms is crucial for tackling these problems efficiently.
+        </p>
+    </div>
+</body>
+</html>
