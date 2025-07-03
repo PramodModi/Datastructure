@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search in Rotated Array Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .step-by-step {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+        .array-visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        .array-element {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #666;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .array-element.target {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .array-element.pivot {
+            background-color: #cce5ff;
+            border-color: #007bff;
+        }
+        .array-element.current {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+        .array-index {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Search in Rotated Array</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            There is an integer array <code>nums</code> sorted in ascending order (with distinct values).
+        </p>
+        <p>
+            Prior to being passed to your function, <code>nums</code> is possibly rotated at an unknown pivot index <code>k</code> (1 ≤ k < nums.length) such that the resulting array is <code>[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]</code> (0-indexed).
+        </p>
+        <p>
+            For example, <code>[0,1,2,4,5,6,7]</code> might be rotated at pivot index 3 and become <code>[4,5,6,7,0,1,2]</code>.
+        </p>
+        <p>
+            Given the array <code>nums</code> after the possible rotation and an integer <code>target</code>, return the index of <code>target</code> if it is in <code>nums</code>, or <code>-1</code> if it is not in <code>nums</code>.
+        </p>
+        <p>
+            You must write an algorithm with O(log n) runtime complexity.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: nums = [4,5,6,7,0,1,2], target = 3
+Output: -1
+</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 3:</h3>
+            <pre>
+Input: nums = [1], target = 0
+Output: -1
+</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>1 ≤ nums.length ≤ 5000</li>
+            <li>-10<sup>4</sup> ≤ nums[i] ≤ 10<sup>4</sup></li>
+            <li>All values of nums are unique.</li>
+            <li>nums is an ascending array that is possibly rotated.</li>
+            <li>-10<sup>4</sup> ≤ target ≤ 10<sup>4</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we have a sorted array that has been rotated around a pivot point. For example, a sorted array <code>[1,2,3,4,5,6,7]</code> might be rotated to become <code>[4,5,6,7,1,2,3]</code>. Our task is to find a target element in this rotated array in O(log n) time complexity.
+        </p>
+        <p>
+            The key characteristic of a rotated sorted array is that it consists of two sorted subarrays. In our example <code>[4,5,6,7,1,2,3]</code>, the subarrays <code>[4,5,6,7]</code> and <code>[1,2,3]</code> are both sorted, but the entire array is not sorted.
+        </p>
+        <p>
+            Since the problem requires O(log n) time complexity, we need to use a variation of binary search. The challenge is to determine which subarray contains the target element.
+        </p>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">4</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element">5</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">6</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element">7</div>
+                <div class="array-index">3</div>
+            </div>
+            <div>
+                <div class="array-element target">0</div>
+                <div class="array-index">4</div>
+            </div>
+            <div>
+                <div class="array-element">1</div>
+                <div class="array-index">5</div>
+            </div>
+            <div>
+                <div class="array-element">2</div>
+                <div class="array-index">6</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Target = 0, Located at index 4</span>
+            </div>
+        </div>
+
+        <p>
+            Notice that the array <code>[4,5,6,7,0,1,2]</code> is rotated, with the pivot between indices 3 and 4. The target 0 is located at index 4.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Modified Binary Search</h2>
+        <p>
+            To solve this problem efficiently, we'll use a modified binary search algorithm. The key insight is that in a rotated sorted array, at least one half of the array will always be sorted.
+        </p>
+        <p>
+            Here's our approach:
+        </p>
+        <ol>
+            <li>Perform a binary search by finding the middle element of the array.</li>
+            <li>Check if the middle element is the target. If yes, return the middle index.</li>
+            <li>Determine which half of the array is sorted:
+                <ul>
+                    <li>If <code>nums[left] ≤ nums[mid]</code>, then the left half is sorted.</li>
+                    <li>Otherwise, the right half is sorted.</li>
+                </ul>
+            </li>
+            <li>Based on which half is sorted and the value of the target, decide which half to continue the search:</li>
+            <li>If the left half is sorted:</li>
+            <ul>
+                <li>Check if the target lies within the sorted left half (<code>nums[left] ≤ target < nums[mid]</code>).</li>
+                <li>If yes, search in the left half.</li>
+                <li>If no, search in the right half.</li>
+            </ul>
+            <li>If the right half is sorted:</li>
+            <ul>
+                <li>Check if the target lies within the sorted right half (<code>nums[mid] < target ≤ nums[right]</code>).</li>
+                <li>If yes, search in the right half.</li>
+                <li>If no, search in the left half.</li>
+            </ul>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of the Approach</h3>
+            <p>Let's trace through the algorithm for <code>nums = [4,5,6,7,0,1,2]</code> and <code>target = 0</code>:</p>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Left</th>
+                    <th>Right</th>
+                    <th>Mid</th>
+                    <th>nums[Mid]</th>
+                    <th>Which half is sorted?</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>6</td>
+                    <td>3</td>
+                    <td>7</td>
+                    <td>Left half (4,5,6,7) is sorted</td>
+                    <td>target (0) is not in the sorted left half, so search right half</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>4</td>
+                    <td>6</td>
+                    <td>5</td>
+                    <td>1</td>
+                    <td>Right half (1,2) is sorted</td>
+                    <td>target (0) is not in the sorted right half, so search left half</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>0</td>
+                    <td>-</td>
+                    <td>target (0) found at index 4</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of our modified binary search algorithm for searching in a rotated sorted array:
+        </p>
+
+        <pre>
+def search(nums, target):
+    <span class="comment">"""Search for target in a rotated sorted array.
+    
+    Args:
+        nums: A rotated sorted array of integers with distinct values
+        target: The target value to search for
+        
+    Returns:
+        The index of target if found, otherwise -1
+    """</span>
+    left, right = 0, len(nums) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        
+        # If we found the target, return its index
+        if nums[mid] == target:
+            return mid
+        
+        # Check which half is sorted
+        if nums[left] <= nums[mid]:  # Left half is sorted
+            # Check if target is in the sorted left half
+            if nums[left] <= target < nums[mid]:
+                right = mid - 1  # Search in the left half
+            else:
+                left = mid + 1   # Search in the right half
+        else:  # Right half is sorted
+            # Check if target is in the sorted right half
+            if nums[mid] < target <= nums[right]:
+                left = mid + 1   # Search in the right half
+            else:
+                right = mid - 1  # Search in the left half
+    
+    # Target not found
+    return -1</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(log n), where n is the length of the array. In each step, we eliminate half of the array, which gives us a logarithmic time complexity.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.
+        </p>
+    </div>
+
+    <div class="section step-by-step">
+        <h2>Step-by-Step Walkthrough</h2>
+        <p>
+            Let's trace through our algorithm for <code>nums = [4,5,6,7,0,1,2]</code> and <code>target = 0</code>:
+        </p>
+        <ol>
+            <li>
+                Initialize <code>left = 0</code>, <code>right = 6</code>.
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 6) // 2 = 3</code></li>
+                    <li><code>nums[mid] = nums[3] = 7</code></li>
+                    <li>Since <code>7 != 0</code>, we need to determine which half to search.</li>
+                    <li>Check which half is sorted: <code>nums[left] = 4 <= nums[mid] = 7</code>, so the left half is sorted.</li>
+                    <li>Is target in the sorted left half? <code>nums[left] = 4 <= target = 0 < nums[mid] = 7</code>? No, so we search the right half.</li>
+                    <li>Update <code>left = mid + 1 = 4</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li>Calculate <code>mid = (4 + 6) // 2 = 5</code></li>
+                    <li><code>nums[mid] = nums[5] = 1</code></li>
+                    <li>Since <code>1 != 0</code>, we need to determine which half to search.</li>
+                    <li>Check which half is sorted: <code>nums[left] = 0 <= nums[mid] = 1</code>, so the left half is sorted.</li>
+                    <li>Is target in the sorted left half? <code>nums[left] = 0 <= target = 0 < nums[mid] = 1</code>? Yes, so we search the left half.</li>
+                    <li>Update <code>right = mid - 1 = 4</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Third iteration:
+                <ul>
+                    <li>Calculate <code>mid = (4 + 4) // 2 = 4</code></li>
+                    <li><code>nums[mid] = nums[4] = 0</code></li>
+                    <li>Since <code>0 == 0</code>, we found the target at index 4.</li>
+                </ul>
+            </li>
+            <li>
+                Return <code>4</code>.
+            </li>
+        </ol>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">4</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element">5</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">6</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element current">7</div>
+                <div class="array-index">3 (mid)</div>
+            </div>
+            <div>
+                <div class="array-element target">0</div>
+                <div class="array-index">4</div>
+            </div>
+            <div>
+                <div class="array-element">1</div>
+                <div class="array-index">5</div>
+            </div>
+            <div>
+                <div class="array-element">2</div>
+                <div class="array-index">6</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>First iteration: mid = 3, left half is sorted, target is in right half</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Extension: Searching in a Rotated Array with Duplicates</h2>
+        <p>
+            A variation of this problem is when the rotated array may contain duplicate elements. In this case, our algorithm needs a slight modification to handle scenarios where <code>nums[left] == nums[mid] == nums[right]</code>.
+        </p>
+        <p>
+            When we encounter such a case, we cannot determine which half is sorted, so we need to incrementally move the boundaries:
+        </p>
+
+        <pre>
+def searchWithDuplicates(nums, target):
+    <span class="comment">"""Search for target in a rotated sorted array that may contain duplicates.
+    
+    Args:
+        nums: A rotated sorted array of integers that may contain duplicates
+        target: The target value to search for
+        
+    Returns:
+        The index of target if found, otherwise -1
+    """</span>
+    left, right = 0, len(nums) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        
+        # If we found the target, return its index
+        if nums[mid] == target:
+            return mid
+        
+        # Handle the case with duplicates
+        if nums[left] == nums[mid] and nums[mid] == nums[right]:
+            left += 1
+            right -= 1
+        # Check which half is sorted
+        elif nums[left] <= nums[mid]:  # Left half is sorted
+            # Check if target is in the sorted left half
+            if nums[left] <= target < nums[mid]:
+                right = mid - 1  # Search in the left half
+            else:
+                left = mid + 1   # Search in the right half
+        else:  # Right half is sorted
+            # Check if target is in the sorted right half
+            if nums[mid] < target <= nums[right]:
+                left = mid + 1   # Search in the right half
+            else:
+                right = mid - 1  # Search in the left half
+    
+    # Target not found
+    return -1</pre>
+
+        <p>
+            With this modification, the time complexity becomes O(n) in the worst case (when the array contains all duplicates), but remains O(log n) on average.
+        </p>
+
+        <h3>Example with Duplicates</h3>
+        <div class="example">
+            <pre>
+Input: nums = [2,5,6,0,0,1,2], target = 0
+Output: 3 or 4 (both are valid)
+</pre>
+        </div>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">2</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element">5</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">6</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element target">0</div>
+                <div class="array-index">3</div>
+            </div>
+            <div>
+                <div class="array-element target">0</div>
+                <div class="array-index">4</div>
+            </div>
+            <div>
+                <div class="array-element">1</div>
+                <div class="array-index">5</div>
+            </div>
+            <div>
+                <div class="array-element">2</div>
+                <div class="array-index">6</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Target = 0, Could be at index 3 or 4</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Edge Cases and Optimizations</h2>
+        <p>
+            Here are some edge cases to consider:
+        </p>
+        <ol>
+            <li>
+                <strong>Empty array</strong>: If the array is empty, we should return -1. Our implementation handles this correctly as the while loop condition would not be met initially.
+            </li>
+            <li>
+                <strong>Single element array</strong>: If the array has only one element, our binary search will work correctly. If that element is the target, we return its index; otherwise, we return -1.
+            </li>
+            <li>
+                <strong>Not rotated array</strong>: If the array is sorted but not rotated, our algorithm still works correctly because it properly handles the case where the left half is completely sorted.
+            </li>
+            <li>
+                <strong>Target not in array</strong>: If the target is not in the array, our search will eventually exhaust all possible ranges and return -1.
+            </li>
+        </ol>
+
+        <h3>Optimization: Finding the Pivot First</h3>
+        <p>
+            An alternative approach is to first find the pivot (the smallest element) in the rotated array, which would give us the rotation point. Then we can perform a standard binary search on the appropriate half of the array.
+        </p>
+
+        <pre>
+def search_using_pivot(nums, target):
+    <span class="comment">"""Search by first finding the pivot and then performing binary search."""
+</span>
+    # Find the pivot (smallest element)
+    pivot = find_pivot(nums)
+    
+    # If the array is not rotated, perform standard binary search
+    if pivot == 0:
+        return binary_search(nums, 0, len(nums) - 1, target)
+    
+    # If target is >= nums[0], search in the left side of pivot
+    if target >= nums[0]:
+        return binary_search(nums, 0, pivot - 1, target)
+    # Otherwise, search in the right side of pivot
+    else:
+        return binary_search(nums, pivot, len(nums) - 1, target)
+
+def find_pivot(nums):
+    <span class="comment">"""Find the index of the smallest element in the rotated array."""
+</span>
+    left, right = 0, len(nums) - 1
+    
+    # If array is not rotated
+    if nums[left] < nums[right]:
+        return 0
+    
+    while left < right:
+        mid = (left + right) // 2
+        
+        if nums[mid] > nums[right]:
+            left = mid + 1
+        else:
+            right = mid
+    
+    return left
+
+def binary_search(nums, left, right, target):
+    <span class="comment">"""Standard binary search implementation."""
+</span>
+    while left <= right:
+        mid = (left + right) // 2
+        
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    return -1</pre>
+
+        <p>
+            This approach can be more intuitive for some, but it requires an additional O(log n) operation to find the pivot. The overall time complexity remains O(log n).
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            The Search in Rotated Array problem is related to several other binary search variations:
+        </p>
+        <ul>
+            <li>
+                <strong>Find Minimum in Rotated Sorted Array</strong>: Find the minimum element in a rotated sorted array.
+            </li>
+            <li>
+                <strong>Search in Rotated Sorted Array II</strong>: Same as this problem, but with duplicates allowed.
+            </li>
+            <li>
+                <strong>Rotation Count</strong>: Count how many times a sorted array has been rotated.
+            </li>
+            <li>
+                <strong>Search in Almost Sorted Array</strong>: Find an element in an array where each element is at most k positions away from its sorted position.
+            </li>
+            <li>
+                <strong>Find Peak Element</strong>: Find a peak element in an array (an element greater than its neighbors).
+            </li>
+        </ul>
+        <p>
+            Understanding the solution to the Search in Rotated Array problem provides insights into handling more complex search scenarios where the traditional binary search algorithm needs to be adapted.
+        </p>
+    </div>
+</body>
+</html>

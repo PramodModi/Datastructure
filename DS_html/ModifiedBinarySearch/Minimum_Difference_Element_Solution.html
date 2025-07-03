@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Difference Element Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .step-by-step {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+        .array-visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .array-element {
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #666;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .array-element.target {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .array-element.closest {
+            background-color: #cce5ff;
+            border-color: #007bff;
+        }
+        .array-element.current {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+        .array-index {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .diff-indicator {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minimum Difference Element</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given an array of numbers sorted in ascending order, find the element in the array that has the minimum difference with the given 'key'.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: [4, 6, 10], key = 7
+Output: 6
+Explanation: The difference between the key '7' and '6' is minimum than any other number in the array</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: [4, 6, 10], key = 4
+Output: 4
+Explanation: The difference between the key '4' and '4' is minimum than any other number in the array</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 3:</h3>
+            <pre>
+Input: [1, 3, 8, 10, 15], key = 12
+Output: 10
+Explanation: The difference between the key '12' and '10' is minimum than any other number in the array</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 4:</h3>
+            <pre>
+Input: [4, 6, 10], key = 17
+Output: 10
+Explanation: The difference between the key '17' and '10' is minimum than any other number in the array</pre>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to find the element in a sorted array that has the minimum absolute difference with a given key. The key itself may or may not be present in the array.
+        </p>
+        <p>
+            For example, if the array is [4, 6, 10] and the key is 7, we need to find the element that has the minimum absolute difference with 7:
+        </p>
+        <ul>
+            <li>Difference between 4 and 7: |4 - 7| = 3</li>
+            <li>Difference between 6 and 7: |6 - 7| = 1</li>
+            <li>Difference between 10 and 7: |10 - 7| = 3</li>
+        </ul>
+        <p>
+            The element with the minimum difference is 6, with a difference of 1.
+        </p>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">4</div>
+                <div class="array-index">0</div>
+                <div class="diff-indicator">|4-7| = 3</div>
+            </div>
+            <div>
+                <div class="array-element closest">6</div>
+                <div class="array-index">1</div>
+                <div class="diff-indicator">|6-7| = 1</div>
+            </div>
+            <div>
+                <div class="array-element">10</div>
+                <div class="array-index">2</div>
+                <div class="diff-indicator">|10-7| = 3</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Key = 7</span>
+            </div>
+        </div>
+
+        <p>
+            If the key is present in the array, the element with the minimum difference is the key itself (with a difference of 0).
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Modified Binary Search</h2>
+        <p>
+            Since the array is sorted, we can use binary search to efficiently find the element with the minimum difference. The key insight is that the element with the minimum difference will be one of the two closest elements to the key.
+        </p>
+        <p>
+            Here's our approach:
+        </p>
+        <ol>
+            <li>Perform a standard binary search to find the key or the closest elements to the key.</li>
+            <li>If the key is found, return it (the minimum difference is 0).</li>
+            <li>Otherwise, the binary search will terminate with <code>left > right</code>, and the closest elements will be at indices <code>right</code> and <code>left</code> (assuming they're both valid indices).</li>
+            <li>Compare the absolute differences between the key and these two elements, and return the one with the smaller difference.</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of the Approach</h3>
+            <p>Let's trace through the algorithm for <code>nums = [4, 6, 10]</code> and <code>key = 7</code>:</p>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Left</th>
+                    <th>Right</th>
+                    <th>Mid</th>
+                    <th>nums[Mid]</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>6</td>
+                    <td>key > nums[mid], so move left to mid+1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>10</td>
+                    <td>key < nums[mid], so move right to mid-1</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>left > right, search ends</td>
+                </tr>
+            </table>
+            <p>
+                After the search, <code>right = 1</code> (nums[right] = 6) and <code>left = 2</code> (nums[left] = 10). We compare the absolute differences:
+            </p>
+            <ul>
+                <li>|6 - 7| = 1</li>
+                <li>|10 - 7| = 3</li>
+            </ul>
+            <p>
+                The element with the minimum difference is 6, so we return 6.
+            </p>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of our modified binary search approach:
+        </p>
+
+        <pre>
+def find_minimum_difference_element(arr, key):
+    <span class="comment">"""Find the element in the sorted array with the minimum difference to the key.
+    
+    Args:
+        arr: A sorted array of integers
+        key: The target value to find the closest element to
+        
+    Returns:
+        The element in the array with the minimum difference to the key
+    """</span>
+    n = len(arr)
+    
+    # Edge cases
+    if key <= arr[0]:
+        return arr[0]
+    if key >= arr[n-1]:
+        return arr[n-1]
+    
+    left, right = 0, n - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        
+        if arr[mid] == key:
+            return arr[mid]  # Found exact match
+        
+        if arr[mid] < key:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    # At this point, left > right
+    # The closest elements are at indices right and left
+    # Compare the differences and return the element with smaller difference
+    if abs(arr[right] - key) <= abs(arr[left] - key):
+        return arr[right]
+    else:
+        return arr[left]</pre>
+
+        <h3>Optimized Implementation</h3>
+        <p>
+            We can simplify the code by recognizing that after binary search, if the key is not found, we need to compare the elements at <code>right</code> and <code>left</code> indices (which are the floor and ceiling of the key):
+        </p>
+
+        <pre>
+def find_minimum_difference_element_optimized(arr, key):
+    <span class="comment">"""Optimized implementation to find the element with minimum difference."""
+</span>
+    n = len(arr)
+    
+    # Edge cases
+    if key <= arr[0]:
+        return arr[0]
+    if key >= arr[n-1]:
+        return arr[n-1]
+    
+    left, right = 0, n - 1
+    
+    # Binary search to find the closest position
+    while left <= right:
+        mid = (left + right) // 2
+        
+        if arr[mid] == key:
+            return arr[mid]  # Found exact match
+        
+        if arr[mid] < key:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    # At this point, right is the index of the floor value (largest element smaller than key)
+    # and left is the index of the ceiling value (smallest element greater than key)
+    # Compare the differences and return the element with smaller difference
+    if (key - arr[right]) <= (arr[left] - key):
+        return arr[right]
+    else:
+        return arr[left]</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(log n), where n is the length of the array. Binary search reduces the search space by half in each step.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.
+        </p>
+    </div>
+
+    <div class="section step-by-step">
+        <h2>Step-by-Step Walkthrough</h2>
+        <p>
+            Let's trace through our algorithm for <code>arr = [1, 3, 8, 10, 15]</code> and <code>key = 12</code>:
+        </p>
+        <ol>
+            <li>
+                Edge cases: 12 is not outside the array range, so we proceed with binary search.
+            </li>
+            <li>
+                Initialize <code>left = 0</code>, <code>right = 4</code>.
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 4) // 2 = 2</code></li>
+                    <li><code>arr[mid] = arr[2] = 8</code></li>
+                    <li>Since <code>12 > 8</code>, set <code>left = mid + 1 = 3</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li>Calculate <code>mid = (3 + 4) // 2 = 3</code></li>
+                    <li><code>arr[mid] = arr[3] = 10</code></li>
+                    <li>Since <code>12 > 10</code>, set <code>left = mid + 1 = 4</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Third iteration:
+                <ul>
+                    <li>Calculate <code>mid = (4 + 4) // 2 = 4</code></li>
+                    <li><code>arr[mid] = arr[4] = 15</code></li>
+                    <li>Since <code>12 < 15</code>, set <code>right = mid - 1 = 3</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Now <code>left = 4</code> and <code>right = 3</code>, so <code>left > right</code> and the loop exits.
+            </li>
+            <li>
+                Compare the differences:
+                <ul>
+                    <li>Difference with <code>arr[right] = arr[3] = 10</code>: <code>|10 - 12| = 2</code></li>
+                    <li>Difference with <code>arr[left] = arr[4] = 15</code>: <code>|15 - 12| = 3</code></li>
+                </ul>
+            </li>
+            <li>
+                The element with the minimum difference is 10, so we return 10.
+            </li>
+        </ol>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">1</div>
+                <div class="array-index">0</div>
+                <div class="diff-indicator">|1-12| = 11</div>
+            </div>
+            <div>
+                <div class="array-element">3</div>
+                <div class="array-index">1</div>
+                <div class="diff-indicator">|3-12| = 9</div>
+            </div>
+            <div>
+                <div class="array-element">8</div>
+                <div class="array-index">2</div>
+                <div class="diff-indicator">|8-12| = 4</div>
+            </div>
+            <div>
+                <div class="array-element closest">10</div>
+                <div class="array-index">3</div>
+                <div class="diff-indicator">|10-12| = 2</div>
+            </div>
+            <div>
+                <div class="array-element">15</div>
+                <div class="array-index">4</div>
+                <div class="diff-indicator">|15-12| = 3</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Key = 12</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Edge Cases and Variations</h2>
+        <p>
+            Here are some important edge cases to consider:
+        </p>
+        <ol>
+            <li>
+                <strong>Key smaller than all elements</strong>: In this case, the first element of the array has the minimum difference.
+            </li>
+            <li>
+                <strong>Key larger than all elements</strong>: In this case, the last element of the array has the minimum difference.
+            </li>
+            <li>
+                <strong>Key equal to an array element</strong>: The element itself is returned (difference is 0).
+            </li>
+            <li>
+                <strong>Empty array</strong>: We should handle this case by returning an appropriate value or raising an exception.
+            </li>
+            <li>
+                <strong>Ties in minimum difference</strong>: If there are multiple elements with the same minimum difference, we might choose to return the smallest one or the first one encountered.
+            </li>
+        </ol>
+
+        <h3>Handling Ties</h3>
+        <p>
+            If we want to handle ties by returning the smallest element with the minimum difference, we can modify our approach:
+        </p>
+
+        <pre>
+def find_minimum_difference_with_ties(arr, key):
+    <span class="comment">"""Find the smallest element with minimum difference."""
+</span>
+    n = len(arr)
+    if n == 0:
+        raise ValueError("Array cannot be empty")
+    
+    # Edge cases
+    if key <= arr[0]:
+        return arr[0]
+    if key >= arr[n-1]:
+        return arr[n-1]
+    
+    # Perform binary search to find the floor and ceiling values
+    left, right = 0, n - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if arr[mid] == key:
+            return arr[mid]
+        elif arr[mid] < key:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    # Calculate differences
+    diff_left = abs(arr[left] - key) if left < n else float('inf')
+    diff_right = abs(arr[right] - key) if right >= 0 else float('inf')
+    
+    # Return the element with minimum difference
+    # If tie, return the smaller element
+    if diff_left == diff_right:
+        return min(arr[left], arr[right])
+    elif diff_left < diff_right:
+        return arr[left]
+    else:
+        return arr[right]</pre>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            The Minimum Difference Element problem is related to several other binary search problems:
+        </p>
+        <ul>
+            <li>
+                <strong>Binary Search</strong>: The basic algorithm to find an element in a sorted array.
+            </li>
+            <li>
+                <strong>Ceiling of a Number</strong>: Find the smallest element in a sorted array that is greater than or equal to a given number.
+            </li>
+            <li>
+                <strong>Floor of a Number</strong>: Find the largest element in a sorted array that is smaller than or equal to a given number.
+            </li>
+            <li>
+                <strong>Find K Closest Elements</strong>: Find K elements in the array that are closest to a given value.
+            </li>
+            <li>
+                <strong>Search Insert Position</strong>: Find the index where a target would be inserted in a sorted array.
+            </li>
+        </ul>
+        <p>
+            The Minimum Difference Element problem is essentially finding the element that is closest to the key by minimizing the absolute difference, which combines aspects of finding both the floor and ceiling of a number.
+        </p>
+
+        <h3>Real-World Applications</h3>
+        <p>
+            This problem has several real-world applications, including:
+        </p>
+        <ul>
+            <li>
+                <strong>Nearest Neighbor Search</strong>: Finding the nearest point in a database to a query point.
+            </li>
+            <li>
+                <strong>Recommendation Systems</strong>: Finding products, movies, or songs that closely match a user's preferences.
+            </li>
+            <li>
+                <strong>Time Series Analysis</strong>: Finding the closest data point in time series data.
+            </li>
+            <li>
+                <strong>Quantization</strong>: In signal processing, mapping a large set of input values to a smaller set of output values.
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

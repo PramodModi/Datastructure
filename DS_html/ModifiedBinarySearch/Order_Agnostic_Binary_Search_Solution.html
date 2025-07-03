@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order-agnostic Binary Search Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .step-by-step {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order-agnostic Binary Search</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given a sorted array of numbers, find if a given number 'target' is present in the array. Though we know that the array is sorted, we don't know if it's sorted in ascending or descending order. You should assume that the array can have duplicates.
+        </p>
+        <p>
+            Write a function to return the index of the 'target' if it is present in the array, otherwise return -1.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: nums = [1, 2, 3, 4, 5, 6, 7], target = 5
+Output: 4</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: nums = [10, 6, 4], target = 10
+Output: 0</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 3:</h3>
+            <pre>
+Input: nums = [-1, 0, 3, 5, 9, 12], target = 9
+Output: 4</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 4:</h3>
+            <pre>
+Input: nums = [-1, 0, 3, 5, 9, 12], target = 2
+Output: -1</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>1 ≤ nums.length ≤ 10<sup>4</sup></li>
+            <li>-10<sup>4</sup> < nums[i], target < 10<sup>4</sup></li>
+            <li>All the integers in nums are sorted (either ascending or descending).</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            This problem is a variation of the classic binary search algorithm. The key difference is that we don't know whether the array is sorted in ascending or descending order. We need to determine the order first and then perform a binary search accordingly.
+        </p>
+        <p>
+            In a standard binary search, we operate under the assumption that the array is sorted in ascending order. When we find that our target is greater than the middle element, we search in the right half, and when the target is less than the middle element, we search in the left half.
+        </p>
+        <p>
+            In this problem, we need to reverse our logic if the array is sorted in descending order. If the array is in descending order and our target is greater than the middle element, we should search in the left half (not the right half).
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            Our approach will be as follows:
+        </p>
+        <ol>
+            <li>Determine if the array is sorted in ascending or descending order by comparing the first and last elements.</li>
+            <li>Perform binary search based on the sorting order.</li>
+        </ol>
+        <p>
+            To determine the order:
+        </p>
+        <ul>
+            <li>If <code>array[0] < array[array.length-1]</code>, the array is sorted in ascending order.</li>
+            <li>If <code>array[0] > array[array.length-1]</code>, the array is sorted in descending order.</li>
+            <li>If <code>array[0] == array[array.length-1]</code>, we need to check other elements to determine the order (this happens when there are duplicates), or the array could be a single element.</li>
+        </ul>
+        <p>
+            Once we know the order, we apply the binary search algorithm with appropriate conditions for moving left and right pointers.
+        </p>
+
+        <div class="visualization">
+            <h3>Ascending Order Example</h3>
+            <p>Let's walk through the process for <code>nums = [1, 2, 3, 4, 5, 6, 7]</code>, <code>target = 5</code>:</p>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Left</th>
+                    <th>Right</th>
+                    <th>Mid</th>
+                    <th>nums[Mid]</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>6</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>target > nums[mid], so move left to mid+1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>4</td>
+                    <td>6</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>target < nums[mid], so move right to mid-1</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>target == nums[mid], found at index 4!</td>
+                </tr>
+            </table>
+
+            <h3>Descending Order Example</h3>
+            <p>Let's walk through the process for <code>nums = [10, 6, 4]</code>, <code>target = 10</code>:</p>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Left</th>
+                    <th>Right</th>
+                    <th>Mid</th>
+                    <th>nums[Mid]</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>6</td>
+                    <td>target > nums[mid], but array is descending, so move right to mid-1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>10</td>
+                    <td>target == nums[mid], found at index 0!</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the order-agnostic binary search:
+        </p>
+
+        <pre>
+def search(nums, target):
+    <span class="comment">"""Order-agnostic binary search.
+    
+    Args:
+        nums: A sorted array (either ascending or descending)
+        target: The value to search for
+        
+    Returns:
+        The index of target if found, otherwise -1
+    """</span>
+    left, right = 0, len(nums) - 1
+    
+    # Determine whether the array is sorted in ascending or descending order
+    is_ascending = nums[left] < nums[right]
+    
+    while left <= right:
+        # Calculate the middle index
+        mid = (left + right) // 2
+        
+        # Check if we've found the target
+        if nums[mid] == target:
+            return mid
+        
+        if is_ascending:
+            # If array is sorted in ascending order
+            if target > nums[mid]:
+                # Target is in the right half
+                left = mid + 1
+            else:
+                # Target is in the left half
+                right = mid - 1
+        else:
+            # If array is sorted in descending order
+            if target > nums[mid]:
+                # Target is in the left half
+                right = mid - 1
+            else:
+                # Target is in the right half
+                left = mid + 1
+    
+    # Target not found
+    return -1</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(log n), where n is the length of the array. Binary search reduces the search space by half in each step.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.
+        </p>
+    </div>
+
+    <div class="section step-by-step">
+        <h2>Step-by-Step Walkthrough</h2>
+        <p>
+            Let's trace through the algorithm for <code>nums = [-1, 0, 3, 5, 9, 12]</code>, <code>target = 9</code>:
+        </p>
+        <ol>
+            <li>
+                Initialize <code>left = 0</code>, <code>right = 5</code>.
+            </li>
+            <li>
+                Determine the order: <code>nums[0] = -1</code> and <code>nums[5] = 12</code>. Since <code>-1 < 12</code>, the array is sorted in ascending order. Set <code>is_ascending = true</code>.
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 5) // 2 = 2</code></li>
+                    <li><code>nums[mid] = nums[2] = 3</code></li>
+                    <li>Since <code>9 > 3</code> and the array is ascending, search in the right half. Set <code>left = mid + 1 = 3</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li>Calculate <code>mid = (3 + 5) // 2 = 4</code></li>
+                    <li><code>nums[mid] = nums[4] = 9</code></li>
+                    <li>Since <code>9 == 9</code>, we found the target at index 4.</li>
+                </ul>
+            </li>
+            <li>
+                Return <code>4</code>.
+            </li>
+        </ol>
+
+        <p>
+            Let's trace through another example: <code>nums = [10, 6, 4]</code>, <code>target = 10</code>:
+        </p>
+        <ol>
+            <li>
+                Initialize <code>left = 0</code>, <code>right = 2</code>.
+            </li>
+            <li>
+                Determine the order: <code>nums[0] = 10</code> and <code>nums[2] = 4</code>. Since <code>10 > 4</code>, the array is sorted in descending order. Set <code>is_ascending = false</code>.
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 2) // 2 = 1</code></li>
+                    <li><code>nums[mid] = nums[1] = 6</code></li>
+                    <li>Since <code>10 > 6</code> and the array is descending, search in the left half. Set <code>right = mid - 1 = 0</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 0) // 2 = 0</code></li>
+                    <li><code>nums[mid] = nums[0] = 10</code></li>
+                    <li>Since <code>10 == 10</code>, we found the target at index 0.</li>
+                </ul>
+            </li>
+            <li>
+                Return <code>0</code>.
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Edge Cases</h2>
+        <p>
+            Here are some edge cases to consider:
+        </p>
+        <ol>
+            <li>
+                <strong>Empty array</strong>: The function would return -1 as the while loop condition would not be met initially.            
+            </li>
+            <li>
+                <strong>Array with a single element</strong>: In this case, <code>left = right</code> and the order determination would give <code>is_ascending = true</code> (since the element is equal to itself). The algorithm still works correctly as there's only one element to compare with the target.
+            </li>
+            <li>
+                <strong>Array with all elements equal</strong>: If all elements are the same, the order determination gives <code>is_ascending = false</code> (as we check if <code>nums[left] < nums[right]</code>). This doesn't affect the algorithm as all elements have the same value.
+            </li>
+            <li>
+                <strong>Target not in the array</strong>: The function would return -1 after exhausting all possible indices.
+            </li>
+        </ol>
+        <p>
+            To handle the case where all elements are equal more robustly, we could modify our order determination logic to check more elements if the first and last are equal. However, for simplicity and since the problem states the array is sorted, the current implementation suffices.
+        </p>
+
+        <pre>
+# Alternative implementation to handle edge cases better
+def search_robust(nums, target):
+    if not nums:  # Handle empty array
+        return -1
+    
+    left, right = 0, len(nums) - 1
+    
+    # Determine the order
+    is_ascending = True
+    if nums[left] > nums[right]:
+        is_ascending = False
+    elif nums[left] == nums[right]:
+        # If first and last elements are equal, check more elements
+        for i in range(1, len(nums)):
+            if nums[i] != nums[0]:
+                is_ascending = nums[i] > nums[0]
+                break
+    
+    # Proceed with binary search as before
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] == target:
+            return mid
+        
+        if is_ascending:
+            if target > nums[mid]:
+                left = mid + 1
+            else:
+                right = mid - 1
+        else:
+            if target > nums[mid]:
+                right = mid - 1
+            else:
+                left = mid + 1
+    
+    return -1</pre>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            Order-agnostic binary search is a foundational concept that serves as a building block for more complex binary search problems. Here are some related problems that build on this concept:
+        </p>
+        <ul>
+            <li>
+                <strong>Search in a Sorted and Rotated Array</strong>: Search for a target value in a sorted array that has been rotated an unknown number of times.
+            </li>
+            <li>
+                <strong>Ceiling of a Number</strong>: Find the smallest element in a sorted array that is greater than or equal to a given number.
+            </li>
+            <li>
+                <strong>Next Letter</strong>: Find the smallest letter in an array that is greater than a given key.
+            </li>
+            <li>
+                <strong>Number Range</strong>: Find the first and last position of a given number in a sorted array.
+            </li>
+            <li>
+                <strong>Search in a Bitonic Array</strong>: A Bitonic array is one that first increases monotonically and then decreases monotonically.
+            </li>
+        </ul>
+        <p>
+            By mastering the order-agnostic binary search pattern, you'll be well-equipped to tackle these more complex binary search variations.
+        </p>
+    </div>
+</body>
+</html>

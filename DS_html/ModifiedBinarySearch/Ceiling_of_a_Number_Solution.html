@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ceiling of a Number Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .step-by-step {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+        .array-visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        .array-element {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #666;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .array-element.ceiling {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .array-element.target {
+            background-color: #cce5ff;
+            border-color: #007bff;
+        }
+        .array-element.current {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+        .array-index {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ceiling of a Number</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given an array of numbers sorted in ascending order, find the ceiling of a given number 'key'. The ceiling of the 'key' will be the smallest element in the given array greater than or equal to the 'key'.
+        </p>
+        <p>
+            Write a function to return the index of the ceiling of the 'key'. If there isn't any ceiling (all elements are smaller than the key), return the length of the array (which would be the position to insert the key).
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: [4, 6, 10], key = 6
+Output: 1
+Explanation: The smallest number greater than or equal to '6' is '6' having index '1'.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: [1, 3, 8, 10, 15], key = 12
+Output: 4
+Explanation: The smallest number greater than or equal to '12' is '15' having index '4'.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 3:</h3>
+            <pre>
+Input: [4, 6, 10], key = 17
+Output: 3
+Explanation: There is no number greater than or equal to '17' in the given array, so we return the next index (which is 3).</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 4:</h3>
+            <pre>
+Input: [4, 6, 10], key = -1
+Output: 0
+Explanation: The smallest number greater than or equal to '-1' is '4' having index '0'.</pre>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            The ceiling of a number is the smallest element in an array that is greater than or equal to the given number. Here's what we need to find:
+        </p>
+        <ul>
+            <li>If the key exists in the array, its ceiling is the key itself.</li>
+            <li>If the key doesn't exist, its ceiling is the smallest element greater than the key.</li>
+            <li>If all elements in the array are smaller than the key, there is no ceiling, and we should return the index where we would insert the key (which is the length of the array).</li>
+        </ul>
+        <p>
+            Since the array is already sorted in ascending order, we can use a binary search approach to find the ceiling efficiently.
+        </p>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">4</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element ceiling">6</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">10</div>
+                <div class="array-index">2</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Key = 6</span>
+            </div>
+        </div>
+
+        <p>
+            In the example above, the ceiling of 6 is the element 6 itself at index 1.
+        </p>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">1</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element">3</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">8</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element">10</div>
+                <div class="array-index">3</div>
+            </div>
+            <div>
+                <div class="array-element ceiling">15</div>
+                <div class="array-index">4</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Key = 12</span>
+            </div>
+        </div>
+
+        <p>
+            In this example, the ceiling of 12 is 15 at index 4.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Binary Search</h2>
+        <p>
+            Since the array is sorted, we can use a modified binary search to efficiently find the ceiling of a number. The key insight is that after the binary search, if we didn't find the exact key, the left pointer will point to the ceiling of the key (if it exists).
+        </p>
+        <p>
+            Here's how the approach works:
+        </p>
+        <ol>
+            <li>Perform a standard binary search to find the key.</li>
+            <li>If the key is found, return its index (as it's its own ceiling).</li>
+            <li>If the key is not found, the binary search will end with <code>left > right</code>:
+                <ul>
+                    <li>If <code>left</code> is within the array bounds (<code>left < arr.length</code>), <code>arr[left]</code> is the ceiling of the key.</li>
+                    <li>If <code>left</code> is outside the array bounds (<code>left == arr.length</code>), there is no ceiling.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Binary Search Visualization</h3>
+            <p>Let's trace the approach for <code>[1, 3, 8, 10, 15]</code> with <code>key = 12</code>:</p>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Left</th>
+                    <th>Right</th>
+                    <th>Mid</th>
+                    <th>nums[Mid]</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>4</td>
+                    <td>2</td>
+                    <td>8</td>
+                    <td>key > nums[mid], so move left to mid+1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>10</td>
+                    <td>key > nums[mid], so move left to mid+1</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>15</td>
+                    <td>key < nums[mid], so move right to mid-1</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>left > right, search ends</td>
+                </tr>
+            </table>
+            <p>
+                After the search, <code>left = 4</code>, which is the index of the ceiling (15) of the key (12).
+            </p>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the ceiling of a number problem:
+        </p>
+
+        <pre>
+def searchCeiling(nums, key):
+    <span class="comment">"""Find the ceiling of a key in a sorted array.
+    
+    Args:
+        nums: A sorted array of integers
+        key: The target value to find the ceiling of
+        
+    Returns:
+        The index of the ceiling of the key,
+        or length of the array if no ceiling exists
+    """</span>
+    n = len(nums)
+    
+    # Edge case: if the key is smaller than the first element
+    if key <= nums[0]:
+        return 0
+    
+    # Edge case: if the key is larger than the last element
+    if key > nums[n-1]:
+        return n
+    
+    left, right = 0, n - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        
+        if key == nums[mid]:
+            return mid
+        
+        if key < nums[mid]:
+            right = mid - 1
+        else:
+            left = mid + 1
+    
+    # At this point, left > right
+    # left is the index of the smallest element greater than the key
+    return left</pre>
+
+        <h3>Simplified Implementation</h3>
+        <p>
+            The implementation can be simplified since we don't need to handle the edge cases separately. The binary search naturally handles them:
+        </p>
+
+        <pre>
+def searchCeiling(nums, key):
+    <span class="comment">"""Find the ceiling of a key in a sorted array.
+    
+    Args:
+        nums: A sorted array of integers
+        key: The target value to find the ceiling of
+        
+    Returns:
+        The index of the ceiling of the key,
+        or length of the array if no ceiling exists
+    """</span>
+    left, right = 0, len(nums) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        
+        if key == nums[mid]:
+            return mid
+        
+        if key > nums[mid]:
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    # At this point, left is the index where key would be inserted
+    # If left is within bounds, nums[left] is the ceiling of key
+    # If left is out of bounds, there is no ceiling
+    return left</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(log n), where n is the length of the array. Binary search reduces the search space by half in each step.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.
+        </p>
+    </div>
+
+    <div class="section step-by-step">
+        <h2>Step-by-Step Walkthrough</h2>
+        <p>
+            Let's trace through the algorithm for <code>[1, 3, 8, 10, 15]</code> with <code>key = 12</code> again, focusing on the simplified implementation:
+        </p>
+        <ol>
+            <li>
+                Initialize <code>left = 0</code>, <code>right = 4</code>.
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 4) // 2 = 2</code></li>
+                    <li><code>nums[mid] = nums[2] = 8</code></li>
+                    <li>Since <code>12 > 8</code>, set <code>left = mid + 1 = 3</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li>Calculate <code>mid = (3 + 4) // 2 = 3</code></li>
+                    <li><code>nums[mid] = nums[3] = 10</code></li>
+                    <li>Since <code>12 > 10</code>, set <code>left = mid + 1 = 4</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Third iteration:
+                <ul>
+                    <li>Calculate <code>mid = (4 + 4) // 2 = 4</code></li>
+                    <li><code>nums[mid] = nums[4] = 15</code></li>
+                    <li>Since <code>12 < 15</code>, set <code>right = mid - 1 = 3</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Now <code>left = 4</code> and <code>right = 3</code>, so <code>left > right</code> and the loop exits.
+            </li>
+            <li>
+                Return <code>left = 4</code>, which is the index of 15, the ceiling of 12.
+            </li>
+        </ol>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">1</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element">3</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element current">8</div>
+                <div class="array-index">2 (mid)</div>
+            </div>
+            <div>
+                <div class="array-element">10</div>
+                <div class="array-index">3</div>
+            </div>
+            <div>
+                <div class="array-element ceiling">15</div>
+                <div class="array-index">4</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Key = 12</span>
+            </div>
+        </div>
+
+        <p>
+            Let's trace another example: <code>[4, 6, 10]</code> with <code>key = 17</code>:
+        </p>
+        <ol>
+            <li>
+                Initialize <code>left = 0</code>, <code>right = 2</code>.
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 2) // 2 = 1</code></li>
+                    <li><code>nums[mid] = nums[1] = 6</code></li>
+                    <li>Since <code>17 > 6</code>, set <code>left = mid + 1 = 2</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li>Calculate <code>mid = (2 + 2) // 2 = 2</code></li>
+                    <li><code>nums[mid] = nums[2] = 10</code></li>
+                    <li>Since <code>17 > 10</code>, set <code>left = mid + 1 = 3</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Now <code>left = 3</code> and <code>right = 2</code>, so <code>left > right</code> and the loop exits.
+            </li>
+            <li>
+                Return <code>left = 3</code>, which is outside the array bounds. This indicates there is no ceiling for 17 in the array, and 3 is the position where 17 would be inserted.
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Edge Cases and Variations</h2>
+        <p>
+            Here are some important edge cases to consider:
+        </p>
+        <ol>
+            <li>
+                <strong>Key is smaller than all elements</strong>: The ceiling is the first element (index 0).
+            </li>
+            <li>
+                <strong>Key is larger than all elements</strong>: There is no ceiling in the array. Return the length of the array.
+            </li>
+            <li>
+                <strong>Key exists in the array</strong>: The ceiling is the key itself.
+            </li>
+            <li>
+                <strong>Empty array</strong>: Return 0 (the index where the key would be inserted).
+            </li>
+        </ol>
+
+        <h3>Finding the Floor of a Number</h3>
+        <p>
+            A related problem is finding the floor of a number, which is the largest element in the array that is smaller than or equal to the key. Here's the implementation:
+        </p>
+
+        <pre>
+def searchFloor(nums, key):
+    <span class="comment">"""Find the floor of a key in a sorted array.
+    
+    The floor is the largest element smaller than or equal to the key.
+    
+    Args:
+        nums: A sorted array of integers
+        key: The target value to find the floor of
+        
+    Returns:
+        The index of the floor of the key, or -1 if no floor exists
+    """</span>
+    n = len(nums)
+    
+    # Edge case: if the key is smaller than the first element, there is no floor
+    if key < nums[0]:
+        return -1
+    
+    # Edge case: if the key is larger than or equal to the last element
+    if key >= nums[n-1]:
+        return n-1
+    
+    left, right = 0, n - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        
+        if key == nums[mid]:
+            return mid
+        
+        if key < nums[mid]:
+            right = mid - 1
+        else:
+            left = mid + 1
+    
+    # At this point, right < left
+    # right is the index of the largest element smaller than the key
+    return right</pre>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            The ceiling of a number problem is related to several other modified binary search problems:
+        </p>
+        <ul>
+            <li>
+                <strong>Floor of a Number</strong>: Find the largest element in a sorted array that is smaller than or equal to a given number.
+            </li>
+            <li>
+                <strong>Search Insert Position</strong>: Find the position where a target should be inserted in a sorted array.
+            </li>
+            <li>
+                <strong>Next Letter</strong>: Find the smallest letter in an array that is greater than a given key.
+            </li>
+            <li>
+                <strong>Minimum Difference Element</strong>: Find the element in the array that has the minimum difference with a given key.
+            </li>
+            <li>
+                <strong>Bitonic Array Maximum</strong>: Find the maximum value in a bitonic array (an array that first increases and then decreases).
+            </li>
+        </ul>
+        <p>
+            By understanding the ceiling of a number problem, you'll have a solid foundation for approaching these related problems, which all involve variations of the binary search algorithm.
+        </p>
+    </div>
+</body>
+</html>

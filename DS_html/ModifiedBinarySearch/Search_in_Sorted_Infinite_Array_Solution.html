@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search in a Sorted Infinite Array Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .step-by-step {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+        .array-visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .array-element {
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #666;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .array-element.target {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .array-element.bounds {
+            border: 2px dashed #fd7e14;
+        }
+        .array-element.current {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+        .array-element.searched {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+        .array-index {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .array-infinite {
+            font-size: 24px;
+            margin: 0 10px;
+            align-self: center;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .image-container img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Search in a Sorted Infinite Array</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given an infinite sorted array (or an array with unknown size), find if a given number 'key' is present in the array. Write a function to return the index of the 'key' if it is present in the array, otherwise return -1.
+        </p>
+        <p>
+            Since it is not possible to define an array with infinite (unknown) size, you will be provided with an interface ArrayReader to read elements of the array. ArrayReader.get(index) will return the number at index; if the array's size is smaller than the index, it will return Integer.MAX_VALUE (or a very large value that indicates the element doesn't exist).
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: nums = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30], target = 11
+Output: -1
+</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: nums = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30], target = 16
+Output: 6
+</pre>
+        </div>
+
+        <p>
+            Note: The examples show finite arrays for clarity, but in the actual problem, the array size is unknown (potentially infinite).
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to search for a target value in a sorted array of unknown size. The key challenges are:
+        </p>
+        <ol>
+            <li>We don't know the length of the array.</li>
+            <li>We need to find the target in O(log n) time complexity (which suggests a binary search approach).</li>
+            <li>We can't directly access array elements beyond the array's size, as they would return a special value (e.g., Integer.MAX_VALUE).</li>
+        </ol>
+        <p>
+            Since the array is sorted, binary search would be an ideal choice. However, binary search requires knowing the bounds of the array. Without knowing the array's length, we first need to find appropriate bounds within which our target might exist, then apply binary search within those bounds.
+        </p>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">4</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element">6</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">8</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element">10</div>
+                <div class="array-index">3</div>
+            </div>
+            <div>
+                <div class="array-element">12</div>
+                <div class="array-index">4</div>
+            </div>
+            <div>
+                <div class="array-element">14</div>
+                <div class="array-index">5</div>
+            </div>
+            <div>
+                <div class="array-element target">16</div>
+                <div class="array-index">6</div>
+            </div>
+            <div>
+                <div class="array-element">18</div>
+                <div class="array-index">7</div>
+            </div>
+            <div>
+                <div class="array-element">20</div>
+                <div class="array-index">8</div>
+            </div>
+            <div>
+                <div class="array-element">22</div>
+                <div class="array-index">9</div>
+            </div>
+            <div class="array-infinite">...</div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Target = 16, Located at index 6</span>
+            </div>
+        </div>
+
+        <p>
+            The array extends indefinitely (or to an unknown length), and we need to find the target value efficiently.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Exponential Search + Binary Search</h2>
+        <p>
+            To solve this problem efficiently, we'll use a technique called "Exponential Search" (also known as "Doubling Search" or "Galloping Search"), followed by a Binary Search.
+        </p>
+        <p>
+            The approach consists of two steps:
+        </p>
+        <ol>
+            <li>
+                <strong>Exponential Search</strong>: Find a range where the target might exist by exponentially increasing the bounds.
+                <ul>
+                    <li>Start with a small range [0, 1].</li>
+                    <li>Double the size of the range in each iteration until we find a value greater than or equal to the target (or until we reach the end of the array).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Binary Search</strong>: Perform a standard binary search within the identified range.
+            </li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of the Exponential Search</h3>
+            <p>Let's trace through the exponential search for <code>nums = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, ...]</code> and <code>target = 16</code>:</p>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Range Size</th>
+                    <th>nums[End]</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>6</td>
+                    <td>6 < 16, double the range</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>10</td>
+                    <td>10 < 16, double the range</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>7</td>
+                    <td>4</td>
+                    <td>18</td>
+                    <td>18 > 16, stop exponential search</td>
+                </tr>
+            </table>
+            <p>Now we have a range [4, 7] where the target 16 might exist. Next, we'll perform a binary search within this range.</p>
+            
+            <h3>Visualization of the Binary Search</h3>
+            <p>Binary search within the range [4, 7]:</p>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Left</th>
+                    <th>Right</th>
+                    <th>Mid</th>
+                    <th>nums[Mid]</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>4</td>
+                    <td>7</td>
+                    <td>5</td>
+                    <td>14</td>
+                    <td>14 < 16, so move left to mid+1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>6</td>
+                    <td>7</td>
+                    <td>6</td>
+                    <td>16</td>
+                    <td>16 == 16, target found at index 6!</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of our solution:
+        </p>
+
+        <pre>
+# In a real interview, you would be given an ArrayReader class
+class ArrayReader:
+    def __init__(self, arr):
+        self.arr = arr
+        
+    def get(self, index):
+        if index >= len(self.arr):
+            return float('inf')  # Simulating Integer.MAX_VALUE
+        return self.arr[index]
+
+def search_in_infinite_array(reader, target):
+    <span class="comment">"""Search for target in a sorted infinite array.
+    
+    Args:
+        reader: An ArrayReader interface to access the array
+        target: The target value to search for
+        
+    Returns:
+        The index of target if found, otherwise -1
+    """</span>
+    # Step 1: Find the bounds using exponential search
+    start = 0
+    end = 1
+    
+    # Double the bounds until we find a value greater than or equal to target
+    while reader.get(end) < target:
+        new_start = end + 1
+        # Double the range size for next iteration
+        end += (end - start + 1) * 2
+        start = new_start
+    
+    # Step 2: Perform binary search within the found bounds
+    return binary_search(reader, target, start, end)
+
+def binary_search(reader, target, left, right):
+    <span class="comment">"""Perform binary search in the given range.
+    
+    Args:
+        reader: An ArrayReader interface to access the array
+        target: The target value to search for
+        left: The left bound of the search range
+        right: The right bound of the search range
+        
+    Returns:
+        The index of target if found, otherwise -1
+    """</span>
+    while left <= right:
+        mid = (left + right) // 2
+        mid_value = reader.get(mid)
+        
+        # If we've gone beyond array bounds or found the target
+        if mid_value == float('inf'):
+            right = mid - 1
+        elif mid_value == target:
+            return mid
+        elif mid_value > target:
+            right = mid - 1
+        else:  # mid_value < target
+            left = mid + 1
+    
+    return -1</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(log n), where n is the position of the target element in the array.
+            <ul>
+                <li>Exponential search takes O(log n) time to find the appropriate bounds.</li>
+                <li>Binary search within those bounds takes O(log n) time.</li>
+                <li>Overall, the time complexity is O(log n).</li>
+            </ul>
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.
+        </p>
+    </div>
+
+    <div class="section step-by-step">
+        <h2>Step-by-Step Walkthrough</h2>
+        <p>
+            Let's trace through our algorithm for <code>nums = [4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]</code> and <code>target = 16</code> step-by-step:
+        </p>
+        <h3>Exponential Search Phase:</h3>
+        <ol>
+            <li>
+                Initialize <code>start = 0</code>, <code>end = 1</code>.
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li><code>reader.get(end) = reader.get(1) = 6</code></li>
+                    <li>Since <code>6 < 16</code>, we need to expand our bounds.</li>
+                    <li>New <code>start = end + 1 = 1 + 1 = 2</code></li>
+                    <li>New <code>end = end + (end - start + 1) * 2 = 1 + (1 - 0 + 1) * 2 = 1 + 4 = 5</code></li>
+                    <li>Now <code>start = 2</code> and <code>end = 5</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li><code>reader.get(end) = reader.get(5) = 14</code></li>
+                    <li>Since <code>14 < 16</code>, we need to expand our bounds again.</li>
+                    <li>New <code>start = end + 1 = 5 + 1 = 6</code></li>
+                    <li>New <code>end = end + (end - start + 1) * 2 = 5 + (5 - 2 + 1) * 2 = 5 + 8 = 13</code></li>
+                    <li>Now <code>start = 6</code> and <code>end = 13</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Third iteration:
+                <ul>
+                    <li><code>reader.get(end) = reader.get(13) = 28</code></li>
+                    <li>Since <code>28 > 16</code>, we stop the exponential search.</li>
+                    <li>Our final bounds are <code>start = 6</code> and <code>end = 13</code>.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3>Binary Search Phase:</h3>
+        <ol>
+            <li>
+                Start binary search within the range [6, 13].
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li>Calculate <code>mid = (6 + 13) // 2 = 9</code></li>
+                    <li><code>reader.get(mid) = reader.get(9) = 22</code></li>
+                    <li>Since <code>22 > 16</code>, set <code>right = mid - 1 = 8</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li>Calculate <code>mid = (6 + 8) // 2 = 7</code></li>
+                    <li><code>reader.get(mid) = reader.get(7) = 18</code></li>
+                    <li>Since <code>18 > 16</code>, set <code>right = mid - 1 = 6</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Third iteration:
+                <ul>
+                    <li>Calculate <code>mid = (6 + 6) // 2 = 6</code></li>
+                    <li><code>reader.get(mid) = reader.get(6) = 16</code></li>
+                    <li>Since <code>16 == 16</code>, we found the target at index 6!</li>
+                </ul>
+            </li>
+            <li>
+                Return <code>6</code>.
+            </li>
+        </ol>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">4</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element">6</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">8</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element">10</div>
+                <div class="array-index">3</div>
+            </div>
+            <div>
+                <div class="array-element">12</div>
+                <div class="array-index">4</div>
+            </div>
+            <div>
+                <div class="array-element">14</div>
+                <div class="array-index">5</div>
+            </div>
+            <div>
+                <div class="array-element target bounds">16</div>
+                <div class="array-index">6 (start)</div>
+            </div>
+            <div>
+                <div class="array-element bounds">18</div>
+                <div class="array-index">7</div>
+            </div>
+            <div>
+                <div class="array-element bounds">20</div>
+                <div class="array-index">8</div>
+            </div>
+            <div>
+                <div class="array-element bounds">22</div>
+                <div class="array-index">9</div>
+            </div>
+            <div>
+                <div class="array-element bounds">24</div>
+                <div class="array-index">10</div>
+            </div>
+            <div>
+                <div class="array-element bounds">26</div>
+                <div class="array-index">11</div>
+            </div>
+            <div>
+                <div class="array-element bounds">28</div>
+                <div class="array-index">12</div>
+            </div>
+            <div>
+                <div class="array-element bounds">30</div>
+                <div class="array-index">13 (end)</div>
+            </div>
+            <div class="array-infinite">...</div>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Edge Cases and Optimizations</h2>
+        <p>
+            Here are some edge cases to consider:
+        </p>
+        <ol>
+            <li>
+                <strong>Target at the beginning of the array</strong>: Our algorithm handles this correctly. The exponential search will quickly find the appropriate bounds, and the binary search will locate the target.
+            </li>
+            <li>
+                <strong>Target not in the array</strong>: If the target is not present, our binary search will exhaust all possible positions within the bounds and return -1.
+            </li>
+            <li>
+                <strong>Target larger than all elements</strong>: In a truly infinite array, the exponential search would continue indefinitely. In practice, we'd need to handle this case by defining a maximum bound or detecting when we've gone beyond the array's actual size.
+            </li>
+        </ol>
+
+        <h3>Optimizations:</h3>
+        <p>
+            Here are some potential optimizations for the algorithm:
+        </p>
+        <ol>
+            <li>
+                <strong>Adjust Growth Factor</strong>: Instead of doubling the range size, we could use a different factor (like 1.5 or 3) depending on the expected distribution of values.
+            </li>
+            <li>
+                <strong>Early Termination</strong>: If we know the maximum value in the array or have other domain-specific knowledge, we can terminate the search earlier when appropriate.
+            </li>
+            <li>
+                <strong>Handle NULL/Invalid Values</strong>: If the array can contain null or invalid values, we need to handle those cases explicitly.
+            </li>
+        </ol>
+
+        <h3>Alternative Implementation: Direct Exponential Search</h3>
+        <pre>
+def search_in_infinite_array_alternative(reader, target):
+    <span class="comment">"""Search using a more direct exponential search approach."""
+</span>
+    # Start with position 0
+    pos = 0
+    
+    # Find the upper bound using exponential search
+    while reader.get(pos) < target:
+        # Double the position each time
+        pos = 2 * pos + 1 if pos > 0 else 1
+    
+    # Binary search between pos/2 and pos
+    return binary_search(reader, target, pos // 2, pos)</pre>
+        <p>
+            This alternative implementation achieves the same result but with slightly different bounds calculation. It directly doubles the position in each step rather than calculating a new range based on the previous one.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            The "Search in a Sorted Infinite Array" problem combines concepts from binary search and bound finding. Here are some related problems:
+        </p>
+        <ul>
+            <li>
+                <strong>Binary Search</strong>: The standard binary search algorithm for finding an element in a sorted array.
+            </li>
+            <li>
+                <strong>Search Insert Position</strong>: Find the index where a target should be inserted in a sorted array.
+            </li>
+            <li>
+                <strong>Find First and Last Position of Element in Sorted Array</strong>: Find the range of indices where a target appears in a sorted array.
+            </li>
+            <li>
+                <strong>Median of Two Sorted Arrays</strong>: Find the median of two sorted arrays in O(log(m+n)) time.
+            </li>
+            <li>
+                <strong>Search in Rotated Sorted Array</strong>: Find an element in a sorted array that has been rotated.
+            </li>
+        </ul>
+        <p>
+            Understanding this problem provides insights into handling search scenarios with limited information about the data structure's size or bounds, which is a valuable skill for more complex search problems.
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitonic Array Maximum Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .step-by-step {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+        .array-visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .array-element {
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #666;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .array-element.maximum {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .array-element.current {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+        .array-element.left {
+            border-left: 3px solid #007bff;
+        }
+        .array-element.right {
+            border-right: 3px solid #dc3545;
+        }
+        .array-index {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+        .graph-container {
+            width: 100%;
+            height: 250px;
+            margin: 20px 0;
+            position: relative;
+            border-left: 2px solid #333;
+            border-bottom: 2px solid #333;
+        }
+        .graph-point {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #007bff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .graph-point.maximum {
+            background-color: #28a745;
+            width: 12px;
+            height: 12px;
+        }
+        .graph-line {
+            position: absolute;
+            height: 2px;
+            background-color: #007bff;
+            transform-origin: left center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bitonic Array Maximum</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Find the maximum value in a given Bitonic array. An array is considered bitonic if it is monotonically increasing and then monotonically decreasing. Monotonically increasing or decreasing means that for any index i in the array arr[i] != arr[i+1].
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: [1, 3, 8, 12, 4, 2]
+Output: 12
+Explanation: The maximum number in the input bitonic array is '12'.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: [3, 8, 3, 1]
+Output: 8
+Explanation: The maximum number in the input bitonic array is '8'.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 3:</h3>
+            <pre>
+Input: [1, 3, 8, 12]
+Output: 12
+Explanation: The maximum number in the input bitonic array is '12'.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 4:</h3>
+            <pre>
+Input: [10, 9, 8]
+Output: 10
+Explanation: The maximum number in the input bitonic array is '10'.</pre>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            A bitonic array is a special type of array that has the following properties:
+        </p>
+        <ol>
+            <li>It first increases monotonically (each element is greater than the previous one).</li>
+            <li>After reaching a peak, it decreases monotonically (each element is less than the previous one).</li>
+            <li>No two consecutive elements are equal (arr[i] != arr[i+1]).</li>
+        </ol>
+        <p>
+            The problem asks us to find the maximum value in such an array, which is essentially the peak element where the array transitions from increasing to decreasing.
+        </p>
+        
+        <div class="graph-container">
+            <div class="graph-point" style="bottom: 20%; left: 10%;"></div>
+            <div class="graph-point" style="bottom: 30%; left: 20%;"></div>
+            <div class="graph-point" style="bottom: 45%; left: 30%;"></div>
+            <div class="graph-point maximum" style="bottom: 80%; left: 40%;"></div>
+            <div class="graph-point" style="bottom: 40%; left: 50%;"></div>
+            <div class="graph-point" style="bottom: 25%; left: 60%;"></div>
+            <div class="graph-line" style="bottom: 20%; left: 10%; width: 10%; transform: rotate(45deg);"></div>
+            <div class="graph-line" style="bottom: 30%; left: 20%; width: 10%; transform: rotate(45deg);"></div>
+            <div class="graph-line" style="bottom: 45%; left: 30%; width: 10%; transform: rotate(45deg);"></div>
+            <div class="graph-line" style="bottom: 80%; left: 40%; width: 10%; transform: rotate(-45deg);"></div>
+            <div class="graph-line" style="bottom: 40%; left: 50%; width: 10%; transform: rotate(-45deg);"></div>
+        </div>
+        
+        <p>
+            For example, in the array [1, 3, 8, 12, 4, 2]:
+        </p>
+        <ul>
+            <li>The array first increases: 1 → 3 → 8 → 12</li>
+            <li>Then it decreases: 12 → 4 → 2</li>
+            <li>The maximum value is 12, which is the peak of this bitonic array.</li>
+        </ul>
+
+        <p>
+            Special cases to consider:
+        </p>
+        <ul>
+            <li>The array could be only increasing (e.g., [1, 3, 8, 12]), in which case the maximum is the last element.</li>
+            <li>The array could be only decreasing (e.g., [10, 9, 8]), in which case the maximum is the first element.</li>
+        </ul>
+        
+        <p>
+            The challenge is to find this maximum efficiently, ideally in O(log n) time, which suggests using a binary search approach.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Binary Search</h2>
+        <p>
+            Since a bitonic array has a clear structure (increasing then decreasing), we can use binary search to efficiently find the maximum element. The key insight is that at any point in the array, we can determine whether we're in the increasing part or the decreasing part by comparing the current element with the next element.
+        </p>
+        <p>
+            Here's our approach:
+        </p>
+        <ol>
+            <li>Initialize <code>left = 0</code> and <code>right = length - 1</code>.</li>
+            <li>While <code>left < right</code>:</li>
+            <li>Calculate <code>mid = (left + right) / 2</code>.</li>
+            <li>Compare <code>arr[mid]</code> with <code>arr[mid + 1]</code>:</li>
+            <ul>
+                <li>If <code>arr[mid] > arr[mid + 1]</code>, we are in the decreasing part of the array, so the peak is at <code>mid</code> or to the left of <code>mid</code>. Set <code>right = mid</code>.</li>
+                <li>If <code>arr[mid] < arr[mid + 1]</code>, we are in the increasing part of the array, so the peak is to the right of <code>mid</code>. Set <code>left = mid + 1</code>.</li>
+            </ul>
+            <li>When <code>left == right</code>, we've found the peak. Return <code>arr[left]</code>.</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Binary Search Visualization</h3>
+            <p>Let's trace through the algorithm for <code>arr = [1, 3, 8, 12, 4, 2]</code>:</p>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Left</th>
+                    <th>Right</th>
+                    <th>Mid</th>
+                    <th>arr[Mid]</th>
+                    <th>arr[Mid+1]</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>5</td>
+                    <td>2</td>
+                    <td>8</td>
+                    <td>12</td>
+                    <td>8 < 12, so move left to mid+1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>2</td>
+                    <td>4 > 2, so move right to mid</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>12</td>
+                    <td>4</td>
+                    <td>12 > 4, so move right to mid</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>left == right, search ends</td>
+                </tr>
+            </table>
+            <p>
+                The maximum value is at index 3, which is 12.
+            </p>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the algorithm to find the maximum in a bitonic array:
+        </p>
+
+        <pre>
+def find_bitonic_maximum(arr):
+    <span class="comment">"""Find the maximum value in a bitonic array.
+    
+    Args:
+        arr: A bitonic array (increasing then decreasing)
+        
+    Returns:
+        The maximum value in the bitonic array
+    """</span>
+    left, right = 0, len(arr) - 1
+    
+    while left < right:
+        mid = (left + right) // 2
+        
+        if arr[mid] > arr[mid + 1]:
+            # We are in the decreasing part of the array
+            # The peak must be at mid or to the left of mid
+            right = mid
+        else:
+            # We are in the increasing part of the array
+            # The peak must be to the right of mid
+            left = mid + 1
+    
+    # At this point, left == right and they both point to the maximum element
+    return arr[left]</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(log n), where n is the length of the array. The binary search reduces the search space by half in each step.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.
+        </p>
+    </div>
+
+    <div class="section step-by-step">
+        <h2>Step-by-Step Walkthrough</h2>
+        <p>
+            Let's trace through our algorithm for <code>arr = [3, 8, 3, 1]</code>:
+        </p>
+        <ol>
+            <li>
+                Initialize <code>left = 0</code>, <code>right = 3</code>.
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 3) // 2 = 1</code></li>
+                    <li><code>arr[mid] = arr[1] = 8</code> and <code>arr[mid + 1] = arr[2] = 3</code></li>
+                    <li>Since <code>8 > 3</code>, we're in the decreasing part, so set <code>right = mid = 1</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 1) // 2 = 0</code></li>
+                    <li><code>arr[mid] = arr[0] = 3</code> and <code>arr[mid + 1] = arr[1] = 8</code></li>
+                    <li>Since <code>3 < 8</code>, we're in the increasing part, so set <code>left = mid + 1 = 1</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Now <code>left = 1</code> and <code>right = 1</code>, so <code>left == right</code> and the loop exits.</li>
+            <li>Return <code>arr[left] = arr[1] = 8</code>.</li>
+        </ol>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">3</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element maximum">8</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">3</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element">1</div>
+                <div class="array-index">3</div>
+            </div>
+        </div>
+
+        <p>
+            Let's trace through another example, <code>arr = [1, 3, 8, 12]</code> (only increasing):
+        </p>
+        <ol>
+            <li>
+                Initialize <code>left = 0</code>, <code>right = 3</code>.
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 3) // 2 = 1</code></li>
+                    <li><code>arr[mid] = arr[1] = 3</code> and <code>arr[mid + 1] = arr[2] = 8</code></li>
+                    <li>Since <code>3 < 8</code>, we're in the increasing part, so set <code>left = mid + 1 = 2</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li>Calculate <code>mid = (2 + 3) // 2 = 2</code></li>
+                    <li><code>arr[mid] = arr[2] = 8</code> and <code>arr[mid + 1] = arr[3] = 12</code></li>
+                    <li>Since <code>8 < 12</code>, we're in the increasing part, so set <code>left = mid + 1 = 3</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Now <code>left = 3</code> and <code>right = 3</code>, so <code>left == right</code> and the loop exits.</li>
+            <li>Return <code>arr[left] = arr[3] = 12</code>.</li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Edge Cases and Special Considerations</h2>
+        <p>
+            Here are some important edge cases to consider:
+        </p>
+        <ol>
+            <li>
+                <strong>Array with only one element</strong>: If the array has only one element, that element is automatically the maximum. Our algorithm handles this correctly as the loop condition <code>left < right</code> would not be satisfied, and we'd immediately return <code>arr[left]</code>.                
+            </li>
+            <li>
+                <strong>Strictly increasing array</strong>: In this case, the maximum is the last element. Our algorithm correctly converges to the last element because each comparison would set <code>left = mid + 1</code> until <code>left</code> points to the last element.
+            </li>
+            <li>
+                <strong>Strictly decreasing array</strong>: In this case, the maximum is the first element. Our algorithm correctly converges to the first element because the first comparison would set <code>right = mid</code> and eventually <code>left</code> and <code>right</code> would both point to the first element.
+            </li>
+        </ol>
+
+        <h3>Alternative Implementation</h3>
+        <p>
+            We can also implement this solution by finding the index of the maximum element first and then returning the element at that index:
+        </p>
+
+        <pre>
+def find_peak_index(arr):
+    <span class="comment">"""Find the index of the peak element in a bitonic array."""
+</span>    left, right = 0, len(arr) - 1
+    
+    while left < right:
+        mid = (left + right) // 2
+        if arr[mid] > arr[mid + 1]:
+            right = mid
+        else:
+            left = mid + 1
+    
+    return left
+
+def find_bitonic_maximum_alternative(arr):
+    <span class="comment">"""Find the maximum value in a bitonic array using the peak index."""
+</span>    peak_index = find_peak_index(arr)
+    return arr[peak_index]</pre>
+
+        <p>
+            This approach is particularly useful if you need to do more operations with the peak index, such as searching for an element in the bitonic array.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            Finding the maximum in a bitonic array is related to several other binary search problems:
+        </p>
+        <ul>
+            <li>
+                <strong>Search in a Bitonic Array</strong>: Find if a given key exists in a bitonic array. This can be solved by first finding the peak (using the algorithm in this solution), and then performing binary search on the increasing and decreasing parts separately.
+            </li>
+            <li>
+                <strong>Find Peak Element</strong>: Find any peak element in an array (an element greater than its neighbors). A bitonic array has exactly one peak, which is its maximum element.
+            </li>
+            <li>
+                <strong>Find Minimum in a Rotated Sorted Array</strong>: Find the minimum element in a rotated sorted array. Similar to finding the peak in a bitonic array, this involves identifying a specific pattern in the array structure.
+            </li>
+            <li>
+                <strong>Search in Rotated Sorted Array</strong>: Find an element in a sorted array that has been rotated. This also involves understanding the structure of the array and applying binary search accordingly.
+            </li>
+        </ul>
+        <p>
+            The technique of modifying binary search to work with arrays that have specific patterns (like bitonic or rotated arrays) is a powerful approach that can be applied to various problems. The key is to identify the conditions that allow you to determine which half of the array to search in each step.
+        </p>
+    </div>
+</body>
+</html>

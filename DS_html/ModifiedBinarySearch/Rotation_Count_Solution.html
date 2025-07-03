@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotation Count Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .step-by-step {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+        .array-visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .array-element {
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #666;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .array-element.pivot {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .array-element.minimum {
+            background-color: #cce5ff;
+            border-color: #007bff;
+        }
+        .array-element.current {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+        }
+        .array-index {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rotation Count</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given an array of numbers which is sorted in ascending order and is rotated 'k' times around a pivot, find 'k'.
+        </p>
+        <p>
+            You are given a sorted array that has been rotated some number of times. A rotation involves taking the last element of the array and moving it to the front, shifting all other elements to the right. The goal is to find the number of rotations that have been performed on the array.
+        </p>
+        <p>
+            This is equivalent to finding the index of the minimum element in the rotated array, as the number of rotations equals this index.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: [3, 4, 5, 1, 2]
+Output: 3
+Explanation: The original array was [1, 2, 3, 4, 5] and it was rotated 3 times.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: [4, 5, 6, 7, 0, 1, 2]
+Output: 4
+Explanation: The original array was [0, 1, 2, 4, 5, 6, 7] and it was rotated 4 times.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 3:</h3>
+            <pre>
+Input: [11, 13, 15, 17]
+Output: 0
+Explanation: The original array was [11, 13, 15, 17] and it was not rotated.</pre>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In a sorted array that has been rotated, the rotation count is equal to the index of the minimum element. This is because when an array is rotated 'k' times, the element that was originally at index 0 will move to index n-k, and the element that was at index k will move to index 0.
+        </p>
+        <p>
+            For example, if we have the sorted array <code>[1, 2, 3, 4, 5]</code> and rotate it 3 times, we get <code>[3, 4, 5, 1, 2]</code>. Here, the minimum element 1 is at index 3, which equals the number of rotations.
+        </p>
+        
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">1</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element">2</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">3</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element">4</div>
+                <div class="array-index">3</div>
+            </div>
+            <div>
+                <div class="array-element">5</div>
+                <div class="array-index">4</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Original Sorted Array</span>
+            </div>
+        </div>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">3</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element">4</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">5</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element minimum">1</div>
+                <div class="array-index">3</div>
+            </div>
+            <div>
+                <div class="array-element">2</div>
+                <div class="array-index">4</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Rotated 3 Times</span>
+            </div>
+        </div>
+        
+        <p>
+            If the array is not rotated or is rotated a multiple of the array length, then the minimum element will be at index 0. In this case, the rotation count is 0.
+        </p>
+        <p>
+            The challenge is to efficiently find the index of the minimum element in a rotated sorted array, which suggests using a binary search approach to achieve O(log n) time complexity.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Modified Binary Search</h2>
+        <p>
+            We can use a modified binary search to find the minimum element in a rotated sorted array. The key insight is that in a rotated sorted array, the minimum element is the only element that is smaller than its previous element.
+        </p>
+        <p>
+            Here's our approach:
+        </p>
+        <ol>
+            <li>Initialize <code>left = 0</code> and <code>right = length - 1</code>.</li>
+            <li>While <code>left < right</code>:</li>
+            <li>Check if the array is already sorted between left and right (i.e., <code>nums[left] < nums[right]</code>). If true, the minimum element is at <code>left</code>.</li>
+            <li>Calculate <code>mid = (left + right) / 2</code>.</li>
+            <li>Determine which half of the array contains the minimum element:</li>
+            <ul>
+                <li>If <code>nums[left] <= nums[mid]</code>, then the left half is sorted and the minimum must be in the right half. Set <code>left = mid + 1</code>.</li>
+                <li>Otherwise, the right half is sorted and the minimum must be in the left half including the mid element. Set <code>right = mid</code>.</li>
+            </ul>
+            <li>When <code>left >= right</code>, we've found the minimum element. Return <code>left</code> as the rotation count.</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Binary Search Visualization</h3>
+            <p>Let's trace through the algorithm for <code>nums = [3, 4, 5, 1, 2]</code>:</p>
+            <table>
+                <tr>
+                    <th>Step</th>
+                    <th>Left</th>
+                    <th>Right</th>
+                    <th>Mid</th>
+                    <th>nums[Left]</th>
+                    <th>nums[Mid]</th>
+                    <th>nums[Right]</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>4</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>5</td>
+                    <td>2</td>
+                    <td>nums[left] <= nums[mid], so minimum is in right half. Set left = mid + 1</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>nums[left] > nums[mid] is false, so minimum is not in right half. Set right = mid</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>left == right, search ends</td>
+                </tr>
+            </table>
+            <p>
+                The rotation count is 3, which is the index of the minimum element (1).
+            </p>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the algorithm to find the rotation count:
+        </p>
+
+        <pre>
+def count_rotations(nums):
+    <span class="comment">"""Find the rotation count of a sorted rotated array.
+    
+    Args:
+        nums: A sorted array that has been rotated
+        
+    Returns:
+        The number of rotations (the index of the minimum element)
+    """</span>
+    if not nums:
+        return 0
+    
+    n = len(nums)
+    
+    # Handle edge cases
+    if n == 1 or nums[0] < nums[n-1]:
+        return 0  # Array is not rotated or has only one element
+    
+    left, right = 0, n - 1
+    
+    while left < right:
+        # If array is already sorted between left and right
+        if nums[left] < nums[right]:
+            return left
+        
+        mid = (left + right) // 2
+        
+        # Check which half is sorted
+        if nums[left] <= nums[mid]:
+            # Left half is sorted, so minimum must be in right half
+            left = mid + 1
+        else:
+            # Right half is sorted, so minimum must be in left half including mid
+            right = mid
+    
+    # At this point, left == right and points to the minimum element
+    return left</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(log n), where n is the length of the array. The binary search reduces the search space by half in each step.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.
+        </p>
+    </div>
+
+    <div class="section step-by-step">
+        <h2>Step-by-Step Walkthrough</h2>
+        <p>
+            Let's trace through our algorithm for <code>nums = [4, 5, 6, 7, 0, 1, 2]</code>:
+        </p>
+        <ol>
+            <li>
+                Initialize <code>left = 0</code>, <code>right = 6</code>.
+            </li>
+            <li>
+                Check if <code>nums[left] < nums[right]</code>. <code>4 < 2</code> is false, so we continue with the binary search.
+            </li>
+            <li>
+                First iteration:
+                <ul>
+                    <li>Calculate <code>mid = (0 + 6) // 2 = 3</code></li>
+                    <li><code>nums[left] = nums[0] = 4</code>, <code>nums[mid] = nums[3] = 7</code></li>
+                    <li>Since <code>4 <= 7</code> (left half is sorted), the minimum must be in the right half.</li>
+                    <li>Set <code>left = mid + 1 = 4</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li>Calculate <code>mid = (4 + 6) // 2 = 5</code></li>
+                    <li><code>nums[left] = nums[4] = 0</code>, <code>nums[mid] = nums[5] = 1</code></li>
+                    <li>Since <code>0 <= 1</code> (left half is sorted), the minimum must be in the right half.</li>
+                    <li>But that's incorrect in this case! The minimum is actually at index 4.</li>
+                    <li>The issue is that we're comparing <code>nums[left]</code> and <code>nums[mid]</code>, but both are in the same sorted segment after the rotation point. We need to compare <code>nums[mid]</code> with <code>nums[mid-1]</code> or <code>nums[mid+1]</code> to correctly identify the minimum.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>
+            Let's revise our algorithm to correctly handle this case:
+        </p>
+
+        <pre>
+def count_rotations_revised(nums):
+    <span class="comment">"""Find the rotation count of a sorted rotated array (revised approach)."""
+</span>    if not nums:
+        return 0
+    
+    n = len(nums)
+    
+    # Handle edge cases
+    if n == 1 or nums[0] < nums[n-1]:
+        return 0  # Array is not rotated or has only one element
+    
+    left, right = 0, n - 1
+    
+    while left < right:
+        mid = (left + right) // 2
+        
+        # If mid element is greater than its next element, we found the min point
+        if mid < n-1 and nums[mid] > nums[mid+1]:
+            return mid + 1
+        
+        # If mid element is less than its previous element, we found the min point
+        if mid > 0 and nums[mid] < nums[mid-1]:
+            return mid
+        
+        # Determine which half to search
+        if nums[left] <= nums[mid]:  # Left half is sorted
+            # If the first element is less than the last element in the left half,
+            # there's no rotation in the left half
+            left = mid + 1
+        else:  # Right half is sorted
+            right = mid - 1
+    
+    # If we can't find the min point, the array must not be rotated
+    return 0</pre>
+
+        <p>
+            However, this approach is more complex and might be error-prone. A simpler approach is to just find the index of the minimum element:
+        </p>
+
+        <pre>
+def count_rotations_simple(nums):
+    <span class="comment">"""Find the rotation count by finding the minimum element."""
+</span>    if not nums:
+        return 0
+    
+    n = len(nums)
+    left, right = 0, n - 1
+    
+    # If array is already sorted (not rotated or rotated n times)
+    if nums[left] <= nums[right]:
+        return 0
+    
+    while left < right:
+        mid = (left + right) // 2
+        
+        # If mid element is greater than the next element, next element is the minimum
+        if mid < n-1 and nums[mid] > nums[mid+1]:
+            return mid + 1
+        
+        # If mid element is less than the previous element, mid is the minimum
+        if mid > 0 and nums[mid] < nums[mid-1]:
+            return mid
+        
+        # Decide which half to search
+        if nums[left] <= nums[mid]:  # Left half is sorted
+            left = mid + 1
+        else:  # Right half is sorted
+            right = mid - 1
+    
+    return left</pre>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element">4</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element">5</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element">6</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element">7</div>
+                <div class="array-index">3</div>
+            </div>
+            <div>
+                <div class="array-element minimum">0</div>
+                <div class="array-index">4</div>
+            </div>
+            <div>
+                <div class="array-element">1</div>
+                <div class="array-index">5</div>
+            </div>
+            <div>
+                <div class="array-element">2</div>
+                <div class="array-index">6</div>
+            </div>
+            <div style="display: flex; align-items: center; margin-left: 10px">
+                <span>Rotated 4 Times</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Handling Edge Cases and Duplicates</h2>
+        <p>
+            Here are some important edge cases to consider:
+        </p>
+        <ol>
+            <li>
+                <strong>Empty array</strong>: Return 0 as there are no rotations.
+            </li>
+            <li>
+                <strong>Array with one element</strong>: Return 0 as a single element array cannot be meaningfully rotated.
+            </li>
+            <li>
+                <strong>Non-rotated array</strong>: If the array is already sorted (not rotated or rotated n times), return 0.
+            </li>
+            <li>
+                <strong>Array with duplicate elements</strong>: If the array has duplicate elements, we need special handling.
+            </li>
+        </ol>
+
+        <h3>Handling Duplicates</h3>
+        <p>
+            When the array contains duplicate elements, our binary search approach might fail because the condition <code>nums[left] <= nums[mid]</code> doesn't reliably tell us which half is sorted. To handle this, we need an additional check:
+        </p>
+
+        <pre>
+def count_rotations_with_duplicates(nums):
+    <span class="comment">"""Find the rotation count when the array may contain duplicates."""
+</span>    if not nums:
+        return 0
+    
+    n = len(nums)
+    left, right = 0, n - 1
+    
+    # If array is already sorted (not rotated or rotated n times)
+    if nums[left] < nums[right]:
+        return 0
+    
+    while left < right:
+        # If first element is equal to the last element
+        # we can't determine which half is sorted, so we reduce the search space by 1
+        if nums[left] == nums[right]:
+            if left + 1 < n and nums[left] > nums[left+1]:
+                return left + 1
+            left += 1
+            continue
+        
+        mid = (left + right) // 2
+        
+        # If mid element is greater than the next element, next element is the minimum
+        if mid < n-1 and nums[mid] > nums[mid+1]:
+            return mid + 1
+        
+        # If mid element is less than the previous element, mid is the minimum
+        if mid > 0 and nums[mid] < nums[mid-1]:
+            return mid
+        
+        # Handle duplicates
+        if nums[left] == nums[mid] and nums[mid] == nums[right]:
+            left += 1
+            right -= 1
+            continue
+        
+        # Decide which half to search
+        if nums[left] <= nums[mid]:  # Left half is sorted
+            left = mid + 1
+        else:  # Right half is sorted
+            right = mid - 1
+    
+    return left</pre>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            The Rotation Count problem is related to several other modified binary search problems:
+        </p>
+        <ul>
+            <li>
+                <strong>Find Minimum in Rotated Sorted Array</strong>: This is essentially the same problem, as the rotation count is the index of the minimum element.
+            </li>
+            <li>
+                <strong>Search in Rotated Sorted Array</strong>: Once you know the rotation count, you can efficiently search in a rotated array by offsetting the indices.
+            </li>
+            <li>
+                <strong>Find Maximum in Rotated Sorted Array</strong>: This is related, as the maximum element would be at index (rotation count - 1).
+            </li>
+            <li>
+                <strong>Check if an Array is Sorted and Rotated</strong>: You can determine this by counting the number of positions where adjacent elements are not sorted.
+            </li>
+        </ul>
+        <p>
+            Understanding the rotation count problem provides insights into how to handle sorted arrays that have been transformed in specific ways, which is a common pattern in algorithm problems.
+        </p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Bitonic Array Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .step-by-step {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .array-visualization {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .array-element {
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #666;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .array-element.maximum {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .array-element.target {
+            background-color: #cce5ff;
+            border-color: #007bff;
+        }
+        .array-element.ascending {
+            border-bottom: 3px solid #28a745;
+        }
+        .array-element.descending {
+            border-bottom: 3px solid #dc3545;
+        }
+        .array-index {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search in Bitonic Array</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given a Bitonic array, find if a given 'key' is present in it. An array is considered bitonic if it is monotonically increasing and then monotonically decreasing. Monotonically increasing or decreasing means that for any index i in the array arr[i] != arr[i+1].
+        </p>
+        <p>
+            Write a function to return the index of the 'key'. If the 'key' appears more than once, return the smaller index. If the 'key' is not present, return -1.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: [1, 3, 8, 4, 3], key=4
+Output: 3
+Explanation: '4' appears once at index 3.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: [3, 8, 3, 1], key=8
+Output: 1
+Explanation: '8' appears once at index 1.</pre>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            A bitonic array is an array that first increases monotonically (each element is greater than the previous one) until reaching a peak, and then decreases monotonically (each element is less than the previous one). No two consecutive elements are equal.
+        </p>
+        <p>
+            For example, in the array [1, 3, 8, 4, 3]:
+        </p>
+        <ul>
+            <li>The array first increases: 1 → 3 → 8</li>
+            <li>Then it decreases: 8 → 4 → 3</li>
+            <li>The peak (maximum value) is 8 at index 2.</li>
+        </ul>
+        
+        <p>
+            The problem asks us to find the index of a given key in this bitonic array. If the key appears multiple times, we should return the smaller index. If the key doesn't exist in the array, we should return -1.
+        </p>
+        <p>
+            We need an efficient algorithm to search for the key, ideally with O(log n) time complexity, which suggests using a binary search approach.
+        </p>
+        
+        <div class="array-visualization">
+            <div>
+                <div class="array-element ascending">1</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element ascending">3</div>
+                <div class="array-index">1</div>
+            </div>
+            <div>
+                <div class="array-element maximum ascending">8</div>
+                <div class="array-index">2 (peak)</div>
+            </div>
+            <div>
+                <div class="array-element target descending">4</div>
+                <div class="array-index">3</div>
+            </div>
+            <div>
+                <div class="array-element descending">3</div>
+                <div class="array-index">4</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Modified Binary Search</h2>
+        <p>
+            To efficiently search in a bitonic array, we'll break down the problem into three steps:
+        </p>
+        <ol>
+            <li><strong>Find the peak element</strong> (maximum value) in the bitonic array.</li>
+            <li><strong>Search in the increasing part</strong> of the array (left of the peak) using standard binary search.</li>
+            <li>If the key is not found in the increasing part, <strong>search in the decreasing part</strong> of the array (right of the peak) using a modified binary search.</li>
+        </ol>
+        
+        <h3>Step 1: Find the Peak Element</h3>
+        <p>
+            We can find the peak element using binary search. At each step, we compare the middle element with its next element to determine if we're in the increasing part or decreasing part of the array.
+        </p>
+        <ul>
+            <li>If <code>arr[mid] > arr[mid+1]</code>, we are in the decreasing part, so the peak is either at <code>mid</code> or to the left of <code>mid</code>.</li>
+            <li>If <code>arr[mid] < arr[mid+1]</code>, we are in the increasing part, so the peak is to the right of <code>mid</code>.</li>
+        </ul>
+
+        <h3>Step 2 & 3: Search in the Sorted Parts</h3>
+        <p>
+            Once we know the peak element's index, we can divide the array into two sorted subarrays:
+        </p>
+        <ul>
+            <li>The left subarray (from index 0 to peak index) is sorted in ascending order.</li>
+            <li>The right subarray (from peak index+1 to the end) is sorted in descending order.</li>
+        </ul>
+        <p>
+            We can then perform binary search on both parts:
+        </p>
+        <ul>
+            <li>First, search in the left (ascending) part.</li>
+            <li>If the key is not found, search in the right (descending) part.</li>
+        </ul>
+        
+        <div class="visualization">
+            <h3>Example Visualization</h3>
+            <p>For array <code>[1, 3, 8, 4, 3]</code> and key <code>4</code>:</p>
+            <ul>
+                <li>Step 1: Find peak at index 2 (value 8)</li>
+                <li>Step 2: Search in left part [0,2] - key not found</li>
+                <li>Step 3: Search in right part [3,4] - key found at index 3</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of our approach:
+        </p>
+
+        <pre>
+def search_bitonic_array(arr, key):
+    <span class="comment">"""Search for a key in a bitonic array."""</span>
+    # Step 1: Find the peak (maximum) element
+    peak_index = find_peak_index(arr)
+    
+    # Step 2: Search in the ascending part
+    result = binary_search(arr, 0, peak_index, key, True)
+    
+    # Step 3: If key not found in ascending part, search in the descending part
+    if result == -1:
+        result = binary_search(arr, peak_index + 1, len(arr) - 1, key, False)
+    
+    return result
+
+def find_peak_index(arr):
+    <span class="comment">"""Find the index of the peak element in a bitonic array."""</span>
+    left, right = 0, len(arr) - 1
+    
+    while left < right:
+        mid = (left + right) // 2
+        if arr[mid] > arr[mid + 1]:  # We are in the decreasing part
+            right = mid
+        else:  # We are in the increasing part
+            left = mid + 1
+    
+    # At this point, left == right and points to the peak
+    return left
+
+def binary_search(arr, left, right, key, is_ascending):
+    <span class="comment">"""Binary search in a sorted array (either ascending or descending)."""</span>
+    while left <= right:
+        mid = (left + right) // 2
+        
+        if arr[mid] == key:
+            return mid
+        
+        if is_ascending:  # Ascending order search
+            if key < arr[mid]:
+                right = mid - 1
+            else:
+                left = mid + 1
+        else:  # Descending order search
+            if key < arr[mid]:
+                left = mid + 1
+            else:
+                right = mid - 1
+    
+    return -1</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(log n), where n is the length of the array. We perform three binary searches, each taking O(log n) time, resulting in a total time complexity of O(log n).
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.
+        </p>
+    </div>
+
+    <div class="section step-by-step">
+        <h2>Step-by-Step Walkthrough</h2>
+        <p>
+            Let's trace through our algorithm for <code>arr = [3, 8, 3, 1]</code> and <code>key = 8</code>:
+        </p>
+
+        <h3>Step 1: Find the Peak Index</h3>
+        <ul>
+            <li>Initialize <code>left = 0</code>, <code>right = 3</code>.</li>
+            <li>Calculate <code>mid = 1</code>, <code>arr[mid] = 8</code>, <code>arr[mid+1] = 3</code></li>
+            <li>Since <code>8 > 3</code>, set <code>right = mid = 1</code>.</li>
+            <li>Calculate <code>mid = 0</code>, <code>arr[mid] = 3</code>, <code>arr[mid+1] = 8</code></li>
+            <li>Since <code>3 < 8</code>, set <code>left = mid + 1 = 1</code>.</li>
+            <li>Now <code>left = right = 1</code>, so peak index is 1 with value 8.</li>
+        </ul>
+
+        <h3>Step 2: Search in the Ascending Part</h3>
+        <ul>
+            <li>Search in range [0, 1] for key 8.</li>
+            <li>Calculate <code>mid = 0</code>, <code>arr[mid] = 3</code></li>
+            <li>Since <code>3 != 8</code> and <code>3 < 8</code>, set <code>left = mid + 1 = 1</code>.</li>
+            <li>Calculate <code>mid = 1</code>, <code>arr[mid] = 8</code></li>
+            <li>Since <code>8 == 8</code>, we found the key at index 1!</li>
+        </ul>
+
+        <div class="array-visualization">
+            <div>
+                <div class="array-element ascending">3</div>
+                <div class="array-index">0</div>
+            </div>
+            <div>
+                <div class="array-element target maximum ascending">8</div>
+                <div class="array-index">1 (peak)</div>
+            </div>
+            <div>
+                <div class="array-element descending">3</div>
+                <div class="array-index">2</div>
+            </div>
+            <div>
+                <div class="array-element descending">1</div>
+                <div class="array-index">3</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Edge Cases and Optimizations</h2>
+        <p>
+            Here are some important edge cases to consider:
+        </p>
+        <ol>
+            <li><strong>Empty array</strong>: Return -1</li>
+            <li><strong>Single element array</strong>: Check if the element matches the key</li>
+            <li><strong>Monotonically increasing array</strong>: Peak is the last element</li>
+            <li><strong>Monotonically decreasing array</strong>: Peak is the first element</li>
+            <li><strong>Key appears multiple times</strong>: Return the smaller index</li>
+        </ol>
+
+        <h3>Optimization: Order-Agnostic Binary Search</h3>
+        <p>
+            We can optimize by using a single binary search function that detects the order (ascending or descending) of the array segment:
+        </p>
+
+        <pre>
+def order_agnostic_binary_search(arr, key, left, right):
+    <span class="comment">"""Binary search that determines the order of the array segment."""</span>
+    if left > right:
+        return -1
+    
+    # Determine if the array segment is sorted in ascending order
+    is_ascending = arr[left] <= arr[right]
+    
+    while left <= right:
+        mid = (left + right) // 2
+        
+        if arr[mid] == key:
+            return mid
+        
+        if is_ascending:
+            if key < arr[mid]:
+                right = mid - 1
+            else:
+                left = mid + 1
+        else:  # Descending order
+            if key < arr[mid]:
+                left = mid + 1
+            else:
+                right = mid - 1
+    
+    return -1</pre>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            The Search in Bitonic Array problem is related to several other modified binary search problems:
+        </p>
+        <ul>
+            <li><strong>Find Peak Element</strong>: Find any peak element in an array</li>
+            <li><strong>Bitonic Array Maximum</strong>: Find the maximum value in a bitonic array</li>
+            <li><strong>Search in Rotated Sorted Array</strong>: Find an element in a sorted array that has been rotated</li>
+            <li><strong>Order-Agnostic Binary Search</strong>: Binary search without knowing the sort order</li>
+        </ul>
+        <p>
+            Understanding how to search in a bitonic array provides insights into dividing complex search problems into simpler sub-problems. By breaking down the search into multiple binary searches on sorted segments, we can maintain the O(log n) efficiency while handling more complex array structures.
+        </p>
+    </div>
+</body>
+</html>
