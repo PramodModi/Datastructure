@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count of Structurally Unique BST Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .tree-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .tree {
+            text-align: center;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: inline-block;
+        }
+        .formula {
+            text-align: center;
+            margin: 15px 0;
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Count of Structurally Unique Binary Search Trees</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given an integer n, return the number of structurally unique BST's (binary search trees) which has exactly n nodes of unique values from 1 to n.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: n = 3
+Output: 5
+</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: n = 1
+Output: 1
+</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>1 ≤ n ≤ 19</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to count the number of structurally different binary search trees (BSTs) that can be formed using values from 1 to n.
+        </p>
+        <p>
+            A binary search tree has the following properties:
+        </p>
+        <ul>
+            <li>The left subtree of a node contains only nodes with keys less than the node's key.</li>
+            <li>The right subtree of a node contains only nodes with keys greater than the node's key.</li>
+            <li>Both the left and right subtrees must also be binary search trees.</li>
+        </ul>
+        <p>
+            Two BSTs are considered "structurally unique" if they have different shapes, regardless of the specific values in the nodes.
+        </p>
+        <p>
+            For example, when n = 3 (values 1, 2, 3), there are 5 possible BST structures:
+        </p>
+
+        <div class="tree-container">
+            <div class="tree">
+                <pre>
+   1
+    \
+     2
+      \
+       3
+                </pre>
+            </div>
+            <div class="tree">
+                <pre>
+   1
+    \
+     3
+    /
+   2
+                </pre>
+            </div>
+            <div class="tree">
+                <pre>
+     2
+    / \
+   1   3
+                </pre>
+            </div>
+            <div class="tree">
+                <pre>
+   3
+  /
+ 1
+  \
+   2
+                </pre>
+            </div>
+            <div class="tree">
+                <pre>
+   3
+  /
+ 2
+/
+1
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach 1: Recursion with Memoization</h2>
+        <p>
+            The key insight to solving this problem is to recognize that for each value i that we choose as the root:
+        </p>
+        <ul>
+            <li>The left subtree will contain values from 1 to (i-1)</li>
+            <li>The right subtree will contain values from (i+1) to n</li>
+        </ul>
+        <p>
+            The number of unique BST structures equals the product of the number of unique BST structures for the left subtree and the right subtree.
+        </p>
+        <p>
+            We can define a recursive function <code>numTrees(n)</code> that computes the number of unique BST structures with n nodes:
+        </p>
+        <div class="formula">
+            numTrees(n) = ∑<sub>i=1 to n</sub> (numTrees(i-1) * numTrees(n-i))
+        </div>
+        <p>
+            Base cases:
+        </p>
+        <ul>
+            <li><code>numTrees(0) = 1</code> (empty tree is one valid BST)</li>
+            <li><code>numTrees(1) = 1</code> (a tree with one node has only one possible structure)</li>
+        </ul>
+        <p>
+            Since this recursive approach involves many overlapping subproblems, we can use memoization to avoid redundant calculations.
+        </p>
+
+        <div class="visualization">
+            <h3>Visualization for n = 3</h3>
+            <pre>
+With root = 1:
+  Left: numTrees(0) = 1 (empty tree)
+  Right: numTrees(2) = 2
+  Total for root 1: 1 * 2 = 2 structures
+
+With root = 2:
+  Left: numTrees(1) = 1
+  Right: numTrees(1) = 1
+  Total for root 2: 1 * 1 = 1 structure
+
+With root = 3:
+  Left: numTrees(2) = 2
+  Right: numTrees(0) = 1 (empty tree)
+  Total for root 3: 2 * 1 = 2 structures
+
+Total number of unique BSTs = 2 + 1 + 2 = 5</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation of Approach 1</h2>
+        <p>
+            Here's the Python implementation using recursion with memoization:
+        </p>
+
+        <pre>
+def numTrees(n):
+    <span class="comment">"""Count the number of structurally unique BSTs with n nodes.
+    
+    Args:
+        n: The number of nodes
+        
+    Returns:
+        The number of unique BST structures
+    """</span>
+    return countTreesRec({}, n)
+
+def countTreesRec(memo, n):
+    <span class="comment">"""Recursive helper function with memoization.
+    
+    Args:
+        memo: Dictionary to store previously computed results
+        n: The number of nodes
+        
+    Returns:
+        The number of unique BST structures
+    """</span>
+    # Check if we've already computed this value
+    if n in memo:
+        return memo[n]
+    
+    # Base cases
+    if n <= 1:
+        return 1
+    
+    # Try each value as the root
+    count = 0
+    for i in range(1, n+1):
+        # Number of unique BSTs with root i
+        leftCount = countTreesRec(memo, i-1)      # Unique structures for left subtree
+        rightCount = countTreesRec(memo, n-i)     # Unique structures for right subtree
+        
+        # Multiply to get total combinations for this root
+        count += leftCount * rightCount
+    
+    # Store result in memoization dictionary
+    memo[n] = count
+    return count</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n²) - With memoization, we compute each subproblem only once, and there are n subproblems each requiring O(n) time.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n) - For the memoization dictionary and the recursion stack.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach 2: Dynamic Programming</h2>
+        <p>
+            We can also solve this problem iteratively using dynamic programming:
+        </p>
+        <ol>
+            <li>Create a DP array where dp[i] represents the number of unique BSTs with i nodes.</li>
+            <li>Initialize dp[0] = dp[1] = 1.</li>
+            <li>For each i from 2 to n, calculate dp[i] using the formula:</li>
+        </ol>
+        <div class="formula">
+            dp[i] = ∑<sub>j=1 to i</sub> (dp[j-1] * dp[i-j])
+        </div>
+        <p>
+            Here, j represents the root node, dp[j-1] represents the number of unique BSTs for the left subtree, and dp[i-j] represents the number of unique BSTs for the right subtree.
+        </p>
+
+        <div class="visualization">
+            <h3>DP Calculation for n = 3</h3>
+            <pre>
+dp[0] = 1 (base case)
+dp[1] = 1 (base case)
+
+dp[2] = dp[0]*dp[1] + dp[1]*dp[0]
+      = 1*1 + 1*1 = 2
+
+dp[3] = dp[0]*dp[2] + dp[1]*dp[1] + dp[2]*dp[0]
+      = 1*2 + 1*1 + 2*1
+      = 2 + 1 + 2 = 5</pre>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Implementation of Approach 2</h2>
+        <p>
+            Here's the Python implementation using dynamic programming:
+        </p>
+
+        <pre>
+def numTrees_dp(n):
+    <span class="comment">"""Count the number of structurally unique BSTs with n nodes using DP.
+    
+    Args:
+        n: The number of nodes
+        
+    Returns:
+        The number of unique BST structures
+    """</span>
+    # Initialize DP array
+    dp = [0] * (n+1)
+    
+    # Base cases
+    dp[0] = 1
+    dp[1] = 1
+    
+    # Build up the solution
+    for i in range(2, n+1):
+        # Try each value as the root
+        for j in range(1, i+1):
+            # j is the root, j-1 nodes in left subtree, i-j nodes in right subtree
+            dp[i] += dp[j-1] * dp[i-j]
+    
+    return dp[n]</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n²) - We have two nested loops: the outer loop runs n times, and the inner loop runs at most n times.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n) - We need an array of size n+1 to store the DP values.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Mathematical Insight: Catalan Numbers</h2>
+        <p>
+            The sequence we're computing is actually the well-known Catalan numbers, which appear in many combinatorial problems. The nth Catalan number C(n) can be calculated using the formula:
+        </p>
+        <div class="formula">
+            C(n) = (1 / (n+1)) * (2n choose n) = (2n)! / ((n+1)! * n!)
+        </div>
+        <p>
+            The first few Catalan numbers are:
+        </p>
+        <table>
+            <tr>
+                <th>n</th>
+                <th>C(n)</th>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>14</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>42</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>132</td>
+            </tr>
+        </table>
+        <p>
+            The Catalan numbers grow exponentially, which explains why the problem constrains n to be at most 19.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with a few examples:
+        </p>
+
+        <div class="example">
+            <pre>
+# Example 1
+numTrees(3)
+# Output: 5
+
+# Example 2
+numTrees(1)
+# Output: 1
+
+# Additional test
+numTrees(6)
+# Output: 132</pre>
+        </div>
+
+        <p>
+            Our solution correctly computes the number of unique BST structures for these examples.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Applications and Related Problems</h2>
+        <p>
+            The Catalan number appears in many problems in mathematics and computer science:
+        </p>
+        <ul>
+            <li><strong>Counting valid parentheses expressions:</strong> The number of valid expressions with n pairs of parentheses.</li>
+            <li><strong>Counting binary trees:</strong> The number of different binary trees with n nodes.</li>
+            <li><strong>Counting paths on a grid:</strong> The number of paths from (0,0) to (n,n) that don't cross above the diagonal.</li>
+            <li><strong>Triangulations of polygons:</strong> The number of ways to triangulate a convex polygon with n+2 sides.</li>
+        </ul>
+        <p>
+            Related problems that use similar dynamic programming or recursive approaches include:
+        </p>
+        <ul>
+            <li><strong>Unique Binary Search Trees II:</strong> Generate all structurally unique BSTs for values 1 to n.</li>
+            <li><strong>Different Ways to Add Parentheses:</strong> Count the number of ways to add parentheses to an expression.</li>
+            <li><strong>Valid Parenthesis Strings:</strong> Generate all valid combinations of parentheses.</li>
+        </ul>
+    </div>
+</body>
+</html>

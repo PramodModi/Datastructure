@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Structurally Unique Binary Search Trees Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .tree-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .tree {
+            text-align: center;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            display: inline-block;
+        }
+        .ascii-tree {
+            font-family: monospace;
+            white-space: pre;
+            text-align: left;
+            margin: 5px 0;
+        }
+        .output-format {
+            background-color: #f0f8ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Structurally Unique Binary Search Trees</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given an integer n, return all the structurally unique BST's (binary search trees), which has exactly n nodes of unique values from 1 to n. Return the answer in any order.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: n = 3
+Output: [[1,null,2,null,3],[1,null,3,2],[2,1,3],[3,1,null,null,2],[3,2,null,1]]
+</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: n = 1
+Output: [[1]]
+</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>1 ≤ n ≤ 8</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            This problem is an extension of the "Count of Structurally Unique Binary Search Trees" problem. Instead of just counting the number of unique BSTs, we need to actually generate all possible BST structures using the values from 1 to n.
+        </p>
+        <p>
+            A Binary Search Tree (BST) has the following properties:
+        </p>
+        <ul>
+            <li>The left subtree of a node contains only nodes with keys less than the node's key.</li>
+            <li>The right subtree of a node contains only nodes with keys greater than the node's key.</li>
+            <li>Both left and right subtrees are also binary search trees.</li>
+        </ul>
+        <p>
+            For example, with n = 3, we need to generate all five possible unique BST structures using the values 1, 2, and 3:
+        </p>
+
+        <div class="tree-container">
+            <div class="tree">
+                <div class="ascii-tree">
+   1
+    \
+     2
+      \
+       3</div>
+            </div>
+            <div class="tree">
+                <div class="ascii-tree">
+   1
+    \
+     3
+    /
+   2</div>
+            </div>
+            <div class="tree">
+                <div class="ascii-tree">
+     2
+    / \
+   1   3</div>
+            </div>
+            <div class="tree">
+                <div class="ascii-tree">
+   3
+  /
+ 1
+  \
+   2</div>
+            </div>
+            <div class="tree">
+                <div class="ascii-tree">
+   3
+  /
+ 2
+/
+1</div>
+            </div>
+        </div>
+
+        <p>
+            The output format in the problem is a list of trees represented in a level-order traversal format, where <code>null</code> indicates the absence of a node.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Recursive Tree Construction</h2>
+        <p>
+            We can solve this problem using a recursive approach. The key insight is that for each value i (from 1 to n) that we choose as the root:
+        </p>
+        <ol>
+            <li>The left subtree will contain values from 1 to (i-1)</li>
+            <li>The right subtree will contain values from (i+1) to n</li>
+        </ol>
+        <p>
+            For each possible root value i, we recursively generate all possible left and right subtrees, and then combine them to create all possible BSTs with i as the root.
+        </p>
+
+        <div class="visualization">
+            <h3>Recursive Algorithm</h3>
+            <pre>
+Function generateTrees(start, end):
+    1. If start > end, return a list containing a single null node (representing an empty tree)
+    2. Initialize an empty result list
+    3. For each value i from start to end:
+        a. Recursively generate all possible left subtrees using values from start to (i-1)
+        b. Recursively generate all possible right subtrees using values from (i+1) to end
+        c. For each left subtree and right subtree combination:
+            i. Create a new tree with i as the root and the current left and right subtrees
+            ii. Add this tree to the result list
+    4. Return the result list</pre>
+            <p>
+                The final answer will be the result of calling <code>generateTrees(1, n)</code>.
+            </p>
+        </div>
+
+        <div class="visualization">
+            <h3>Example Visualization for n = 3</h3>
+            <pre>
+generateTrees(1, 3)
+
+1. Try i = 1 as root:
+   - Left subtrees = generateTrees(1, 0) = [null]
+   - Right subtrees = generateTrees(2, 3) = [
+       2 -> 3,
+       2 <- 3
+     ]
+   - Combine: Two trees with root 1
+
+2. Try i = 2 as root:
+   - Left subtrees = generateTrees(1, 1) = [1]
+   - Right subtrees = generateTrees(3, 3) = [3]
+   - Combine: One tree with root 2
+
+3. Try i = 3 as root:
+   - Left subtrees = generateTrees(1, 2) = [
+       1 -> 2,
+       1 <- 2
+     ]
+   - Right subtrees = generateTrees(4, 3) = [null]
+   - Combine: Two trees with root 3
+
+Total: 5 unique BSTs</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of our recursive approach:
+        </p>
+
+        <pre>
+class TreeNode:
+    <span class="comment">"""Definition for a binary tree node."""
+</span>    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def generateTrees(n):
+    <span class="comment">"""Generate all structurally unique BSTs with n nodes.
+    
+    Args:
+        n: The number of nodes
+        
+    Returns:
+        List of all unique BST root nodes
+    """</span>
+    if n == 0:
+        return []
+    return generateTreesRec(1, n)
+
+def generateTreesRec(start, end):
+    <span class="comment">"""Recursively generate all unique BSTs for values from start to end.
+    
+    Args:
+        start: Starting value
+        end: Ending value
+        
+    Returns:
+        List of all unique BST root nodes for the range
+    """</span>
+    result = []
+    
+    # Base case: empty tree
+    if start > end:
+        result.append(None)
+        return result
+    
+    # Try each value as the root
+    for i in range(start, end + 1):
+        # Generate all possible left subtrees
+        leftSubtrees = generateTreesRec(start, i - 1)
+        
+        # Generate all possible right subtrees
+        rightSubtrees = generateTreesRec(i + 1, end)
+        
+        # Combine left and right subtrees with current root
+        for left in leftSubtrees:
+            for right in rightSubtrees:
+                # Create new root with current value and subtrees
+                root = TreeNode(i)
+                root.left = left
+                root.right = right
+                result.append(root)
+    
+    return result</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n * C<sub>n</sub>), where C<sub>n</sub> is the nth Catalan number.
+            <ul>
+                <li>There are C<sub>n</sub> unique BSTs (as we calculated in the previous problem).</li>
+                <li>For each BST, we need O(n) time to construct it (assign nodes, values, etc.).</li>
+            </ul>
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n * C<sub>n</sub>)
+            <ul>
+                <li>We need to store all C<sub>n</sub> unique BSTs, each requiring O(n) space.</li>
+                <li>Additionally, O(n) space is used for the recursion stack.</li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Visualization of Tree Generation</h2>
+        <p>
+            Let's walk through the process of generating all unique BSTs for n = 3 in more detail:
+        </p>
+
+        <div class="visualization">
+            <h3>Detailed Generation Process</h3>
+            <pre>
+generateTrees(1, 3)
+
+1. Root = 1:
+   - Left = generateTrees(1, 0) = [null]
+   - Right = generateTrees(2, 3)
+     - Root = 2:
+       - Left = generateTrees(2, 1) = [null]
+       - Right = generateTrees(3, 3) = [TreeNode(3)]
+       - Returns [TreeNode(2, null, TreeNode(3))]
+     - Root = 3:
+       - Left = generateTrees(2, 2) = [TreeNode(2)]
+       - Right = generateTrees(4, 3) = [null]
+       - Returns [TreeNode(3, TreeNode(2), null)]
+     - Total for Right: [TreeNode(2, null, TreeNode(3)), TreeNode(3, TreeNode(2), null)]
+   - Trees with Root 1:
+     - TreeNode(1, null, TreeNode(2, null, TreeNode(3)))
+     - TreeNode(1, null, TreeNode(3, TreeNode(2), null))
+
+2. Root = 2:
+   - Left = generateTrees(1, 1) = [TreeNode(1)]
+   - Right = generateTrees(3, 3) = [TreeNode(3)]
+   - Trees with Root 2:
+     - TreeNode(2, TreeNode(1), TreeNode(3))
+
+3. Root = 3:
+   - Left = generateTrees(1, 2)
+     - Root = 1:
+       - Left = generateTrees(1, 0) = [null]
+       - Right = generateTrees(2, 2) = [TreeNode(2)]
+       - Returns [TreeNode(1, null, TreeNode(2))]
+     - Root = 2:
+       - Left = generateTrees(1, 1) = [TreeNode(1)]
+       - Right = generateTrees(3, 2) = [null]
+       - Returns [TreeNode(2, TreeNode(1), null)]
+     - Total for Left: [TreeNode(1, null, TreeNode(2)), TreeNode(2, TreeNode(1), null)]
+   - Right = generateTrees(4, 3) = [null]
+   - Trees with Root 3:
+     - TreeNode(3, TreeNode(1, null, TreeNode(2)), null)
+     - TreeNode(3, TreeNode(2, TreeNode(1), null), null)
+
+Final Result: 5 unique BSTs</pre>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Memoization Consideration</h2>
+        <p>
+            Since our algorithm involves overlapping subproblems (we may generate the same subtrees multiple times), we might consider using memoization to improve efficiency. However, there's a caveat:
+        </p>
+        <p>
+            When we return a result from cache, we need to clone the trees because they will be used as left or right children of new tree nodes. This cloning process essentially reconstructs the trees, making the time complexity of the memoized approach similar to the non-memoized one.
+        </p>
+        <p>
+            Here's how we could implement memoization with cloning:
+        </p>
+
+        <pre>
+def generateTrees(n):
+    <span class="comment">"""Generate all structurally unique BSTs with n nodes using memoization."""
+</span>    if n == 0:
+        return []
+    memo = {}
+    return generateTreesRec(1, n, memo)
+
+def generateTreesRec(start, end, memo):
+    <span class="comment">"""Recursively generate trees with memoization."""
+</span>    # Check if we've already computed this result
+    if (start, end) in memo:
+        # Need to clone the trees to avoid modifying cached results
+        return [cloneTree(root) for root in memo[(start, end)]]
+    
+    result = []
+    if start > end:
+        result.append(None)
+        return result
+    
+    for i in range(start, end + 1):
+        leftSubtrees = generateTreesRec(start, i - 1, memo)
+        rightSubtrees = generateTreesRec(i + 1, end, memo)
+        
+        for left in leftSubtrees:
+            for right in rightSubtrees:
+                root = TreeNode(i)
+                root.left = left
+                root.right = right
+                result.append(root)
+    
+    # Cache the result
+    memo[(start, end)] = result
+    return result
+
+def cloneTree(root):
+    <span class="comment">"""Deep copy a binary tree."""
+</span>    if not root:
+        return None
+    newRoot = TreeNode(root.val)
+    newRoot.left = cloneTree(root.left)
+    newRoot.right = cloneTree(root.right)
+    return newRoot</pre>
+
+        <p>
+            Given the overhead of tree cloning and the small problem size constraints (n ≤ 8), the non-memoized approach is often sufficient in practice.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Output Representation</h2>
+        <p>
+            In the problem statement, the output is represented as arrays in level-order traversal format. Here's how the five unique BSTs for n = 3 would be represented:
+        </p>
+        <div class="output-format">
+            1. [1,null,2,null,3]  - Tree with shape: 1 -> 2 -> 3
+            2. [1,null,3,2]      - Tree with shape: 1 -> 3 -> 2
+            3. [2,1,3]           - Tree with shape: 2 with 1 (left) and 3 (right)
+            4. [3,1,null,null,2] - Tree with shape: 3 -> 1 -> 2
+            5. [3,2,null,1]      - Tree with shape: 3 -> 2 -> 1
+        </div>
+        <p>
+            To convert our tree objects to this format, we would need to perform a level-order traversal of each tree and represent it as an array.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's verify our solution with the examples from the problem:
+        </p>
+
+        <div class="example">
+            <pre>
+# Example 1
+trees = generateTrees(3)
+# Output: 5 unique BSTs
+
+# Example 2
+trees = generateTrees(1)
+# Output: [TreeNode(1)] (1 unique BST)</pre>
+        </div>
+        <p>
+            We can verify that our implementation generates the correct number of unique BSTs for various values of n:
+        </p>
+        <table>
+            <tr>
+                <th>n</th>
+                <th>Number of Unique BSTs</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>14</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>42</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you've understood this problem, you might want to explore these related problems:
+        </p>
+        <ul>
+            <li><strong>Unique Binary Search Trees:</strong> Count the number of structurally unique BSTs (which we covered in the previous problem).</li>
+            <li><strong>All Possible Full Binary Trees:</strong> Generate all possible full binary trees with n nodes.</li>
+            <li><strong>Different Ways to Add Parentheses:</strong> A similar divide-and-conquer problem that involves generating all possible expressions.</li>
+            <li><strong>Serialize and Deserialize Binary Tree:</strong> Convert a binary tree to a string and vice versa, which can be useful for understanding the array representation format used in this problem.</li>
+            <li><strong>Validate Binary Search Tree:</strong> Check if a binary tree is a valid BST.</li>
+        </ul>
+        <p>
+            This problem exemplifies the power of recursive tree construction and how to generate all possible structures based on a given constraint - a technique applicable to many combinatorial problems involving trees and graphs.
+        </p>
+    </div>
+</body>
+</html>

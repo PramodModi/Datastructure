@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluate Expression Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .expression {
+            font-family: monospace;
+            font-size: 1.1em;
+            padding: 2px 5px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 3px;
+            border-radius: 3px;
+        }
+        .tree-node {
+            margin-left: 20px;
+            position: relative;
+        }
+        .tree-node::before {
+            content: "";
+            position: absolute;
+            left: -10px;
+            top: 10px;
+            border-left: 1px solid #666;
+            width: 10px;
+            height: 1px;
+        }
+        .tree-branch {
+            border-left: 1px solid #666;
+            margin-left: 10px;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Evaluate Expression</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given a string expression of numbers and operators, return all possible results from computing all the different possible ways to group numbers and operators. You may return the answer in any order.
+        </p>
+        <p>
+            The test cases are generated such that the output values fit in a 32-bit integer and the number of different results does not exceed 10<sup>4</sup>.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: expression = "2-1-1"
+Output: [0,2]
+Explanation:
+((2-1)-1) = 0 
+(2-(1-1)) = 2</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: expression = "2*3-4*5"
+Output: [-34,-14,-10,-10,10]
+Explanation:
+(2*(3-(4*5))) = -34 
+((2*3)-(4*5)) = -14 
+((2*(3-4))*5) = -10 
+(2*((3-4)*5)) = -10 
+(((2*3)-4)*5) = 10</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>1 ≤ expression.length ≤ 20</li>
+            <li>expression consists of digits and the operators '+', '-', and '*'.</li>
+            <li>All the integer values in the input expression are in the range [0, 99].</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            This problem asks us to find all possible ways to evaluate an arithmetic expression by adding different parentheses. The key insights are:
+        </p>
+        <ul>
+            <li>Parentheses can change the order of operations, resulting in different final values.</li>
+            <li>We need to find all possible values that can be obtained by adding different valid parentheses.</li>
+            <li>The standard operator precedence (*, then +/-) is ignored - we need to consider all possible groupings.</li>
+        </ul>
+        <p>
+            For example, with the expression "2-1-1", we have two ways to add parentheses:</p>
+        <ol>
+            <li><span class="expression">((2-1)-1) = 1-1 = 0</span></li>
+            <li><span class="expression">(2-(1-1)) = 2-0 = 2</span></li>
+        </ol>
+        <p>
+            The different groupings lead to different results (0 and 2), both of which should be included in the output.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Divide and Conquer with Memoization</h2>
+        <p>
+            We can solve this problem using a divide-and-conquer approach. For each operator in the expression, we can split the expression into two parts: left and right. Then, we recursively evaluate all possible values for both parts and combine them using the operator.
+        </p>
+        <p>
+            Here's the step-by-step approach:
+        </p>
+        <ol>
+            <li>Iterate through the expression character by character.</li>
+            <li>When an operator ('+', '-', '*') is encountered at position i:
+                <ul>
+                    <li>Split the expression into a left part (expression[:i]) and a right part (expression[i+1:]).</li>
+                    <li>Recursively compute all possible values for the left part and the right part.</li>
+                    <li>Combine each value from the left part with each value from the right part using the operator at position i.</li>
+                </ul>
+            </li>
+            <li>If no operator is found (i.e., the expression is just a number), return the numeric value as the base case.</li>
+        </ol>
+        <p>
+            Since this process may involve recalculating values for the same subexpressions multiple times, we can use memoization to store and reuse previously computed results.
+        </p>
+
+        <div class="visualization">
+            <h3>Visualization of the Approach</h3>
+            <p>Let's walk through the process for the expression "2-1-1":</p>
+            <pre>
+Evaluate "2-1-1":
+  For operator '-' at position 1:
+    Left: "2" = [2]
+    Right: "1-1" = [0]
+    Combine: 2-0 = [2]
+  For operator '-' at position 3:
+    Left: "2-1" = [1]
+    Right: "1" = [1]
+    Combine: 1-1 = [0]
+  Result: [0, 2]
+
+Recursive breakdown:
+  Evaluate "2-1":
+    For operator '-' at position 1:
+      Left: "2" = [2]
+      Right: "1" = [1]
+      Combine: 2-1 = [1]
+    Result: [1]
+  
+  Evaluate "1-1":
+    For operator '-' at position 1:
+      Left: "1" = [1]
+      Right: "1" = [1]
+      Combine: 1-1 = [0]
+    Result: [0]</pre>
+            <p>Similarly, for the more complex expression "2*3-4*5":</p>
+            <pre>
+Evaluate "2*3-4*5":
+  For operator '*' at position 1:
+    Left: "2" = [2]
+    Right: "3-4*5" = [-17, -1]
+    Combine: 2*(-17) = -34, 2*(-1) = -2
+  For operator '-' at position 3:
+    Left: "2*3" = [6]
+    Right: "4*5" = [20]
+    Combine: 6-20 = -14
+  For operator '*' at position 5:
+    Left: "2*3-4" = [2]
+    Right: "5" = [5]
+    Combine: 2*5 = 10
+  Result: [-34, -2, -14, 10]</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of our divide-and-conquer approach with memoization:
+        </p>
+
+        <pre>
+def diffWaysToCompute(expression):
+    <span class="comment">"""Compute all possible results from different ways to group numbers and operators.
+    
+    Args:
+        expression: A string containing numbers and operators
+        
+    Returns:
+        List of all possible results
+    """</span>
+    # Use memoization to avoid recalculating the same subexpressions
+    memo = {}
+    return diffWaysToComputeRec(expression, memo)
+
+def diffWaysToComputeRec(expression, memo):
+    <span class="comment">"""Recursive function to compute all possible results.
+    
+    Args:
+        expression: Current expression to evaluate
+        memo: Dictionary to store previously computed results
+        
+    Returns:
+        List of all possible results for this expression
+    """</span>
+    # Check if we've already computed this expression
+    if expression in memo:
+        return memo[expression]
+    
+    results = []
+    
+    # Base case: if the expression is just a number
+    if expression.isdigit():
+        results.append(int(expression))
+    else:
+        # Iterate through the expression
+        for i in range(len(expression)):
+            # If we find an operator, split the expression
+            if not expression[i].isdigit():
+                # Compute all possible results for the left and right parts
+                left_results = diffWaysToComputeRec(expression[:i], memo)
+                right_results = diffWaysToComputeRec(expression[i+1:], memo)
+                
+                # Combine results from left and right parts using the operator
+                for left in left_results:
+                    for right in right_results:
+                        if expression[i] == '+':
+                            results.append(left + right)
+                        elif expression[i] == '-':
+                            results.append(left - right)
+                        elif expression[i] == '*':
+                            results.append(left * right)
+    
+    # Store the results in memoization dictionary
+    memo[expression] = results
+    return results</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(4<sup>n</sup>/n<sup>3/2</sup>), where n is the length of the expression.
+            <ul>
+                <li>This is an approximate bound related to the Catalan number, which counts the number of different ways to add parentheses.</li>
+                <li>Without memoization, the time complexity would be even worse due to recalculations.</li>
+            </ul>
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(4<sup>n</sup>/n<sup>3/2</sup>) for storing all unique subexpressions and their results in the memoization dictionary.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Handling Multi-Digit Numbers</h2>
+        <p>
+            One limitation of the implementation above is that it assumes all numbers in the expression are single digits. To handle multi-digit numbers properly, we need to modify our approach:
+        </p>
+
+        <pre>
+def diffWaysToCompute(expression):
+    memo = {}
+    return diffWaysToComputeRec(expression, memo)
+
+def diffWaysToComputeRec(expression, memo):
+    if expression in memo:
+        return memo[expression]
+    
+    results = []
+    
+    # Check if the expression contains any operator
+    has_operator = False
+    for i in range(len(expression)):
+        if expression[i] in '+-*':
+            has_operator = True
+            # Split the expression at this operator
+            left_results = diffWaysToComputeRec(expression[:i], memo)
+            right_results = diffWaysToComputeRec(expression[i+1:], memo)
+            
+            # Combine results
+            for left in left_results:
+                for right in right_results:
+                    if expression[i] == '+':
+                        results.append(left + right)
+                    elif expression[i] == '-':
+                        results.append(left - right)
+                    elif expression[i] == '*':
+                        results.append(left * right)
+    
+    # Base case: if no operator is found or the expression is just a number
+    if not has_operator:
+        results.append(int(expression))
+    
+    memo[expression] = results
+    return results</pre>
+
+        <p>
+            This implementation checks if the expression contains any operator rather than assuming all characters that are not digits are operators. It also handles the base case when the expression is just a number (no operators).
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Iterative Approach for Large Expressions</h2>
+        <p>
+            For very large expressions, a bottom-up dynamic programming approach can be more efficient:
+        </p>
+
+        <pre>
+def diffWaysToCompute_dp(expression):
+    <span class="comment">"""Compute all possible results using dynamic programming."""
+</span>
+    # Parse the expression into numbers and operators
+    nums = []
+    ops = []
+    i = 0
+    while i < len(expression):
+        # Extract number
+        num = 0
+        while i < len(expression) and expression[i].isdigit():
+            num = num * 10 + int(expression[i])
+            i += 1
+        nums.append(num)
+        
+        # Extract operator if present
+        if i < len(expression):
+            ops.append(expression[i])
+            i += 1
+    
+    # Initialize DP table
+    n = len(nums)
+    dp = [[[] for _ in range(n)] for _ in range(n)]
+    
+    # Fill in the diagonal (base cases: single numbers)
+    for i in range(n):
+        dp[i][i] = [nums[i]]
+    
+    # Fill the DP table
+    for length in range(2, n+1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            for k in range(i, j):
+                # Combine results from left and right parts
+                for left in dp[i][k]:
+                    for right in dp[k+1][j]:
+                        if ops[k] == '+':
+                            dp[i][j].append(left + right)
+                        elif ops[k] == '-':
+                            dp[i][j].append(left - right)
+                        elif ops[k] == '*':
+                            dp[i][j].append(left * right)
+    
+    return dp[0][n-1] if n > 0 else []</pre>
+
+        <p>
+            This approach first parses the expression into separate numbers and operators, then uses a 2D DP table to build up solutions for larger subexpressions from smaller ones. While more complex, it can be more efficient for very large expressions with many repeated subexpressions.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples from the problem:
+        </p>
+
+        <div class="example">
+            <pre>
+# Example 1
+diffWaysToCompute("2-1-1")
+# Output: [0, 2]
+
+# Example 2
+diffWaysToCompute("2*3-4*5")
+# Output: [-34, -10, -14, -10, 10]</pre>
+        </div>
+
+        <p>
+            Our solution correctly computes all possible results for both examples.
+        </p>
+        <p>
+            Let's verify with a few additional examples:
+        </p>
+        <div class="example">
+            <pre>
+# Example 3
+diffWaysToCompute("1+1+1")
+# Output: [3, 3]
+
+# Example 4
+diffWaysToCompute("10+5")
+# Output: [15]</pre>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Mathematical Foundation</h2>
+        <p>
+            The number of different ways to evaluate an expression with n operators is given by the nth Catalan number, C(n). The formula for the nth Catalan number is:
+        </p>
+        <p style="text-align: center;">
+            C(n) = (1 / (n+1)) * (2n choose n)
+        </p>
+        <p>
+            For example:
+        </p>
+        <ul>
+            <li>With 1 operator (e.g., "1+2"), there's only 1 way = C(1) = 1</li>
+            <li>With 2 operators (e.g., "1+2+3"), there are 2 ways = C(2) = 2</li>
+            <li>With 3 operators (e.g., "1+2+3+4"), there are 5 ways = C(3) = 5</li>
+        </ul>
+        <p>
+            This is why our recursive algorithm can generate so many different results for expressions with many operators, and why memoization is crucial for efficiency.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you've understood this problem, you might want to try these related problems:
+        </p>
+        <ul>
+            <li><strong>Basic Calculator:</strong> Evaluate an expression with parentheses, +, and -.</li>
+            <li><strong>Basic Calculator II:</strong> Evaluate an expression with +, -, *, and /.</li>
+            <li><strong>Basic Calculator III:</strong> Evaluate an expression with parentheses, +, -, *, and /.</li>
+            <li><strong>Expression Add Operators:</strong> Add operators +, -, and * to a number string to get a specific target value.</li>
+            <li><strong>Unique Binary Search Trees II:</strong> Generate all structurally unique BSTs (a related divide-and-conquer problem).</li>
+        </ul>
+        <p>
+            These problems all involve parsing and evaluating expressions with different operators and constraints, and many can be approached using similar divide-and-conquer or dynamic programming techniques.
+        </p>
+    </div>
+</body>
+</html>

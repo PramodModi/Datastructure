@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Case Permutation Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .perm-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .perm {
+            border: 1px solid #9c27b0;
+            border-radius: 4px;
+            padding: 5px 10px;
+            background-color: #f3e5f5;
+            font-family: monospace;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 0 3px;
+        }
+        .tree-container {
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .decision-tree {
+            font-family: monospace;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Letter Case Permutation</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given a string <code>s</code>, you can transform every letter individually to be lowercase or uppercase to create another string.
+        </p>
+        <p>
+            Return a list of all possible strings we could create. Return the output in any order.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: s = "a1b2"
+Output: ["a1b2","a1B2","A1b2","A1B2"]
+</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: s = "3z4"
+Output: ["3z4","3Z4"]
+</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>1 ≤ s.length ≤ 12</li>
+            <li>s consists of lowercase English letters, uppercase English letters, and digits.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            This problem asks us to generate all possible permutations of a string by changing the case of each letter (keeping digits unchanged). For each letter in the string, we have two options:
+        </p>
+        <ol>
+            <li>Keep it as its original case</li>
+            <li>Change it to the opposite case (uppercase to lowercase, or lowercase to uppercase)</li>
+        </ol>
+        <p>
+            Digits should remain unchanged. The total number of permutations will be 2^k, where k is the number of letters in the string (non-digit characters).
+        </p>
+        <p>
+            For example, given the string "a1b2":
+        </p>
+        <div class="perm-container">
+            <div class="perm">"a1b2"</div>
+            <div class="perm">"a1B2"</div>
+            <div class="perm">"A1b2"</div>
+            <div class="perm">"A1B2"</div>
+        </div>
+        <p>
+            Since there are 2 letters ('a' and 'b'), we have 2^2 = 4 possible permutations.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach 1: Backtracking with String Modification</h2>
+        <p>
+            One way to solve this problem is to use backtracking with in-place string modification. The approach works as follows:
+        </p>
+        <ol>
+            <li>Start with the original string</li>
+            <li>For each letter in the string (skipping digits):
+                <ul>
+                    <li>Change its case</li>
+                    <li>Recursively generate all permutations for the remaining characters</li>
+                    <li>Change the case back (backtrack)</li>
+                </ul>
+            </li>
+            <li>Add each generated string to the result</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of Backtracking Approach</h3>
+            <p>Let's trace through the backtracking process for the input "a1b2":</p>
+            <pre class="decision-tree">
+Start with "a1b2"
+- Add "a1b2" to result
+
+- Change 'a' to 'A': "A1b2"
+  - Add "A1b2" to result
+  - Change 'b' to 'B': "A1B2"
+    - Add "A1B2" to result
+    - Backtrack: change 'B' back to 'b': "A1b2"
+  - Backtrack: change 'A' back to 'a': "a1b2"
+
+- Skip '1' (not a letter)
+
+- Change 'b' to 'B': "a1B2"
+  - Add "a1B2" to result
+  - Backtrack: change 'B' back to 'b': "a1b2"
+
+- Skip '2' (not a letter)
+
+Final result: ["a1b2", "A1b2", "A1B2", "a1B2"]</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation of Approach 1</h2>
+        <p>
+            Here's the Python implementation of the backtracking approach with string modification:
+        </p>
+
+        <pre>
+def letterCasePermutation(s):
+    <span class="comment">"""Generate all letter case permutations of string s.
+    
+    Args:
+        s: Input string containing letters and digits
+        
+    Returns:
+        List of all possible letter case permutations
+    """</span>
+    result = []
+    backtrack(s, result, 0)
+    return result
+
+def backtrack(s, result, index):
+    <span class="comment">"""Recursive backtracking function to generate permutations.
+    
+    Args:
+        s: Current string being modified
+        result: List to store all permutations
+        index: Starting index for considering characters
+    """</span>
+    # Add the current string to the result
+    result.append(s)
+    
+    # Try changing the case of each letter
+    for i in range(index, len(s)):
+        char = s[i]
+        
+        # Skip digits
+        if not char.isalpha():
+            continue
+        
+        # Change the case of the current letter
+        if char.islower():
+            new_char = char.upper()
+        else:
+            new_char = char.lower()
+        
+        # Create a new string with the case changed
+        new_s = s[:i] + new_char + s[i+1:]
+        
+        # Recursively generate permutations for the rest of the string
+        backtrack(new_s, result, i + 1)
+        
+        # Note: No explicit backtracking needed for string modification
+        # because we're creating new strings rather than modifying in place</pre>
+
+        <p>
+            In this implementation, we start by adding the current string to the result. Then, for each letter (skipping digits), we change its case and recursively generate all permutations for the rest of the string. Since we're creating new strings rather than modifying the original string in place, we don't need explicit backtracking.
+        </p>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n * 2^n), where n is the length of the input string.
+            <ul>
+                <li>In the worst case, all characters are letters, resulting in 2^n permutations.</li>
+                <li>For each permutation, we perform O(n) work to create a new string.</li>
+            </ul>
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n * 2^n)
+            <ul>
+                <li>O(2^n) space for storing all permutations.</li>
+                <li>Each permutation requires O(n) space.</li>
+                <li>Additionally, O(n) space is used for the recursion stack.</li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach 2: Decision Tree Recursion</h2>
+        <p>
+            Another approach is to build the permutations character by character using a decision tree. For each character in the input string:
+        </p>
+        <ol>
+            <li>If it's a digit, simply add it to the current permutation and proceed.</li>
+            <li>If it's a letter, create two branches: one with the lowercase version and one with the uppercase version.</li>
+        </ol>
+        <p>
+            This approach avoids the need for explicit backtracking as we build each permutation from scratch.
+        </p>
+
+        <div class="visualization">
+            <h3>Visualization of Decision Tree Approach</h3>
+            <p>Let's trace through the process for the input "a1b2":</p>
+            <pre class="decision-tree">
+Start with ""
+
+Process character 'a':
+- Branch 1: Add 'a' -> "a"
+- Branch 2: Add 'A' -> "A"
+
+Process character '1':
+- For "a": Add '1' -> "a1"
+- For "A": Add '1' -> "A1"
+
+Process character 'b':
+- For "a1": 
+  - Branch 1: Add 'b' -> "a1b"
+  - Branch 2: Add 'B' -> "a1B"
+- For "A1":
+  - Branch 1: Add 'b' -> "A1b"
+  - Branch 2: Add 'B' -> "A1B"
+
+Process character '2':
+- For "a1b": Add '2' -> "a1b2"
+- For "a1B": Add '2' -> "a1B2"
+- For "A1b": Add '2' -> "A1b2"
+- For "A1B": Add '2' -> "A1B2"
+
+Final result: ["a1b2", "a1B2", "A1b2", "A1B2"]</pre>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Implementation of Approach 2</h2>
+        <p>
+            Here's the Python implementation of the decision tree approach:
+        </p>
+
+        <pre>
+def letterCasePermutation(s):
+    <span class="comment">"""Generate all letter case permutations using a decision tree approach.
+    
+    Args:
+        s: Input string containing letters and digits
+        
+    Returns:
+        List of all possible letter case permutations
+    """</span>
+    result = []
+    build_permutation(s, "", 0, result)
+    return result
+
+def build_permutation(s, current, index, result):
+    <span class="comment">"""Recursive function to build permutations character by character.
+    
+    Args:
+        s: Input string
+        current: Current permutation being built
+        index: Current character index being processed
+        result: List to store all permutations
+    """</span>
+    # Base case: we've processed all characters
+    if index == len(s):
+        result.append(current)
+        return
+    
+    # Get the current character
+    char = s[index]
+    
+    # If the character is a letter, create two branches
+    if char.isalpha():
+        # Add lowercase version
+        build_permutation(s, current + char.lower(), index + 1, result)
+        # Add uppercase version
+        build_permutation(s, current + char.upper(), index + 1, result)
+    else:
+        # If it's a digit, just add it and continue
+        build_permutation(s, current + char, index + 1, result)</pre>
+
+        <p>
+            This implementation builds permutations incrementally, character by character. For each letter, it creates two recursive branches - one with the lowercase version and one with the uppercase version. For digits, it simply adds the digit and continues the recursion.
+        </p>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n * 2^n), where n is the length of the input string.
+            <ul>
+                <li>In the worst case, all characters are letters, resulting in 2^n permutations.</li>
+                <li>For each permutation, we perform O(n) work to build the string.</li>
+            </ul>
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n * 2^n)
+            <ul>
+                <li>O(2^n) space for storing all permutations.</li>
+                <li>Each permutation requires O(n) space.</li>
+                <li>Additionally, O(n) space is used for the recursion stack.</li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Comparison of Approaches</h2>
+        <p>
+            Both approaches generate all possible letter case permutations correctly, but they differ in their implementation details:
+        </p>
+        <table>
+            <tr>
+                <th>Aspect</th>
+                <th>Backtracking with String Modification</th>
+                <th>Decision Tree Recursion</th>
+            </tr>
+            <tr>
+                <td>Strategy</td>
+                <td>Change case and backtrack</td>
+                <td>Build strings incrementally</td>
+            </tr>
+            <tr>
+                <td>String handling</td>
+                <td>Creates new strings for each case change</td>
+                <td>Builds strings character by character</td>
+            </tr>
+            <tr>
+                <td>Recursion pattern</td>
+                <td>Appends to result before recursion</td>
+                <td>Appends to result at base case</td>
+            </tr>
+            <tr>
+                <td>Time complexity</td>
+                <td>O(n * 2^n)</td>
+                <td>O(n * 2^n)</td>
+            </tr>
+            <tr>
+                <td>Readability</td>
+                <td>Slightly more complex</td>
+                <td>More intuitive and cleaner</td>
+            </tr>
+        </table>
+        <p>
+            The decision tree approach is generally more intuitive and easier to understand for this particular problem, as it directly models the binary choices for each letter (lowercase or uppercase).
+        </p>
+    </div>
+
+    <div class="section implementation">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples from the problem:
+        </p>
+
+        <div class="example">
+            <pre>
+# Example 1
+letterCasePermutation("a1b2")
+# Output: ["a1b2", "a1B2", "A1b2", "A1B2"]
+
+# Example 2
+letterCasePermutation("3z4")
+# Output: ["3z4", "3Z4"]
+
+# Additional Example
+letterCasePermutation("C")
+# Output: ["C", "c"]
+</pre>
+        </div>
+
+        <p>
+            Note that the order of the permutations in the output may vary depending on the implementation, but all permutations should be present.
+        </p>
+
+        <p>
+            A key observation is that for a string with k letters, there will be 2^k permutations. For example:
+        </p>
+        <ul>
+            <li>"a1b2" has 2 letters, so 2^2 = 4 permutations</li>
+            <li>"3z4" has 1 letter, so 2^1 = 2 permutations</li>
+            <li>"abc" has 3 letters, so 2^3 = 8 permutations</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Alternative Approaches</h2>
+        <p>
+            There are several other ways to solve this problem:
+        </p>
+        <ul>
+            <li>
+                <strong>Iterative BFS Approach:</strong> Use a queue to generate permutations level by level. Start with the original string, and for each level (corresponding to a character position), generate new permutations by changing the case of the current character.
+            </li>
+            <li>
+                <strong>Bit Manipulation:</strong> Since each letter has two options (lowercase or uppercase), we can use a bit mask to represent all possible combinations. For a string with k letters, generate all 2^k bit patterns and use each pattern to determine the case of each letter.
+            </li>
+        </ul>
+
+        <pre>
+def letterCasePermutation_bfs(s):
+    <span class="comment">"""Generate letter case permutations using BFS."""
+</span>    result = [""]  # Start with an empty string
+    
+    for char in s:
+        size = len(result)
+        if char.isalpha():
+            # For each existing permutation, create two new ones
+            for i in range(size):
+                # Add uppercase version
+                result.append(result[i] + char.upper())
+                # Replace with lowercase version
+                result[i] = result[i] + char.lower()
+        else:
+            # For digits, just append to all existing permutations
+            for i in range(size):
+                result[i] = result[i] + char
+    
+    return result</pre>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you've mastered this problem, you might want to try these related problems:
+        </p>
+        <ul>
+            <li><strong>Permutations:</strong> Generate all possible permutations of an array.</li>
+            <li><strong>Subsets:</strong> Generate all possible subsets of an array.</li>
+            <li><strong>Generate Parentheses:</strong> Generate all combinations of well-formed parentheses.</li>
+            <li><strong>Word Search:</strong> Search for a word in a board of characters.</li>
+            <li><strong>Palindrome Partitioning:</strong> Partition a string into palindromic substrings.</li>
+        </ul>
+        <p>
+            These problems all involve the generation of different combinations or permutations and can be solved using similar backtracking or recursive techniques.
+        </p>
+    </div>
+</body>
+</html>

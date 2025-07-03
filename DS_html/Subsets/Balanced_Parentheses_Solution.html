@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balanced Parentheses Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .parentheses-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .parentheses {
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            padding: 5px 10px;
+            background-color: #e7f5ff;
+            font-family: monospace;
+        }
+        .tree-container {
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .tree {
+            font-family: monospace;
+            line-height: 1.5;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 2px;
+            border-radius: 2px;
+        }
+        .rules {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .rules ul {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Balanced Parentheses</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: n = 1
+Output: ["()"]
+</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>1 ≤ n ≤ 8</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            This problem asks us to generate all valid combinations of well-formed parentheses given n pairs of parentheses. A well-formed (or balanced) parentheses string follows these rules:
+        </p>
+        <div class="rules">
+            <ul>
+                <li>Every opening parenthesis '(' must have a corresponding closing parenthesis ')'</li>
+                <li>Every closing parenthesis ')' must match an opening parenthesis '(' that occurs before it</li>
+                <li>Parentheses must be properly nested</li>
+            </ul>
+        </div>
+        <p>
+            For example, for n = 2, the well-formed combinations are:
+        </p>
+        <div class="parentheses-container">
+            <div class="parentheses">(())</div>
+            <div class="parentheses">()()</div>
+        </div>
+        <p>
+            For n = 3, as shown in the example, we have 5 different combinations.
+        </p>
+        <p>
+            The key insight is that we need to generate all valid permutations that satisfy the balancing rules, not just any permutation of n opening and n closing parentheses.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Backtracking with Balance Tracking</h2>
+        <p>
+            A straightforward approach to solve this problem is using backtracking with balance tracking. The idea is to build the combinations one character at a time, keeping track of how many opening and closing parentheses we've used so far.
+        </p>
+        <p>
+            At each step, we have two possible choices:
+        </p>
+        <ol>
+            <li>Add an opening parenthesis '(' if we haven't used all n opening parentheses yet</li>
+            <li>Add a closing parenthesis ')' if the number of closing parentheses used so far is less than the number of opening parentheses used</li>
+        </ol>
+        <p>
+            We continue recursively until we've used all n pairs of parentheses, at which point we add the complete combination to our result.
+        </p>
+
+        <div class="visualization">
+            <h3>Visualization of the Approach</h3>
+            <p>Let's trace through the process for n = 2:</p>
+            <pre class="tree">
+Start with empty string "", open=2, close=2
+
+1. Add opening parenthesis: "(", open=1, close=2
+   1.1 Add opening parenthesis: "((", open=0, close=2
+       1.1.1 Add closing parenthesis: "(()", open=0, close=1
+           1.1.1.1 Add closing parenthesis: "(())", open=0, close=0
+                  → Complete combination: "(())"
+   
+   1.2 Add closing parenthesis: "()", open=1, close=1
+       1.2.1 Add opening parenthesis: "()(", open=0, close=1
+           1.2.1.1 Add closing parenthesis: "()()", open=0, close=0
+                  → Complete combination: "()()"
+
+Result: ["(())", "()()"]</pre>
+            <p>And for n = 3 (simplified to show the pattern):</p>
+            <pre class="tree">
+Start with empty string "", open=3, close=3
+
+When open=0, close=0, we add the combination to our result.
+
+Key paths (showing just the resulting combinations):
+- "((())) → Complete combination
+- "(()()) → Complete combination
+- "(())() → Complete combination
+- "()(()) → Complete combination
+- "()()() → Complete combination
+
+Result: ["((()))", "(()())", "(())()", "()(())", "()()()"]</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the backtracking approach:
+        </p>
+
+        <pre>
+def generateParenthesis(n):
+    <span class="comment">"""Generate all combinations of well-formed parentheses.
+    
+    Args:
+        n: Number of pairs of parentheses
+        
+    Returns:
+        List of all valid combinations
+    """</span>
+    result = []  # Store all valid combinations
+    backtrack(n, n, "", result)
+    return result
+
+def backtrack(open_count, close_count, current, result):
+    <span class="comment">"""Recursive backtracking function to generate combinations.
+    
+    Args:
+        open_count: Number of remaining opening parentheses
+        close_count: Number of remaining closing parentheses
+        current: Current combination being built
+        result: List to store valid combinations
+    """</span>
+    # Base case: we've used all parentheses
+    if open_count == 0 and close_count == 0:
+        result.append(current)
+        return
+    
+    # Add an opening parenthesis if we still have some left
+    if open_count > 0:
+        backtrack(open_count - 1, close_count, current + "(", result)
+    
+    # Add a closing parenthesis if it's valid (more open than close parentheses)
+    if close_count > open_count:
+        backtrack(open_count, close_count - 1, current + ")", result)</pre>
+
+        <p>
+            The key condition <code>if close_count > open_count</code> ensures that we only add a closing parenthesis when it would keep the string balanced. This is because <code>close_count > open_count</code> means we've used more opening parentheses than closing ones so far, so it's valid to add a closing parenthesis.
+        </p>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(4<sup>n</sup>/√n), which is the nth Catalan number.
+            <ul>
+                <li>The number of valid combinations for n pairs of parentheses is given by the nth Catalan number.</li>
+                <li>Each combination can have up to 2n characters (n opening and n closing parentheses).</li>
+            </ul>
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(4<sup>n</sup>/√n)
+            <ul>
+                <li>Space is needed to store all valid combinations.</li>
+                <li>Additionally, O(n) space is used for the recursion stack.</li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Understanding the Constraints and Rules</h2>
+        <p>
+            Let's dive deeper into the constraints that make a parentheses string well-formed:
+        </p>
+        <ol>
+            <li>
+                <strong>Balance Constraint:</strong> The total number of opening parentheses must equal the total number of closing parentheses (which is n for each).
+            </li>
+            <li>
+                <strong>Ordering Constraint:</strong> At any point while scanning the string from left to right, the number of closing parentheses cannot exceed the number of opening parentheses.
+            </li>
+        </ol>
+        <p>
+            Our backtracking approach enforces these constraints by:
+        </p>
+        <ul>
+            <li>Only adding an opening parenthesis if we haven't used all n opening parentheses yet.</li>
+            <li>Only adding a closing parenthesis if the number of closing parentheses used is less than the number of opening parentheses used.</li>
+        </ul>
+        <p>
+            This ensures that every combination we generate is well-formed.
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation: Building from Shorter Strings</h2>
+        <p>
+            Another approach to solve this problem is using dynamic programming to build up from shorter valid strings. The idea is to insert a pair of parentheses around each element and in each position of the string.
+        </p>
+
+        <pre>
+def generateParenthesis_dp(n):
+    <span class="comment">"""Generate all combinations of well-formed parentheses using DP.
+    
+    Args:
+        n: Number of pairs of parentheses
+        
+    Returns:
+        List of all valid combinations
+    """</span>
+    # Base case
+    if n == 0:
+        return [""]
+    
+    result = []
+    
+    # Try adding a pair of parentheses at different positions
+    for i in range(n):
+        # Generate all valid strings with i pairs of parentheses
+        for left in generateParenthesis_dp(i):
+            # Generate all valid strings with (n-i-1) pairs of parentheses
+            for right in generateParenthesis_dp(n - i - 1):
+                # Combine them as "(" + left + ")" + right
+                result.append("(" + left + ")" + right)
+    
+    return result</pre>
+
+        <p>
+            This approach is based on the recursive structure of the problem. For n pairs of parentheses, we can insert a pair of parentheses around any valid combination with i pairs, and then append any valid combination with (n-i-1) pairs.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with a few examples:
+        </p>
+
+        <div class="example">
+            <pre>
+# Example 1
+generateParenthesis(1)
+# Output: ["()"]
+
+# Example 2
+generateParenthesis(2)
+# Output: ["(())", "()()"]
+
+# Example 3
+generateParenthesis(3)
+# Output: ["((()))", "(()())", "(())()", "()(())", "()()()"]
+
+# Example 4
+generateParenthesis(4)
+# Output: [
+#   "(((())))", "((()()))", "((())())", "((()))()", "(()(()))",
+#   "(()()())", "(()())()", "(())(())", "(())()()", "()((()))",
+#   "()(()())", "()(())()", "()()(())", "()()()()"
+# ]</pre>
+        </div>
+
+        <p>
+            Our solution correctly generates all valid combinations for these examples.
+        </p>
+        <p>
+            The number of valid combinations for n pairs of parentheses is given by the nth Catalan number:
+        </p>
+        <table>
+            <tr>
+                <th>n</th>
+                <th>Number of valid combinations</th>
+                <th>Formula</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>1</td>
+                <td>C₁ = 1</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>2</td>
+                <td>C₂ = 2</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>5</td>
+                <td>C₃ = 5</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>14</td>
+                <td>C₄ = 14</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>42</td>
+                <td>C₅ = 42</td>
+            </tr>
+        </table>
+        <p>
+            The Catalan number grows exponentially, which is why the problem constraints limit n to a maximum of 8.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Common Patterns and Applications</h2>
+        <p>
+            The problem of generating balanced parentheses is a classic example of a problem that can be solved using backtracking. The key insight is that we're building a string character by character, making decisions at each step that satisfy certain constraints.
+        </p>
+        <p>
+            This problem also introduces us to the concept of the Catalan number, which counts various combinatorial structures, including:
+        </p>
+        <ul>
+            <li>Valid parentheses expressions with n pairs</li>
+            <li>The number of ways to divide a polygon with n+2 sides into triangles by connecting vertices</li>
+            <li>The number of binary search trees with n nodes</li>
+            <li>The number of different ways n pairs of nodes can be connected with non-intersecting chords in a circle</li>
+        </ul>
+        <p>
+            Understanding this problem helps develop problem-solving skills for other combinatorial and tree-based problems.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you've mastered generating balanced parentheses, you might want to try these related problems:
+        </p>
+        <ul>
+            <li><strong>Valid Parentheses:</strong> Determine if a given string of parentheses is valid.</li>
+            <li><strong>Longest Valid Parentheses:</strong> Find the length of the longest valid (well-formed) parentheses substring.</li>
+            <li><strong>Remove Invalid Parentheses:</strong> Remove the minimum number of parentheses to make a string valid.</li>
+            <li><strong>Different Ways to Add Parentheses:</strong> Add parentheses to an expression to get different results.</li>
+            <li><strong>Count Different Palindromic Subsequences:</strong> Another problem involving combinatorial counting.</li>
+        </ul>
+        <p>
+            These problems all involve the generation or validation of balanced structures and can be approached using similar backtracking or dynamic programming techniques.
+        </p>
+    </div>
+</body>
+</html>
