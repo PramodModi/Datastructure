@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Linked List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reverse Linked List</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Reverse Linked List (LeetCode #206)</strong></p>
+        <p><a href="https://leetcode.com/problems/reverse-linked-list/" target="_blank">https://leetcode.com/problems/reverse-linked-list/</a></p>
+        <p>
+            Given the head of a singly linked list, reverse the list, and return the reversed list.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> head = [1,2,3,4,5]</p>
+            <p><strong>Output:</strong> [5,4,3,2,1]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> head = [1,2]</p>
+            <p><strong>Output:</strong> [2,1]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> head = []</p>
+            <p><strong>Output:</strong> []</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The number of nodes in the list is in the range [0, 5000].</li>
+            <li>-5000 <= Node.val <= 5000</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This is a fundamental problem in linked list manipulation. We are given a singly linked list, which means each node in the list has a value and a pointer to the next node. The task is to reverse the order of the nodes in the list.
+        </p>
+        <p>
+            For example, if the original list is 1->2->3->4->5, the reversed list should be 5->4->3->2->1.
+        </p>
+        <p>
+            In a singly linked list, each node only has a reference to the next node, not the previous one. So to reverse the list, we need to change the direction of all the next pointers. This requires tracking the previous node as we traverse the list.
+        </p>
+        <p>
+            This problem introduces us to the "In-Place Reversal of a Linked List" pattern, which is a technique to reverse the links between nodes in a linked list without using additional data structures, thus achieving O(1) space complexity.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            The In-Place Reversal pattern involves reversing the links between nodes rather than creating new nodes or lists. This approach is efficient in terms of both time and space.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> To reverse a linked list in-place, we need to iterate through the list and for each node, change its next pointer to point to the previous node instead of the next node. This requires keeping track of three nodes: the current node, the previous node, and the next node.</p>
+        </div>
+        
+        <p>The approach is as follows:</p>
+        <ol>
+            <li>Initialize three pointers: prev (set to null), current (set to head), and next (will be used to temporarily store the next node).</li>
+            <li>Iterate through the list while current is not null:</li>
+            <ul>
+                <li>Store the next node: next = current.next</li>
+                <li>Reverse the link: current.next = prev</li>
+                <li>Move prev and current one step forward: prev = current, current = next</li>
+            </ul>
+            <li>After the iteration, prev will be pointing to the new head of the reversed list.</li>
+            <li>Return prev as the new head.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: [1,2,3,4,5]</strong></p>
+            <pre>
+Initial list: 1 -> 2 -> 3 -> 4 -> 5 -> NULL
+
+Iteration 1:
+  prev = NULL, current = 1, next = 2
+  Set current.next = prev: 1 -> NULL
+  Move pointers: prev = 1, current = 2
+  List now: NULL <- 1    2 -> 3 -> 4 -> 5 -> NULL
+
+Iteration 2:
+  prev = 1, current = 2, next = 3
+  Set current.next = prev: 2 -> 1
+  Move pointers: prev = 2, current = 3
+  List now: NULL <- 1 <- 2    3 -> 4 -> 5 -> NULL
+
+Iteration 3:
+  prev = 2, current = 3, next = 4
+  Set current.next = prev: 3 -> 2
+  Move pointers: prev = 3, current = 4
+  List now: NULL <- 1 <- 2 <- 3    4 -> 5 -> NULL
+
+Iteration 4:
+  prev = 3, current = 4, next = 5
+  Set current.next = prev: 4 -> 3
+  Move pointers: prev = 4, current = 5
+  List now: NULL <- 1 <- 2 <- 3 <- 4    5 -> NULL
+
+Iteration 5:
+  prev = 4, current = 5, next = NULL
+  Set current.next = prev: 5 -> 4
+  Move pointers: prev = 5, current = NULL
+  List now: NULL <- 1 <- 2 <- 3 <- 4 <- 5
+
+Final reversed list: 5 -> 4 -> 3 -> 2 -> 1 -> NULL</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the number of nodes in the linked list. We traverse the list only once.</li>
+            <li><strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize pointers:</strong>
+                <ul>
+                    <li>prev = null</li>
+                    <li>current = head</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Traverse the list:</strong>
+                <ul>
+                    <li>While current is not null:</li>
+                    <ul>
+                        <li>Store the next node: temp = current</li>
+                        <li>Move current to the next node: current = current.next</li>
+                        <li>Reverse the link: temp.next = prev</li>
+                        <li>Update prev to the current node: prev = temp</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the new head:</strong>
+                <ul>
+                    <li>Return prev (which is now pointing to the new head of the reversed list)</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+# Node definition for a singly-linked list
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+def reverseLinkedList(head):
+    <span class="comment">"""Reverse a singly linked list in-place.
+    
+    Args:
+        head: The head of the linked list
+        
+    Returns:
+        The new head of the reversed linked list
+    """</span>
+    prev, cur = None, head
+    while cur:
+        <span class="comment"># Store the current node</span>
+        temp = cur
+        
+        <span class="comment"># Move to the next node</span>
+        cur = cur.next
+        
+        <span class="comment"># Reverse the link</span>
+        temp.next = prev
+        
+        <span class="comment"># Update prev to the current node</span>
+        prev = temp
+    
+    <span class="comment"># prev is now the new head of the reversed list</span>
+    return prev</pre>
+        
+        <div class="example">
+            <p><strong>Example Usage:</strong></p>
+            <pre class="command"># Create a linked list: 1->2->3->4
+head = None
+head = insertNode(head, 1)
+head = insertNode(head, 2)
+head = insertNode(head, 3)
+head = insertNode(head, 4)
+
+# Print the original list
+printLinkedList(head)  <span class="comment"># Output: 1->2->3->4</span>
+
+# Reverse the list
+head = reverseLinkedList(head)
+
+# Print the reversed list
+printLinkedList(head)  <span class="comment"># Output: 4->3->2->1</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">1->2->3->4
+4->3->2->1</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>In-Place Reversal Pattern:</strong></p>
+            <p>This problem demonstrates the "In-Place Reversal of a Linked List" pattern, which is a fundamental technique in linked list manipulation. The key characteristics of this pattern are:</p>
+            <ul>
+                <li><strong>Reversing Links:</strong> Instead of creating new nodes, we reverse the direction of the links between existing nodes.</li>
+                <li><strong>Constant Space:</strong> The reversal is done in-place, using O(1) extra space.</li>
+                <li><strong>Multiple Pointers:</strong> We use multiple pointers to keep track of the nodes we need during the reversal process.</li>
+            </ul>
+            <p>This pattern can be extended to solve more complex linked list reversal problems, such as:</p>
+            <ul>
+                <li>Reversing a sublist within a linked list</li>
+                <li>Reversing every k nodes in a linked list</li>
+                <li>Reversing alternating k-element sublists</li>
+                <li>Rotating a linked list</li>
+            </ul>
+            <p>Understanding this basic reversal technique is essential for tackling these more advanced problems.</p>
+        </div>
+        
+        <p><strong>Alternate Recursive Approach:</strong></p>
+        <p>The linked list can also be reversed recursively, though it may use O(n) space due to the recursive call stack:</p>
+        <pre>
+def reverseLinkedListRecursive(head):
+    <span class="comment">"""Reverse a singly linked list using recursion.
+    
+    Args:
+        head: The head of the linked list
+        
+    Returns:
+        The new head of the reversed linked list
+    """</span>
+    <span class="comment"># Base case: empty list or a single node</span>
+    if head is None or head.next is None:
+        return head
+    
+    <span class="comment"># Recursively reverse the rest of the list</span>
+    new_head = reverseLinkedListRecursive(head.next)
+    
+    <span class="comment"># Reverse the link between head and head.next</span>
+    head.next.next = head
+    head.next = None
+    
+    <span class="comment"># Return the new head of the reversed list</span>
+    return new_head</pre>
+    </div>
+</body>
+</html>

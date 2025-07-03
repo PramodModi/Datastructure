@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palindrome Linked List Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Palindrome Linked List Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Palindrome Linked List (LeetCode #234)</strong></p>
+        <p><a href="https://leetcode.com/problems/palindrome-linked-list/description/" target="_blank">https://leetcode.com/problems/palindrome-linked-list/description/</a></p>
+        <p>
+            Given the head of a singly linked list, return true if it is a palindrome or false otherwise.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2021/03/03/pal1linked-list.jpg" alt="Palindrome Linked List Example 1">
+            <p><strong>Input:</strong> head = [1,2,2,1]</p>
+            <p><strong>Output:</strong> true</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2021/03/03/pal2linked-list.jpg" alt="Palindrome Linked List Example 2">
+            <p><strong>Input:</strong> head = [1,2]</p>
+            <p><strong>Output:</strong> false</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The number of nodes in the list is in the range [1, 10<sup>5</sup>].</li>
+            <li>0 <= Node.val <= 9</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            A palindrome is a sequence that reads the same forward and backward. For example, "racecar" and "madam" are palindromes.
+        </p>
+        <p>
+            In this problem, we need to determine if a given linked list represents a palindrome. For instance:
+        </p>
+        <ul>
+            <li>A linked list with values [1,2,2,1] is a palindrome because it reads the same forward and backward.</li>
+            <li>A linked list with values [1,2] is not a palindrome because it reads [1,2] forward and [2,1] backward.</li>
+        </ul>
+        <p>
+            The challenge here is that a singly linked list can only be traversed in the forward direction. Unlike arrays where we can easily check elements from both ends, with a linked list, we can't directly access elements from the end.
+        </p>
+        <p>
+            To solve this problem, we need to find a way to compare elements from the beginning of the list with elements from the end, despite the constraint of only being able to move in one direction.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a combination of the Fast & Slow pointers pattern and linked list reversal to solve this problem efficiently:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We can find the middle of the linked list using the Fast & Slow pointers pattern, reverse the second half of the list, and then compare the first half with the reversed second half.</p>
+        </div>
+        
+        <p>The approach consists of three main steps:</p>
+        <ol>
+            <li>Find the middle of the linked list using the Fast & Slow pointers pattern.</li>
+            <li>Reverse the second half of the linked list.</li>
+            <li>Compare the first half with the reversed second half. If they are identical, the linked list is a palindrome.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach:</strong></p>
+            <pre>
+Example: head = [1,2,2,1]
+
+Step 1: Find the middle of the linked list
+Initial state: slow = 1, fast = 1
+1 → 2 → 2 → 1
+↑     
+↑     
+S,F   
+
+Iteration 1: slow moves to 2, fast reaches the end
+1 → 2 → 2 → 1
+    ↑     ↑ 
+    S     F 
+
+Middle node is at slow, which is the second node (value 2)
+
+Step 2: Reverse the second half of the linked list
+Original list: 1 → 2 → 2 → 1
+After finding middle: first half = 1 → 2, second half = 2 → 1
+After reversing second half: first half = 1 → 2, reversed second half = 1 → 2
+
+Step 3: Compare the first half with the reversed second half
+First half: 1 → 2
+Reversed second half: 1 → 2
+Compare: 1 == 1 ✓, 2 == 2 ✓
+Since all nodes match, the list is a palindrome. Return true.</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the number of nodes in the linked list. We need to traverse the list once to find the middle, once to reverse the second half, and once to compare the two halves.</li>
+            <li><strong>Space Complexity:</strong> O(1) as we only use a constant amount of extra space regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Find the middle of the linked list:</strong>
+                <ul>
+                    <li>Initialize <code>slow</code> and <code>fast</code> pointers to the head of the linked list.</li>
+                    <li>Move <code>slow</code> one step and <code>fast</code> two steps at a time until <code>fast</code> reaches the end of the list.</li>
+                    <li>At this point, <code>slow</code> will be pointing at the middle node of the linked list.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Reverse the second half of the linked list:</strong>
+                <ul>
+                    <li>Initialize <code>prev</code> as <code>null</code> and <code>curr</code> as the middle node.</li>
+                    <li>Iterate through the second half of the list, reversing the links:</li>
+                    <ul>
+                        <li>Store the next node in a temporary variable.</li>
+                        <li>Set the current node's next pointer to <code>prev</code>.</li>
+                        <li>Move <code>prev</code> to the current node.</li>
+                        <li>Move <code>curr</code> to the next node.</li>
+                    </ul>
+                    <li>After this step, <code>prev</code> will be pointing to the head of the reversed second half.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Compare the first half with the reversed second half:</strong>
+                <ul>
+                    <li>Initialize two pointers, one at the head of the original list and one at the head of the reversed second half.</li>
+                    <li>Traverse both lists simultaneously, comparing the values of the nodes.</li>
+                    <li>If at any point the values don't match, return <code>false</code>.</li>
+                    <li>If we reach the end of the second half without finding any mismatches, return <code>true</code>.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+def isPalindrome(head):
+    <span class="comment">"""Determine if a linked list is a palindrome.
+    
+    Args:
+        head: The head of the linked list
+        
+    Returns:
+        bool: True if the linked list is a palindrome, False otherwise
+    """</span>
+    if head.next is None:  <span class="comment"># If the list has only one node, it's a palindrome</span>
+        return True
+        
+    <span class="comment"># Step 1: Find the middle of the linked list</span>
+    mid = getMiddleNode(head)
+    
+    <span class="comment"># Step 2: Reverse the second half of the linked list</span>
+    midHead = reverse(mid)
+    
+    <span class="comment"># Step 3: Compare the first half with the reversed second half</span>
+    temp1 = head
+    temp2 = midHead
+    
+    while temp2:  <span class="comment"># Only need to check until the end of the second half</span>
+        if temp1.val != temp2.val:
+            return False
+        temp1 = temp1.next
+        temp2 = temp2.next
+        
+    return True
+
+def getMiddleNode(head):
+    <span class="comment">"""Find the middle node of a linked list using the Fast & Slow pointers pattern.
+    
+    Args:
+        head: The head of the linked list
+        
+    Returns:
+        The middle node of the linked list
+    """</span>
+    if head.next is None:
+        return head
+        
+    slow = head
+    fast = head
+    
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        
+    return slow
+
+def reverse(head):
+    <span class="comment">"""Reverse a linked list.
+    
+    Args:
+        head: The head of the linked list to reverse
+        
+    Returns:
+        The new head of the reversed linked list
+    """</span>
+    cur = head
+    prev = None
+    
+    while cur:
+        temp = cur          <span class="comment"># Store the current node</span>
+        cur = cur.next      <span class="comment"># Move to the next node</span>
+        temp.next = prev    <span class="comment"># Reverse the link</span>
+        prev = temp         <span class="comment"># Update prev to the current node</span>
+        
+    return prev  <span class="comment"># prev will be the new head of the reversed list</span></pre>
+        
+        <div class="example">
+            <p><strong>Example Implementation:</strong></p>
+            <pre class="command"><span class="comment"># Helper class for creating linked lists</span>
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+def insertNode(head, val):
+    newNode = Node(val)
+    if head == None:
+        head = newNode
+        return head
+    temp = head
+    while temp.next != None:
+        temp = temp.next
+    temp.next = newNode
+    return head
+
+<span class="comment"># Example 1: Creating a linked list [1,2,2,1]</span>
+head1 = None
+head1 = insertNode(head1, 1)
+head1 = insertNode(head1, 2)
+head1 = insertNode(head1, 2)
+head1 = insertNode(head1, 1)
+
+<span class="comment"># Check if it's a palindrome</span>
+result1 = isPalindrome(head1)
+print(f"Example 1 - Is palindrome: {result1}")
+
+<span class="comment"># Example 2: Creating a linked list [1,2]</span>
+head2 = None
+head2 = insertNode(head2, 1)
+head2 = insertNode(head2, 2)
+
+<span class="comment"># Check if it's a palindrome</span>
+result2 = isPalindrome(head2)
+print(f"Example 2 - Is palindrome: {result2}")
+
+<span class="comment"># Example 3: Creating a linked list [4,1,2,1,4]</span>
+head3 = None
+head3 = insertNode(head3, 4)
+head3 = insertNode(head3, 1)
+head3 = insertNode(head3, 2)
+head3 = insertNode(head3, 1)
+head3 = insertNode(head3, 4)
+
+<span class="comment"># Check if it's a palindrome</span>
+result3 = isPalindrome(head3)
+print(f"Example 3 - Is palindrome: {result3}")</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">Example 1 - Is palindrome: True
+Example 2 - Is palindrome: False
+Example 3 - Is palindrome: True</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Explanation of Code Execution:</strong>
+        </p>
+        <p>Let's trace through the execution of our algorithm for Example 1 (linked list [1,2,2,1]):</p>
+        <ol>
+            <li>We first check if the list has only one node. Since it has multiple nodes, we continue.</li>
+            <li>
+                <strong>Find the middle of the linked list:</strong>
+                <ul>
+                    <li>Initialize <code>slow = head</code> (node with value 1) and <code>fast = head</code> (node with value 1).</li>
+                    <li>First iteration: <code>slow</code> moves to the node with value 2, <code>fast</code> moves to the last node (value 1).</li>
+                    <li>Since <code>fast.next</code> is null, we exit the loop. <code>slow</code> is now pointing at the node with value 2, which is the second node.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Reverse the second half of the linked list:</strong>
+                <ul>
+                    <li>The second half starts at the node with value 2 (the second 2 in [1,2,2,1]).</li>
+                    <li>After reversal, the second half becomes [1,2] (from [2,1]).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Compare the first half with the reversed second half:</strong>
+                <ul>
+                    <li><code>temp1</code> starts at the head of the original list (value 1).</li>
+                    <li><code>temp2</code> starts at the head of the reversed second half (value 1).</li>
+                    <li>First comparison: 1 == 1 ✓</li>
+                    <li>Move both pointers: <code>temp1</code> to the node with value 2, <code>temp2</code> to the node with value 2.</li>
+                    <li>Second comparison: 2 == 2 ✓</li>
+                    <li>Since <code>temp2</code> reaches the end of the list without any mismatches, we return <code>true</code>.</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <p>For Example 2 (linked list [1,2]):</p>
+        <ol>
+            <li>After finding the middle (which is the node with value 2) and reversing it, we get the first half [1] and the reversed second half [2].</li>
+            <li>When we compare them, 1 != 2, so we return <code>false</code>.</li>
+        </ol>
+        
+        <p>For Example 3 (linked list [4,1,2,1,4]):</p>
+        <ol>
+            <li>The middle of the list is the node with value 2.</li>
+            <li>The first half is [4,1], and after reversing the second half [1,4], we get [4,1].</li>
+            <li>Comparing them, we find that they are identical, so we return <code>true</code>.</li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Alternative Approach:</strong> Another approach would be to use a stack to store all the values of the linked list in one pass, and then compare them with the original list in a second pass. However, this would require O(n) space complexity compared to O(1) for our current approach.</p>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Note on Restoring the List:</strong> Our current solution modifies the original linked list by reversing the second half. If we need to preserve the original list, we can add an additional step to reverse the second half back to its original state after the comparison.</p>
+        </div>
+    </div>
+</body>
+</html>

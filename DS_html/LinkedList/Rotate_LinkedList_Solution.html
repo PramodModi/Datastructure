@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotate a LinkedList Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rotate a LinkedList Solution</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem: Rotate a LinkedList</strong></p>
+        <p>LeetCode: 61. Rotate List<br>
+        <a href="https://leetcode.com/problems/rotate-list/description/" target="_blank">https://leetcode.com/problems/rotate-list/description/</a></p>
+        <p>Given the head of a linked list, rotate the list to the right by k places.</p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> head = [1,2,3,4,5], k = 2</p>
+            <p><strong>Output:</strong> [4,5,1,2,3]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> head = [0,1,2], k = 4</p>
+            <p><strong>Output:</strong> [2,0,1]</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The number of nodes in the list is in the range [0, 500].</li>
+            <li>-100 <= Node.val <= 100</li>
+            <li>0 <= k <= 2 * 10<sup>9</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to rotate a linked list to the right by k positions. For example, if we have a linked list 1->2->3->4->5 and k=2, the result should be 4->5->1->2->3.
+        </p>
+        <p>
+            To understand what "rotating to the right by k places" means, imagine the linked list as a circle. To rotate by k places to the right means we take the last k nodes and move them to the front of the list.
+        </p>
+        <p>
+            Key observations:
+        </p>
+        <ul>
+            <li>If k is equal to the length of the linked list, the list remains unchanged (as a full rotation brings us back to the original list).</li>
+            <li>If k is greater than the length of the list, we only need to rotate by k % length times, as every length rotations bring us back to the original list.</li>
+            <li>If the list is empty or has only one node, or if k is 0, no rotation is needed.</li>
+        </ul>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We need to find the new head of the rotated list (which will be the length-k node from the end) and the new tail (which will be the node just before the new head).</p>
+        </div>
+        <p>We can solve this problem using the following steps:</p>
+        <ol>
+            <li>Handle edge cases: if the list is empty, has only one node, or k is 0, return the original list.</li>
+            <li>Find the length of the linked list by traversing it once.</li>
+            <li>Calculate the effective rotation: k = k % length (as rotating by length times brings us back to the original list).</li>
+            <li>If the effective rotation is 0, return the original list.</li>
+            <li>Find the new head of the rotated list, which will be at position (length - k) from the start.</li>
+            <li>Find the new tail, which will be the node just before the new head.</li>
+            <li>Disconnect the new tail from the new head to break the list.</li>
+            <li>Connect the original tail to the original head.</li>
+            <li>Return the new head.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization for Example 1 (head = [1,2,3,4,5], k = 2):</strong></p>
+            <pre>
+Original List: 1 -> 2 -> 3 -> 4 -> 5 -> NULL
+
+Step 1: Find length of list
+   Length = 5
+
+Step 2: Calculate effective rotation
+   k = k % length = 2 % 5 = 2
+
+Step 3: Find the new head and new tail
+   - New head will be at position (length - k) = 5 - 2 = 3 nodes from the end
+   - So, new head will be node with value 4
+   - New tail will be node with value 3
+
+Step 4: Break the list at the new tail
+   Original list after breaking: 1 -> 2 -> 3 -> NULL
+   Remaining part: 4 -> 5 -> NULL
+
+Step 5: Connect original tail to original head
+   Modified remaining part: 4 -> 5 -> 1 -> 2 -> 3 -> NULL
+
+Step 6: Return new head
+   Result: 4 -> 5 -> 1 -> 2 -> 3 -> NULL</pre>
+        </div>
+        
+        <p><strong>Time Complexity:</strong> O(n), where n is the number of nodes in the linked list. We need to traverse the list once to find the length and once more to find the new head and tail.</p>
+        <p><strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.</p>
+    </div>
+
+    <div class="section steps">
+        <h2>Implementation Steps</h2>
+        <ol>
+            <li>First, we handle the edge cases:
+                <ul>
+                    <li>If the list is empty (head is NULL), return NULL.</li>
+                    <li>If k is 0, no rotation is needed, return the original head.</li>
+                </ul>
+            </li>
+            <li>Calculate the length of the linked list by traversing it once.</li>
+            <li>Calculate the effective rotation by taking k % length.</li>
+            <li>If the effective rotation is 0, return the original head (no rotation needed).</li>
+            <li>Initialize two pointers, endNode and newHead, both pointing to the head of the list.</li>
+            <li>Move endNode k steps ahead. If endNode reaches NULL, reset it to the head.</li>
+            <li>Move both endNode and newHead until endNode.next is NULL. At this point, newHead will be pointing to the node that will be the new head after rotation.</li>
+            <li>Store prevNode = newHead, and update newHead to point to the next node.</li>
+            <li>Set prevNode.next to NULL to disconnect the list.</li>
+            <li>Set endNode.next to the original head, connecting the end of the list to the beginning.</li>
+            <li>Return newHead as the new head of the rotated list.</li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+def insertNode(head, val):
+    newNode = Node(val)
+    if head == None:
+        head = newNode
+        return head
+    temp = head
+    while temp.next != None:
+        temp = temp.next
+    temp.next = newNode
+    return head
+
+
+def printLinkedList(head):
+    if not head:
+        print("Empty Linked list")
+    temp = head
+    while temp.next:
+        print(temp.val, end = "->")
+        temp = temp.next
+    print(temp.val)
+
+
+def rotateRight(head, k):
+    <span class="comment">"""Rotate a linked list to the right by k places.
+    
+    Args:
+        head: The head of the linked list
+        k: Number of positions to rotate
+        
+    Returns:
+        The head of the rotated linked list
+    """</span>
+    # Edge cases
+    if not head or not head.next or k == 0:
+        return head
+    
+    # Count the number of nodes
+    numOfNodes = 0
+    temp = head
+    while temp:
+        numOfNodes += 1
+        temp = temp.next
+    
+    # Calculate effective rotation
+    k = k % numOfNodes
+    
+    # If k is 0 after modulo, no rotation needed
+    if k == 0:
+        return head
+    
+    # Find the new head and new tail
+    endNode = head
+    newHead = head
+    
+    # Move endNode k steps ahead
+    while k:
+        k -= 1
+        endNode = endNode.next
+    
+    # Move both pointers until endNode reaches the last node
+    while endNode.next:
+        endNode = endNode.next
+        newHead = newHead.next
+    
+    # Store the new head and break the list
+    prevNode = newHead
+    newHead = newHead.next
+    prevNode.next = None
+    
+    # Connect the end to the original head
+    endNode.next = head
+    
+    return newHead</pre>
+
+        <h3>Testing the Solution</h3>
+        <pre class="command">
+# Example 1
+head = None
+head = insertNode(head, 1)
+head = insertNode(head, 2)
+head = insertNode(head, 3)
+head = insertNode(head, 4)
+head = insertNode(head, 5)
+print("Original linked list:")
+printLinkedList(head)
+head = rotateRight(head, 2)
+print("After rotating by 2 positions:")
+printLinkedList(head)
+# Output: 4->5->1->2->3
+
+# Example 2
+head = None
+head = insertNode(head, 0)
+head = insertNode(head, 1)
+head = insertNode(head, 2)
+print("Original linked list:")
+printLinkedList(head)
+head = rotateRight(head, 4)
+print("After rotating by 4 positions:")
+printLinkedList(head)
+# Output: 2->0->1</pre>
+    </div>
+
+    <div class="section approach">
+        <h2>Additional Notes</h2>
+        <p>
+            <strong>Edge Cases to Consider:</strong>
+        </p>
+        <ul>
+            <li><strong>Empty List:</strong> If the input list is empty, we should return NULL.</li>
+            <li><strong>Single Node:</strong> If the list has only one node, rotation doesn't change anything.</li>
+            <li><strong>k is 0:</strong> No rotation is needed.</li>
+            <li><strong>k is a multiple of the list length:</strong> The list remains unchanged.</li>
+            <li><strong>Large k:</strong> If k is very large, we compute k % length to avoid unnecessary iterations.</li>
+        </ul>
+        
+        <p>
+            <strong>Alternative Approach:</strong>
+        </p>
+        <p>
+            Another way to solve this problem is to:
+        </p>
+        <ol>
+            <li>Connect the last node to the first node, making the list a circular linked list.</li>
+            <li>Find the new head and new tail of the rotated list.</li>
+            <li>Break the circular list by setting the new tail's next to NULL.</li>
+        </ol>
+        <p>
+            This approach also has a time complexity of O(n) and a space complexity of O(1).
+        </p>
+    </div>
+</body>
+</html>

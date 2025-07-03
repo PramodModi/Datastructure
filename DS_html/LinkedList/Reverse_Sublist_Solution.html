@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse a Sublist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reverse a Sublist</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Reverse Linked List II (LeetCode #92)</strong></p>
+        <p><a href="https://leetcode.com/problems/reverse-linked-list-ii/" target="_blank">https://leetcode.com/problems/reverse-linked-list-ii/</a></p>
+        <p>
+            Given the head of a singly linked list and two integers left and right where left <= right, reverse the nodes of the list from position left to position right, and return the reversed list.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><img src="https://assets.leetcode.com/uploads/2021/02/19/rev2ex2.jpg" alt="Reverse Sublist Example"></p>
+            <p><strong>Input:</strong> head = [1,2,3,4,5], left = 2, right = 4</p>
+            <p><strong>Output:</strong> [1,4,3,2,5]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> head = [5], left = 1, right = 1</p>
+            <p><strong>Output:</strong> [5]</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The number of nodes in the list is n.</li>
+            <li>1 <= n <= 500</li>
+            <li>-500 <= Node.val <= 500</li>
+            <li>1 <= left <= right <= n</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem is an extension of the basic linked list reversal problem. Instead of reversing the entire list, we need to reverse only a specific segment of the list, from the <code>left</code>th node to the <code>right</code>th node.
+        </p>
+        <p>
+            For example, if we have a linked list <code>1 -> 2 -> 3 -> 4 -> 5</code> and we want to reverse from position 2 to position 4, the result should be <code>1 -> 4 -> 3 -> 2 -> 5</code>.
+        </p>
+        <p>
+            To solve this problem, we need to:
+        </p>
+        <ol>
+            <li>Find the starting point of the sublist (the <code>left</code>th node).</li>
+            <li>Keep track of the node just before the starting point of the sublist.</li>
+            <li>Reverse the sublist from <code>left</code> to <code>right</code>.</li>
+            <li>Connect the reversed sublist back to the rest of the original list.</li>
+        </ol>
+        <p>
+            This is a classic example of the "In-Place Reversal of a Linked List" pattern, but with additional complexity due to the need to reverse only a specific portion of the list.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use the "In-Place Reversal of a Linked List" pattern to reverse the specified sublist. This involves identifying the sublist, reversing it, and then reconnecting it with the rest of the list.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> To reverse a sublist within a linked list, we need to carefully track four key nodes:</p>
+            <ol>
+                <li><strong>prevLeft</strong>: The node just before the start of the sublist (will be <code>null</code> if <code>left = 1</code>).</li>
+                <li><strong>leftNode</strong>: The first node of the sublist (will become the last node of the reversed sublist).</li>
+                <li><strong>rightNode</strong>: The last node of the sublist (will become the first node of the reversed sublist).</li>
+                <li><strong>afterRight</strong>: The node just after the end of the sublist (might be <code>null</code> if <code>right</code> is the last node).</li>
+            </ol>
+        </div>
+        
+        <p>The approach consists of these main steps:</p>
+        <ol>
+            <li>Locate the sublist by traversing the linked list to find <code>prevLeft</code>, <code>leftNode</code>, <code>rightNode</code>, and <code>afterRight</code>.</li>
+            <li>Temporarily disconnect the sublist from the rest of the linked list.</li>
+            <li>Reverse the sublist using the basic linked list reversal algorithm.</li>
+            <li>Reconnect the reversed sublist back into the original list by updating the appropriate pointers.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: [1,2,3,4,5] with left = 2, right = 4</strong></p>
+            <pre>
+Step 1: Identify the key nodes
+  Original list: 1 -> 2 -> 3 -> 4 -> 5 -> NULL
+  prevLeft = 1 (node before position 'left')
+  leftNode = 2 (node at position 'left')
+  rightNode = 4 (node at position 'right')
+  afterRight = 5 (node after position 'right')
+
+Step 2: Disconnect the sublist
+  1 -> NULL  |  2 -> 3 -> 4 -> NULL  |  5 -> NULL
+  ^prevLeft     ^leftNode  ^rightNode  ^afterRight
+
+Step 3: Reverse the sublist
+  Before: 2 -> 3 -> 4 -> NULL
+  After:  4 -> 3 -> 2 -> NULL
+
+Step 4: Reconnect the reversed sublist
+  prevLeft.next = 4 (rightNode after reversal becomes the new head of sublist)
+  2.next = 5 (leftNode after reversal becomes the new tail and points to afterRight)
+  Final list: 1 -> 4 -> 3 -> 2 -> 5 -> NULL</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the size of the linked list. We need to traverse the list once to find the sublist, and then reverse the sublist which takes O(right - left + 1) time.</li>
+            <li><strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size. We're performing the reversal in-place.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize pointers:</strong>
+                <ul>
+                    <li><code>prevLeft</code> = null</li>
+                    <li><code>leftNode</code> = head</li>
+                    <li><code>rightNode</code> = head</li>
+                    <li><code>afterRight</code> = head</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Find the nodes defining the sublist:</strong>
+                <ul>
+                    <li>Traverse through the list until we find the node at position <code>left</code> and the node at position <code>right</code>.</li>
+                    <li>Keep track of <code>prevLeft</code> (node before <code>leftNode</code>).</li>
+                    <li>Identify <code>afterRight</code> (node after <code>rightNode</code>).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Disconnect the sublist:</strong>
+                <ul>
+                    <li>Set <code>rightNode.next = null</code> to temporarily disconnect the sublist from the rest of the list.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Reverse the sublist:</strong>
+                <ul>
+                    <li>Apply the standard linked list reversal algorithm to the sublist.</li>
+                    <li>After reversal, <code>rightNode</code> becomes the head of the reversed sublist and <code>leftNode</code> becomes the tail.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Reconnect the reversed sublist:</strong>
+                <ul>
+                    <li>If <code>prevLeft</code> exists (i.e., <code>left > 1</code>), set <code>prevLeft.next = rightNode</code>.</li>
+                    <li>Otherwise, update <code>head = rightNode</code>.</li>
+                    <li>Set <code>leftNode.next = afterRight</code> to connect the tail of the reversed sublist to the rest of the list.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Return the head of the modified list.</strong>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+# Definition for singly-linked list node
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def reverseBetween(head, left, right):
+    <span class="comment">"""Reverse a portion of the linked list from position left to position right.
+    
+    Args:
+        head: The head of the linked list
+        left: The starting position of the sublist to be reversed (1-indexed)
+        right: The ending position of the sublist to be reversed (1-indexed)
+        
+    Returns:
+        The head of the modified linked list
+    """</span>
+    # If list is empty or there's only one node, or no reversal needed
+    if not head or not head.next or left == right:
+        return head
+        
+    # Initialize pointers
+    prevLeft = None
+    leftNode = head
+    rightNode = head
+    afterRight = head
+    
+    # Step 1: Find the nodes defining the sublist
+    counter = 1
+    while counter < right:
+        if counter < left:
+            prevLeft = leftNode
+            leftNode = leftNode.next
+        rightNode = afterRight
+        afterRight = afterRight.next
+        counter += 1
+    
+    # Step 2: Disconnect the sublist
+    rightNode.next = None
+    
+    # Step 3: Reverse the sublist
+    reversedHead, reversedTail = reverse(leftNode)
+    
+    # Step 4: Reconnect the reversed sublist
+    if prevLeft:
+        prevLeft.next = reversedHead
+    else:  # If sublist starts from the head of the original list
+        head = reversedHead
+    
+    reversedTail.next = afterRight
+    
+    return head
+
+def reverse(head):
+    <span class="comment">"""Reverse a linked list and return both the new head and tail.
+    
+    Args:
+        head: The head of the linked list to be reversed
+        
+    Returns:
+        A tuple containing (new_head, new_tail) of the reversed list
+    """</span>
+    prev = None
+    current = head
+    
+    while current:
+        next_temp = current.next
+        current.next = prev
+        prev = current
+        current = next_temp
+        
+    return prev, head  # New head is prev, new tail is original head</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command"># Create linked list: 1->2->3->4->5
+head = ListNode(1)
+head.next = ListNode(2)
+head.next.next = ListNode(3)
+head.next.next.next = ListNode(4)
+head.next.next.next.next = ListNode(5)
+
+# Reverse the sublist from position 2 to 4
+result = reverseBetween(head, 2, 4)
+
+# Result: 1->4->3->2->5</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">1->4->3->2->5</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command"># Create linked list: 5
+head = ListNode(5)
+
+# Reverse the sublist from position 1 to 1 (essentially no change)
+result = reverseBetween(head, 1, 1)
+
+# Result: 5</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">5</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command"># Create linked list: 3->5
+head = ListNode(3)
+head.next = ListNode(5)
+
+# Reverse the sublist from position 1 to 2 (reverse the entire list)
+result = reverseBetween(head, 1, 2)
+
+# Result: 5->3</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">5->3</pre>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Alternative Approach:</strong></p>
+            <p>Another way to solve this problem is to use a single-pass approach where we don't need to first identify all the nodes and then reverse the sublist. Instead, we can reverse the sublist nodes one by one as we traverse the list.</p>
+            <p>The single-pass approach works as follows:</p>
+            <ol>
+                <li>Traverse to the node just before the start of the sublist (position <code>left-1</code>).</li>
+                <li>For each node in the sublist (from position <code>left+1</code> to <code>right</code>), remove it from its current position and insert it at the beginning of the sublist.</li>
+                <li>This effectively reverses the sublist without requiring a separate reversal step.</li>
+            </ol>
+            <p>This approach can be more efficient in some cases, especially if the sublist is long, as it only requires a single pass through the list.</p>
+            <p>The In-Place Reversal pattern is a powerful technique that can be adapted to solve various linked list manipulation problems. This problem demonstrates how to apply the pattern to reverse only a portion of a linked list, which is a common variation of the basic reversal problem.</p>
+        </div>
+    </div>
+</body>
+</html>
