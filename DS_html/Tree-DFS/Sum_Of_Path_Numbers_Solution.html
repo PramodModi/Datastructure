@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sum of Path Numbers Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tree-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 10px;
+            font-weight: bold;
+            position: relative;
+        }
+        .tree-node.path1 {
+            background-color: #e74c3c;
+            border: 2px solid #c0392b;
+        }
+        .tree-node.path2 {
+            background-color: #27ae60;
+            border: 2px solid #219653;
+        }
+        .tree-node.path3 {
+            background-color: #f39c12;
+            border: 2px solid #d35400;
+        }
+        .tree-connector {
+            position: absolute;
+            height: 20px;
+            width: 2px;
+            background-color: #333;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .tree-connector.left {
+            transform: translateX(-50%) rotate(-30deg);
+            transform-origin: top;
+        }
+        .tree-connector.right {
+            transform: translateX(-50%) rotate(30deg);
+            transform-origin: top;
+        }
+        .path-number {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .path-digit {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+        }
+        .path1-digit {
+            background-color: #e74c3c;
+        }
+        .path2-digit {
+            background-color: #27ae60;
+        }
+        .path3-digit {
+            background-color: #f39c12;
+        }
+        .path-arrow {
+            font-size: 20px;
+            color: #7f8c8d;
+        }
+        .path-equals {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+        .path-result {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sum of Path Numbers</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given a binary tree where each node contains a digit (0-9), each root-to-leaf path in the tree represents a number. Find the total sum of all root-to-leaf numbers.
+        </p>
+        <p>
+            A root-to-leaf path is a path starting from the root and ending at a leaf node (a node with no children).
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node path1 path2 path3">4
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path1 path2">9
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                    <div class="tree-node path3">0</div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path1">5</div>
+                    <div class="tree-node path2">1</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [4,9,0,5,1]</p>
+            <p><strong>Output:</strong> 1026</p>
+            <p><strong>Explanation:</strong></p>
+            <div class="path-number">
+                <div class="path-digit path1-digit">4</div>
+                <div class="path-arrow">→</div>
+                <div class="path-digit path1-digit">9</div>
+                <div class="path-arrow">→</div>
+                <div class="path-digit path1-digit">5</div>
+                <div class="path-equals">=</div>
+                <div class="path-result">495</div>
+            </div>
+            <div class="path-number">
+                <div class="path-digit path2-digit">4</div>
+                <div class="path-arrow">→</div>
+                <div class="path-digit path2-digit">9</div>
+                <div class="path-arrow">→</div>
+                <div class="path-digit path2-digit">1</div>
+                <div class="path-equals">=</div>
+                <div class="path-result">491</div>
+            </div>
+            <div class="path-number">
+                <div class="path-digit path3-digit">4</div>
+                <div class="path-arrow">→</div>
+                <div class="path-digit path3-digit">0</div>
+                <div class="path-equals">=</div>
+                <div class="path-result">40</div>
+            </div>
+            <p>Therefore, sum = 495 + 491 + 40 = 1026</p>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node path1 path2">1
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path1">2</div>
+                    <div class="tree-node path2">3</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [1,2,3]</p>
+            <p><strong>Output:</strong> 25</p>
+            <p><strong>Explanation:</strong></p>
+            <div class="path-number">
+                <div class="path-digit path1-digit">1</div>
+                <div class="path-arrow">→</div>
+                <div class="path-digit path1-digit">2</div>
+                <div class="path-equals">=</div>
+                <div class="path-result">12</div>
+            </div>
+            <div class="path-number">
+                <div class="path-digit path2-digit">1</div>
+                <div class="path-arrow">→</div>
+                <div class="path-digit path2-digit">3</div>
+                <div class="path-equals">=</div>
+                <div class="path-result">13</div>
+            </div>
+            <p>Therefore, sum = 12 + 13 = 25</p>
+        </div>
+        
+        <h3>Constraints:</h3>
+        <ul>
+            <li>The number of nodes in the tree is in the range [1, 1000].</li>
+            <li>0 ≤ Node.val ≤ 9</li>
+            <li>The depth of the tree will not exceed 10.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to find the sum of all numbers formed by root-to-leaf paths in a binary tree. Each node in the tree contains a single digit (0-9), and we need to interpret each path as a number by concatenating the digits along the path.
+        </p>
+        <p>
+            For example, the path from the root to a leaf that contains the digits 4, 9, and 5 represents the number 495. Similarly, the path with digits 4, 9, and 1 represents 491, and the path with digits 4 and 0 represents 40.
+        </p>
+        <p>
+            We need to find all such root-to-leaf paths, convert them to numbers, and then return the sum of all these numbers.
+        </p>
+        <p>
+            To solve this problem, we can use a depth-first search (DFS) approach to traverse the tree and build the numbers as we go down the tree.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Depth-First Search (DFS)</h2>
+        <p>
+            We'll use a recursive DFS approach to traverse the tree and build the numbers along each path. Here's the general strategy:
+        </p>
+        <ol>
+            <li>Start at the root with a running sum of 0.</li>
+            <li>For each node we visit, update the running sum by multiplying the current sum by 10 (shifting left by one decimal place) and adding the current node's value.</li>
+            <li>If the current node is a leaf node (has no children), return the current running sum.</li>
+            <li>If the current node has children, recursively calculate the sum for each child and return the total sum.</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>Let's trace through the algorithm for Example 1:</p>
+            <pre>
+Tree:
+      4
+     / \
+    9   0
+   / \
+  5   1
+
+Start at the root (4) with a running sum of 0:
+- Update running sum: 0 * 10 + 4 = 4
+- Not a leaf, so we'll recursively go to left and right children
+
+Go to the left child (9):
+- Update running sum: 4 * 10 + 9 = 49
+- Not a leaf, so we'll recursively go to left and right children
+
+Go to the left child of 9 (5):
+- Update running sum: 49 * 10 + 5 = 495
+- This is a leaf node, so we return 495
+
+Go back to 9, then go to the right child of 9 (1):
+- Update running sum: 49 * 10 + 1 = 491
+- This is a leaf node, so we return 491
+
+The left subtree of the root (4) gives us 495 + 491 = 986
+
+Go back to the root (4), then go to the right child (0):
+- Update running sum: 4 * 10 + 0 = 40
+- This is a leaf node, so we return 40
+
+The right subtree of the root (4) gives us 40
+
+Finally, we sum up all the numbers: 986 + 40 = 1026</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the solution:
+        </p>
+
+        <pre>
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def sumNumbers(root):
+    <span class="comment">"""Calculate the sum of all root-to-leaf numbers.
+    
+    Args:
+        root: The root node of the binary tree
+        
+    Returns:
+        The sum of all root-to-leaf numbers
+    """</span>
+    # Helper function to do the DFS
+    return getNumbers(root, 0)
+
+def getNumbers(node, pathSum):
+    <span class="comment">"""Recursive helper function to calculate path sums.
+    
+    Args:
+        node: The current node being processed
+        pathSum: The running sum of the path so far
+        
+    Returns:
+        The sum of all path numbers from this node to leaf nodes
+    """</span>
+    if node is None:
+        return 0
+    
+    # Update the running sum by shifting left and adding current node's value
+    pathSum = 10 * pathSum + node.val
+    
+    # If it's a leaf node, return the current path sum
+    if node.left is None and node.right is None:
+        return pathSum
+    
+    # Otherwise, recursively calculate for left and right children
+    return getNumbers(node.left, pathSum) + getNumbers(node.right, pathSum)</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n) where n is the number of nodes in the tree. We visit each node exactly once.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(h) where h is the height of the tree, which corresponds to the maximum depth of the recursion stack. In the worst case (a skewed tree), this could be O(n).
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation</h2>
+        <p>
+            We can also solve this problem using an iterative approach with a stack. Here's how we would implement it:
+        </p>
+
+        <pre>
+def sumNumbers_iterative(root):
+    <span class="comment">"""Calculate the sum of all root-to-leaf numbers using an iterative approach.
+    
+    Args:
+        root: The root node of the binary tree
+        
+    Returns:
+        The sum of all root-to-leaf numbers
+    """</span>
+    if not root:
+        return 0
+    
+    total_sum = 0
+    stack = [(root, root.val)]  # (node, path_sum_so_far)
+    
+    while stack:
+        node, path_sum = stack.pop()
+        
+        # Check if it's a leaf node
+        if not node.left and not node.right:
+            total_sum += path_sum
+        
+        # Process right child first (so left will be processed first in LIFO order)
+        if node.right:
+            stack.append((node.right, path_sum * 10 + node.right.val))
+            
+        if node.left:
+            stack.append((node.left, path_sum * 10 + node.left.val))
+    
+    return total_sum</pre>
+
+        <p>
+            Both implementations will give the same result, but the recursive approach is more concise and intuitive for this problem. The iterative approach can be useful in languages where recursion depth is limited or when dealing with very deep trees.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples provided in the problem:
+        </p>
+
+        <pre>
+# Example 1
+root1 = TreeNode(4)
+root1.left = TreeNode(9)
+root1.right = TreeNode(0)
+root1.left.left = TreeNode(5)
+root1.left.right = TreeNode(1)
+
+print(sumNumbers(root1))  # Output: 1026
+
+# Example 2
+root2 = TreeNode(1)
+root2.left = TreeNode(2)
+root2.right = TreeNode(3)
+
+print(sumNumbers(root2))  # Output: 25</pre>
+
+        <h3>Edge Cases</h3>
+        <p>
+            The implementation handles these edge cases correctly:
+        </p>
+        <ul>
+            <li><strong>Empty tree:</strong> Returns 0.</li>
+            <li><strong>Single node tree:</strong> Returns the node's value.</li>
+            <li><strong>Tree with only left children:</strong> Correctly computes the sum.</li>
+            <li><strong>Tree with only right children:</strong> Correctly computes the sum.</li>
+            <li><strong>Nodes with value 0:</strong> Correctly handles nodes with value 0, which shift the decimal places but don't add to the value.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you found this problem interesting, you might want to try these related problems:
+        </p>
+        <ul>
+            <li><strong>Path Sum:</strong> Determine if the tree has a root-to-leaf path such that adding up all the values along the path equals a given sum.</li>
+            <li><strong>Path Sum II:</strong> Find all root-to-leaf paths where the sum of the node values in the path equals a given sum.</li>
+            <li><strong>Binary Tree Paths:</strong> Return all root-to-leaf paths in a binary tree as strings.</li>
+            <li><strong>Path with Maximum Sum:</strong> Find the path with the maximum sum in a binary tree (not necessarily from root to leaf).</li>
+            <li><strong>Binary Tree Maximum Path Sum:</strong> Find the path with the maximum sum in a binary tree.</li>
+        </ul>
+        <p>
+            These problems all involve traversing trees and tracking paths, which is a common pattern in tree-based algorithms.
+        </p>
+    </div>
+</body>
+</html>

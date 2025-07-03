@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Paths for a Sum Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tree-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 10px;
+            font-weight: bold;
+            position: relative;
+        }
+        .tree-node.path1 {
+            background-color: #e74c3c;
+        }
+        .tree-node.path2 {
+            background-color: #2ecc71;
+        }
+        .tree-node.both-paths {
+            background: linear-gradient(135deg, #e74c3c 50%, #2ecc71 50%);
+        }
+        .tree-connector {
+            position: absolute;
+            height: 20px;
+            width: 2px;
+            background-color: #333;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .tree-connector.left {
+            transform: translateX(-50%) rotate(-30deg);
+            transform-origin: top;
+        }
+        .tree-connector.right {
+            transform: translateX(-50%) rotate(30deg);
+            transform-origin: top;
+        }
+        .path-label {
+            position: absolute;
+            top: -20px;
+            font-size: 12px;
+            color: #333;
+        }
+        .path-trace {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .path-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .path1-color {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .path2-color {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>All Paths for a Sum</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given the root of a binary tree and an integer <code>targetSum</code>, return all <strong>root-to-leaf</strong> paths where the sum of the node values in the path equals <code>targetSum</code>. Each path should be returned as a list of the node values, not node references.
+        </p>
+        <p>
+            A <strong>root-to-leaf</strong> path is a path starting from the root and ending at any leaf node. A <strong>leaf</strong> is a node with no children.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node both-paths">5
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path1">4
+                        <div class="tree-connector left"></div>
+                    </div>
+                    <div class="tree-node path2">8
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path1">11
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                    <div class="tree-node">13</div>
+                    <div class="tree-node path2">4
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node">7</div>
+                    <div class="tree-node path1">2</div>
+                    <div class="tree-node path2">5</div>
+                    <div class="tree-node">1</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22</p>
+            <p><strong>Output:</strong> [[5,4,11,2], [5,8,4,5]]</p>
+            <p><strong>Explanation:</strong> There are two paths whose sum equals targetSum:</p>
+            <ul>
+                <li class="path1-color">5 + 4 + 11 + 2 = 22 (Path 1 in red)</li>
+                <li class="path2-color">5 + 8 + 4 + 5 = 22 (Path 2 in green)</li>
+            </ul>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node">1
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node">2</div>
+                    <div class="tree-node">3</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [1,2,3], targetSum = 5</p>
+            <p><strong>Output:</strong> []</p>
+            <p><strong>Explanation:</strong> There are no paths that sum to 5. The paths in this tree are:</p>
+            <ul>
+                <li>1 + 2 = 3</li>
+                <li>1 + 3 = 4</li>
+            </ul>
+        </div>
+
+        <div class="example">
+            <h3>Example 3:</h3>
+            <p><strong>Input:</strong> root = [1,2], targetSum = 0</p>
+            <p><strong>Output:</strong> []</p>
+        </div>
+        
+        <h3>Constraints:</h3>
+        <ul>
+            <li>The number of nodes in the tree is in the range [0, 5000].</li>
+            <li>-1000 <= Node.val <= 1000</li>
+            <li>-1000 <= targetSum <= 1000</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to find all possible root-to-leaf paths in a binary tree where the sum of the node values along the path equals the given <code>targetSum</code>. Let's break down the key requirements:
+        </p>
+        <ul>
+            <li><strong>Path Definition:</strong> A valid path must start at the root node and end at a leaf node (a node with no children).</li>
+            <li><strong>Sum Requirement:</strong> The sum of all node values along the path must equal exactly <code>targetSum</code>.</li>
+            <li><strong>Return Format:</strong> We need to return all valid paths as lists of node values, not node references.</li>
+            <li><strong>Multiple Paths:</strong> There can be multiple valid paths, and we need to find all of them.</li>
+        </ul>
+        <p>
+            This is a classic tree traversal problem where we need to explore all possible paths from root to leaf and check each one against the <code>targetSum</code> criterion. Since we need to track complete paths, a depth-first search (DFS) approach is most appropriate.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Depth-First Search with Backtracking</h2>
+        <p>
+            For this problem, we'll use a recursive DFS approach with backtracking to explore all possible root-to-leaf paths and collect those that match our target sum.
+        </p>
+        <p>
+            Here's the step-by-step approach:
+        </p>
+        <ol>
+            <li>Start with an empty result list to store all valid paths.</li>
+            <li>Define a recursive helper function that takes:
+                <ul>
+                    <li>The current node</li>
+                    <li>The remaining target sum after subtracting previously visited node values</li>
+                    <li>The current path being explored (as a list of node values)</li>
+                    <li>The result list to collect valid paths</li>
+                </ul>
+            </li>
+            <li>In the helper function:
+                <ul>
+                    <li>If the node is null, return (base case).</li>
+                    <li>Add the current node's value to the current path.</li>
+                    <li>Subtract the current node's value from the target sum.</li>
+                    <li>If the current node is a leaf node (no children) and the remaining target sum is 0, add a copy of the current path to the result list.</li>
+                    <li>Recursively explore the left and right children.</li>
+                    <li>Backtrack by removing the current node from the path before returning.</li>
+                </ul>
+            </li>
+            <li>Call the helper function with the root node, the original targetSum, an empty path, and the result list.</li>
+            <li>Return the result list containing all valid paths.</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>Let's trace through the algorithm for the first example with targetSum = 22:</p>
+            <pre>
+Tree:
+      5
+     / \
+    4   8
+   /   / \
+  11  13  4
+ /  \     / \
+7    2   5   1
+
+Initialize: result = [], currentPath = []
+
+1. Call helper(root=5, targetSum=22, currentPath=[], result=[]):
+   - Add 5 to currentPath: [5]
+   - remainingSum = 22 - 5 = 17
+   - Not a leaf node, so continue
+
+2. Call helper(node=4, targetSum=17, currentPath=[5], result=[]):
+   - Add 4 to currentPath: [5, 4]
+   - remainingSum = 17 - 4 = 13
+   - Not a leaf node, so continue
+
+3. Call helper(node=11, targetSum=13, currentPath=[5, 4, 11], result=[]):
+   - Add 11 to currentPath: [5, 4, 11]
+   - remainingSum = 13 - 11 = 2
+   - Not a leaf node, so continue
+
+4. Call helper(node=7, targetSum=2, currentPath=[5, 4, 11, 7], result=[]):
+   - Add 7 to currentPath: [5, 4, 11, 7]
+   - remainingSum = 2 - 7 = -5
+   - Leaf node, but remainingSum != 0, so don't add to result
+   - Backtrack: Remove 7 from currentPath: [5, 4, 11]
+
+5. Call helper(node=2, targetSum=2, currentPath=[5, 4, 11, 2], result=[]):
+   - Add 2 to currentPath: [5, 4, 11, 2]
+   - remainingSum = 2 - 2 = 0
+   - Leaf node and remainingSum == 0, so add path to result: result = [[5, 4, 11, 2]]
+   - Backtrack: Remove 2 from currentPath: [5, 4, 11]
+
+6. Backtrack from node 11: Remove 11 from currentPath: [5, 4]
+7. Backtrack from node 4: Remove 4 from currentPath: [5]
+
+8. Call helper(node=8, targetSum=17, currentPath=[5], result=[[5, 4, 11, 2]]):
+   - Add 8 to currentPath: [5, 8]
+   - remainingSum = 17 - 8 = 9
+   - Not a leaf node, so continue
+
+9. Call helper(node=13, targetSum=9, currentPath=[5, 8, 13], result=[[5, 4, 11, 2]]):
+   - Add 13 to currentPath: [5, 8, 13]
+   - remainingSum = 9 - 13 = -4
+   - Leaf node, but remainingSum != 0, so don't add to result
+   - Backtrack: Remove 13 from currentPath: [5, 8]
+
+10. Call helper(node=4, targetSum=9, currentPath=[5, 8, 4], result=[[5, 4, 11, 2]]):
+    - Add 4 to currentPath: [5, 8, 4]
+    - remainingSum = 9 - 4 = 5
+    - Not a leaf node, so continue
+
+11. Call helper(node=5, targetSum=5, currentPath=[5, 8, 4, 5], result=[[5, 4, 11, 2]]):
+    - Add 5 to currentPath: [5, 8, 4, 5]
+    - remainingSum = 5 - 5 = 0
+    - Leaf node and remainingSum == 0, so add path to result: result = [[5, 4, 11, 2], [5, 8, 4, 5]]
+    - Backtrack: Remove 5 from currentPath: [5, 8, 4]
+
+12. Call helper(node=1, targetSum=5, currentPath=[5, 8, 4, 1], result=[[5, 4, 11, 2], [5, 8, 4, 5]]):
+    - Add 1 to currentPath: [5, 8, 4, 1]
+    - remainingSum = 5 - 1 = 4
+    - Leaf node, but remainingSum != 0, so don't add to result
+    - Backtrack: Remove 1 from currentPath: [5, 8, 4]
+
+Final result: [[5, 4, 11, 2], [5, 8, 4, 5]]</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of our approach:
+        </p>
+
+        <pre>
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def pathSum(root, targetSum):
+    <span class="comment">"""Find all root-to-leaf paths where the sum equals targetSum.
+    
+    Args:
+        root: The root node of the binary tree
+        targetSum: The target sum to find
+        
+    Returns:
+        A list of lists, where each inner list represents a valid path
+    """</span>
+    result = []
+    findPaths(root, targetSum, [], result)
+    return result
+
+def findPaths(node, remainingSum, currentPath, result):
+    <span class="comment">"""Helper function to find all paths with the target sum using DFS.
+    
+    Args:
+        node: The current node being explored
+        remainingSum: The remaining sum needed to reach the target
+        currentPath: The path explored so far
+        result: The list to collect valid paths
+    """</span>
+    # Base case: if node is None, return
+    if not node:
+        return
+    
+    # Add current node to path
+    currentPath.append(node.val)
+    
+    # Update remaining sum
+    remainingSum -= node.val
+    
+    # Check if we've reached a leaf node with the target sum
+    if not node.left and not node.right and remainingSum == 0:
+        # We found a valid path, add a copy of it to the result
+        result.append(currentPath[:])
+    
+    # Recursively check left and right subtrees
+    findPaths(node.left, remainingSum, currentPath, result)
+    findPaths(node.right, remainingSum, currentPath, result)
+    
+    # Backtrack: remove the current node from the path
+    currentPath.pop()</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n²) where n is the number of nodes in the tree. In the worst case, we might have to visit all nodes, and for each leaf node that forms a valid path, we make a copy of the path, which could be O(n) in the worst case (for a skewed tree).
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n) for the recursive call stack and to store the current path. In the worst case (a skewed tree), the height of the tree could be n, resulting in a call stack of size n. Additionally, each path can have at most n nodes.
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation</h2>
+        <p>
+            We can also implement this solution using an iterative approach with a stack, which might be more efficient for very deep trees to avoid stack overflow:
+        </p>
+
+        <pre>
+def pathSum_iterative(root, targetSum):
+    <span class="comment">"""Find all root-to-leaf paths where the sum equals targetSum using an iterative approach.
+    
+    Args:
+        root: The root node of the binary tree
+        targetSum: The target sum to find
+        
+    Returns:
+        A list of lists, where each inner list represents a valid path
+    """</span>
+    if not root:
+        return []
+    
+    result = []
+    stack = [(root, targetSum - root.val, [root.val])]
+    
+    while stack:
+        node, remaining, path = stack.pop()
+        
+        # If it's a leaf node and remaining sum is 0, we found a valid path
+        if not node.left and not node.right and remaining == 0:
+            result.append(path)
+        
+        # Push right child to stack (DFS explores right-to-left when using a stack)
+        if node.right:
+            stack.append((node.right, remaining - node.right.val, path + [node.right.val]))
+        
+        # Push left child to stack
+        if node.left:
+            stack.append((node.left, remaining - node.left.val, path + [node.left.val]))
+    
+    return result</pre>
+
+        <p>
+            Note that in the iterative approach, we use a different strategy for maintaining the path. Instead of modifying a shared path list and backtracking, we create a new path list for each node we push onto the stack. This makes the code cleaner but increases the space usage slightly.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples provided in the problem:
+        </p>
+
+        <pre>
+# Example 1
+root1 = TreeNode(5)
+root1.left = TreeNode(4)
+root1.right = TreeNode(8)
+root1.left.left = TreeNode(11)
+root1.left.left.left = TreeNode(7)
+root1.left.left.right = TreeNode(2)
+root1.right.left = TreeNode(13)
+root1.right.right = TreeNode(4)
+root1.right.right.left = TreeNode(5)
+root1.right.right.right = TreeNode(1)
+
+print(pathSum(root1, 22))  # Output: [[5, 4, 11, 2], [5, 8, 4, 5]]
+
+# Example 2
+root2 = TreeNode(1)
+root2.left = TreeNode(2)
+root2.right = TreeNode(3)
+
+print(pathSum(root2, 5))  # Output: []
+
+# Example 3
+root3 = TreeNode(1)
+root3.left = TreeNode(2)
+
+print(pathSum(root3, 0))  # Output: []</pre>
+
+        <h3>Edge Cases</h3>
+        <p>
+            The implementation handles these edge cases correctly:
+        </p>
+        <ul>
+            <li><strong>Empty tree:</strong> Returns an empty list.</li>
+            <li><strong>No valid paths:</strong> Returns an empty list if no paths sum to the target value.</li>
+            <li><strong>Negative numbers:</strong> Works with negative node values and negative target sums.</li>
+            <li><strong>Multiple valid paths:</strong> Correctly identifies all valid paths.</li>
+            <li><strong>Single node tree:</strong> Works correctly if the tree consists of just one node.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Common Pitfalls and Tips</h2>
+        <p>
+            When implementing this solution, be aware of these common pitfalls:
+        </p>
+        <ol>
+            <li>
+                <strong>Forgetting to make a copy of the path:</strong> When adding a valid path to the result, make sure to create a copy of the current path (e.g., <code>currentPath[:]</code> in Python). Otherwise, you'll just be storing a reference to a path that will change as the algorithm continues.
+            </li>
+            <li>
+                <strong>Missing the backtracking step:</strong> After exploring a node's children, don't forget to remove the node from the current path to properly backtrack.
+            </li>
+            <li>
+                <strong>Not checking for leaf nodes:</strong> Remember that a valid path must end at a leaf node. It's not enough to just find a path where the sum equals the target; the last node must have no children.
+            </li>
+            <li>
+                <strong>Handling negative numbers:</strong> If the tree contains negative numbers, you can't optimize by stopping early when the sum exceeds the target, as a future negative number might bring the sum back to the target.
+            </li>
+        </ol>
+
+        <h3>Related Problems</h3>
+        <p>
+            If you've mastered this problem, try these related tree path problems:
+        </p>
+        <ul>
+            <li><strong>Path Sum:</strong> Check if any root-to-leaf path sums to the target (simplified version of this problem).</li>
+            <li><strong>Sum Root to Leaf Numbers:</strong> Treat each root-to-leaf path as a number and sum them.</li>
+            <li><strong>Binary Tree Maximum Path Sum:</strong> Find the path with the maximum sum in a binary tree (path can start and end at any node).</li>
+            <li><strong>Path Sum III:</strong> Count the number of paths that sum to a given value (the path doesn't need to start at the root or end at a leaf).</li>
+        </ul>
+    </div>
+</body>
+</html>

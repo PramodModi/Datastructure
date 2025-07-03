@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree DFS (Depth First Search) Pattern</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .concept {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .algorithm {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .applications {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tree-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        .tree-connection {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+        .tree-connection-line {
+            height: 20px;
+            width: 2px;
+            background-color: #333;
+        }
+        .traversal-path {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .traversal-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .traversal-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .traversal-order {
+            font-size: 12px;
+            color: #666;
+        }
+        .active {
+            background-color: #ff6347;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tree DFS (Depth First Search) Pattern</h1>
+
+    <div class="section concept">
+        <h2>What is Depth First Search?</h2>
+        <p>
+            Depth-First Search (DFS) is a traversal algorithm used to explore and navigate through tree or graph structures. Unlike Breadth-First Search (BFS) which explores level by level, DFS explores as far as possible along each branch before backtracking.
+        </p>
+        <p>
+            In the context of trees, DFS starts at the root node and explores each branch completely before moving to the next branch. This "go deep first" approach gives the algorithm its name.
+        </p>
+
+        <div class="tree-container">
+            <div class="tree-level">
+                <div class="tree-node">1</div>
+            </div>
+            <div class="tree-connection">
+                <div class="tree-connection-line"></div>
+                <div class="tree-connection-line"></div>
+            </div>
+            <div class="tree-level">
+                <div class="tree-node">2</div>
+                <div class="tree-node">3</div>
+            </div>
+            <div class="tree-connection">
+                <div class="tree-connection-line"></div>
+                <div class="tree-connection-line"></div>
+                <div style="width: 2px;"></div>
+                <div style="width: 2px;"></div>
+            </div>
+            <div class="tree-level">
+                <div class="tree-node">4</div>
+                <div class="tree-node">5</div>
+                <div style="width: 40px; height: 40px;"></div>
+                <div style="width: 40px; height: 40px;"></div>
+            </div>
+        </div>
+
+        <p>
+            One of the key characteristics of DFS is its recursive nature. It uses either an explicit stack data structure or the function call stack (through recursion) to keep track of the nodes to visit.
+        </p>
+    </div>
+
+    <div class="section algorithm">
+        <h2>How DFS Works</h2>
+        <p>
+            The basic DFS algorithm for a binary tree follows these steps:
+        </p>
+        <ol>
+            <li>Start at the root node.</li>
+            <li>Process the current node (e.g., print its value, check for a condition).</li>
+            <li>Recursively apply DFS to the left subtree (if it exists).</li>
+            <li>Recursively apply DFS to the right subtree (if it exists).</li>
+        </ol>
+
+        <p>
+            There are three common variations of DFS traversal in a binary tree:
+        </p>
+        <ul>
+            <li><strong>Pre-order traversal:</strong> Process the current node, then traverse the left subtree, then traverse the right subtree (Root → Left → Right).</li>
+            <li><strong>In-order traversal:</strong> Traverse the left subtree, then process the current node, then traverse the right subtree (Left → Root → Right).</li>
+            <li><strong>Post-order traversal:</strong> Traverse the left subtree, then traverse the right subtree, then process the current node (Left → Right → Root).</li>
+        </ul>
+
+        <div class="traversal-path">
+            <div>
+                <h4>Pre-order Traversal</h4>
+                <div class="traversal-step">
+                    <div class="traversal-node">1</div>
+                    <div class="traversal-order">1st</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">2</div>
+                    <div class="traversal-order">2nd</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">4</div>
+                    <div class="traversal-order">3rd</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">5</div>
+                    <div class="traversal-order">4th</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">3</div>
+                    <div class="traversal-order">5th</div>
+                </div>
+            </div>
+            <div>
+                <h4>In-order Traversal</h4>
+                <div class="traversal-step">
+                    <div class="traversal-node">4</div>
+                    <div class="traversal-order">1st</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">2</div>
+                    <div class="traversal-order">2nd</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">5</div>
+                    <div class="traversal-order">3rd</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">1</div>
+                    <div class="traversal-order">4th</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">3</div>
+                    <div class="traversal-order">5th</div>
+                </div>
+            </div>
+            <div>
+                <h4>Post-order Traversal</h4>
+                <div class="traversal-step">
+                    <div class="traversal-node">4</div>
+                    <div class="traversal-order">1st</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">5</div>
+                    <div class="traversal-order">2nd</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">2</div>
+                    <div class="traversal-order">3rd</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">3</div>
+                    <div class="traversal-order">4th</div>
+                </div>
+                <div class="traversal-step">
+                    <div class="traversal-node">1</div>
+                    <div class="traversal-order">5th</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's a simple implementation of DFS using recursion in Python:
+        </p>
+
+        <pre>
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+<span class="comment"># Pre-order traversal (Root → Left → Right)</span>
+def preorder_dfs(node):
+    if not node:
+        return
+    
+    <span class="comment"># Process the current node</span>
+    print(node.val)
+    
+    <span class="comment"># Recursively traverse left subtree</span>
+    preorder_dfs(node.left)
+    
+    <span class="comment"># Recursively traverse right subtree</span>
+    preorder_dfs(node.right)
+
+<span class="comment"># In-order traversal (Left → Root → Right)</span>
+def inorder_dfs(node):
+    if not node:
+        return
+    
+    <span class="comment"># Recursively traverse left subtree</span>
+    inorder_dfs(node.left)
+    
+    <span class="comment"># Process the current node</span>
+    print(node.val)
+    
+    <span class="comment"># Recursively traverse right subtree</span>
+    inorder_dfs(node.right)
+
+<span class="comment"># Post-order traversal (Left → Right → Root)</span>
+def postorder_dfs(node):
+    if not node:
+        return
+    
+    <span class="comment"># Recursively traverse left subtree</span>
+    postorder_dfs(node.left)
+    
+    <span class="comment"># Recursively traverse right subtree</span>
+    postorder_dfs(node.right)
+    
+    <span class="comment"># Process the current node</span>
+    print(node.val)
+</pre>
+
+        <p>
+            DFS can also be implemented using an iterative approach with an explicit stack:
+        </p>
+
+        <pre>
+def iterative_preorder_dfs(root):
+    if not root:
+        return
+    
+    stack = [root]
+    while stack:
+        node = stack.pop()
+        
+        <span class="comment"># Process the current node</span>
+        print(node.val)
+        
+        <span class="comment"># Push right child first so that left child is processed first (LIFO stack)</span>
+        if node.right:
+            stack.append(node.right)
+        if node.left:
+            stack.append(node.left)</pre>
+    </div>
+
+    <div class="section applications">
+        <h2>Applications of Tree DFS Pattern</h2>
+        <p>
+            The Tree DFS pattern is particularly useful for the following types of problems:
+        </p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Problem</th>
+                        <th>Description</th>
+                        <th>Why DFS is Suitable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Binary Tree Path Sum</td>
+                        <td>Determine if there exists a root-to-leaf path that sums to a target value.</td>
+                        <td>DFS allows us to track the sum along each path and check at leaf nodes.</td>
+                    </tr>
+                    <tr>
+                        <td>All Paths for a Sum</td>
+                        <td>Find all root-to-leaf paths that sum to a target value.</td>
+                        <td>DFS can collect all valid paths by maintaining a current path stack.</td>
+                    </tr>
+                    <tr>
+                        <td>Sum of Path Numbers</td>
+                        <td>Find the sum of all numbers formed by root-to-leaf paths.</td>
+                        <td>DFS enables us to build numbers digit by digit along each path.</td>
+                    </tr>
+                    <tr>
+                        <td>Path with Given Sequence</td>
+                        <td>Check if a specific sequence exists as a root-to-leaf path.</td>
+                        <td>DFS can match the sequence with path elements as we traverse.</td>
+                    </tr>
+                    <tr>
+                        <td>Count Paths for a Sum</td>
+                        <td>Count the number of paths that sum to a target value (can start anywhere).</td>
+                        <td>DFS can explore all possible subpaths from each node.</td>
+                    </tr>
+                    <tr>
+                        <td>Tree Diameter</td>
+                        <td>Find the length of the longest path between any two nodes.</td>
+                        <td>DFS can calculate heights and diameters recursively for each subtree.</td>
+                    </tr>
+                    <tr>
+                        <td>Path with Maximum Sum</td>
+                        <td>Find the path with the maximum sum in the tree.</td>
+                        <td>DFS can track and compare sums along different paths.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>
+            In all these problems, the DFS pattern helps us navigate through all possible paths in the tree, while maintaining some state or checking for specific conditions along the way.
+        </p>
+    </div>
+
+    <div class="section algorithm">
+        <h2>When to Use Tree DFS vs. Tree BFS</h2>
+
+        <p>
+            Choosing between DFS and BFS depends on the specific problem and tree structure:
+        </p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Use DFS When...</th>
+                        <th>Use BFS When...</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>You need to explore all possible paths from root to leaf</td>
+                        <td>You need to find the shortest path or closest nodes</td>
+                    </tr>
+                    <tr>
+                        <td>The tree is very deep, and solutions are more likely at the bottom</td>
+                        <td>The tree is very wide, and solutions are more likely at higher levels</td>
+                    </tr>
+                    <tr>
+                        <td>You want to check if a path with certain properties exists</td>
+                        <td>You need to process nodes level by level</td>
+                    </tr>
+                    <tr>
+                        <td>Memory is a concern (DFS uses less memory for deep trees)</td>
+                        <td>Depth of the tree is a concern (BFS won't get stuck in deep branches)</td>
+                    </tr>
+                    <tr>
+                        <td>You're searching for something that's likely far from the root</td>
+                        <td>You're searching for something that's likely close to the root</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Time and Space Complexity</h2>
+
+        <p>
+            <strong>Time Complexity:</strong> O(N), where N is the number of nodes in the tree. DFS visits each node exactly once.
+        </p>
+
+        <p>
+            <strong>Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Recursive implementation:</strong> O(H), where H is the height of the tree, due to the function call stack. In the worst case (skewed tree), this can be O(N).</li>
+            <li><strong>Iterative implementation:</strong> O(H) for the stack space, which in the worst case can be O(N).</li>
+        </ul>
+
+        <p>
+            DFS is often more space-efficient than BFS for deep trees, as it only needs to store the nodes along a single path from the root to the current node, rather than all nodes at a level.
+        </p>
+    </div>
+</body>
+</html>

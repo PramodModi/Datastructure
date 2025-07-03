@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path With Maximum Sum Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tree-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 10px;
+            font-weight: bold;
+            position: relative;
+        }
+        .tree-node.path {
+            background-color: #e74c3c;
+            border: 2px solid #c0392b;
+        }
+        .tree-connector {
+            position: absolute;
+            height: 20px;
+            width: 2px;
+            background-color: #333;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .tree-connector.left {
+            transform: translateX(-50%) rotate(-30deg);
+            transform-origin: top;
+        }
+        .tree-connector.right {
+            transform: translateX(-50%) rotate(30deg);
+            transform-origin: top;
+        }
+        .path-highlight {
+            stroke: #e74c3c;
+            stroke-width: 3px;
+            stroke-linecap: round;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Path With Maximum Sum</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given a binary tree, find the path with the maximum sum. The path may start and end at any node in the tree, but must follow a valid tree path (going only from parent to child, not vice versa).
+        </p>
+        <p>
+            For this problem, a path is defined as any sequence of nodes from some starting node to any node in the tree along the parent-child connections. The path does not need to go through the root, but it must contain at least one node.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node">-10
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node">9</div>
+                    <div class="tree-node path">20
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div style="width: 40px;"></div>
+                    <div class="tree-node path">15</div>
+                    <div class="tree-node path">7</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [-10,9,20,null,null,15,7]</p>
+            <p><strong>Output:</strong> 42</p>
+            <p><strong>Explanation:</strong> The optimal path is 15 → 20 → 7, with a sum of 15 + 20 + 7 = 42.</p>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node path">1
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path">2</div>
+                    <div class="tree-node path">3</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [1,2,3]</p>
+            <p><strong>Output:</strong> 6</p>
+            <p><strong>Explanation:</strong> The optimal path is 1 → 2 → 3, with a sum of 1 + 2 + 3 = 6.</p>
+        </div>
+        
+        <h3>Constraints:</h3>
+        <ul>
+            <li>The number of nodes in the tree is in the range [1, 3 * 10<sup>4</sup>].</li>
+            <li>-1000 ≤ Node.val ≤ 1000</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to find the path in a binary tree that gives the maximum possible sum. Here are the key points to understand:
+        </p>
+        <ul>
+            <li>A path can start and end at <strong>any</strong> node in the tree (it doesn't have to start at the root or end at a leaf).</li>
+            <li>The path must follow parent-child connections, meaning you can only move from a node to one of its children, not to its parent or arbitrary nodes.</li>
+            <li>The path must consist of at least one node.</li>
+            <li>The nodes can have negative values, so sometimes excluding a node from the path might result in a higher sum.</li>
+        </ul>
+        <p>
+            The challenge here is that the optimal path might not include the root, and might not extend all the way to the leaves. It could be a subpath anywhere in the tree, possibly involving only one branch or even just a single node if all values are negative.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Recursive Depth-First Search</h2>
+        <p>
+            We can solve this problem using a recursive depth-first search approach. For each node, we need to compute two values:
+        </p>
+        <ol>
+            <li>The maximum path sum that passes through this node and extends to one of its subtrees (can be used by the node's parent)</li>
+            <li>The maximum path sum that starts and ends somewhere in the subtree rooted at this node (might not be extended further)</li>
+        </ol>
+        <p>
+            Here's the step-by-step approach:
+        </p>
+        <ol>
+            <li>Define a recursive function that returns both values mentioned above.</li>
+            <li>For a given node, recursively compute these values for its left and right children.</li>
+            <li>Calculate the maximum branch sum at the current node by considering:
+                <ul>
+                    <li>The node's value alone</li>
+                    <li>The node's value plus the maximum path sum from the left child</li>
+                    <li>The node's value plus the maximum path sum from the right child</li>
+                </ul>
+            </li>
+            <li>Calculate the maximum path sum at the current node, which can be:
+                <ul>
+                    <li>The node's value alone</li>
+                    <li>The node's value plus the maximum path sum from the left child</li>
+                    <li>The node's value plus the maximum path sum from the right child</li>
+                    <li>The node's value plus the maximum path sum from both children (a complete path through the node)</li>
+                </ul>
+            </li>
+            <li>Return the maximum branch sum (for the parent to use) and keep track of the overall maximum path sum.</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>Let's trace through the algorithm for Example 1:</p>
+            <pre>
+Tree:
+      -10
+     /   \
+    9    20
+        /  \
+      15    7
+
+1. Process node 15:
+   - Node value: 15
+   - Left child: None, max branch sum = -∞
+   - Right child: None, max branch sum = -∞
+   - Max branch sum = max(15, 15 + (-∞), 15 + (-∞)) = 15
+   - Max path sum = 15
+
+2. Process node 7:
+   - Node value: 7
+   - Left child: None, max branch sum = -∞
+   - Right child: None, max branch sum = -∞
+   - Max branch sum = max(7, 7 + (-∞), 7 + (-∞)) = 7
+   - Max path sum = 7
+
+3. Process node 20:
+   - Node value: 20
+   - Left child: 15, max branch sum = 15
+   - Right child: 7, max branch sum = 7
+   - Max branch sum = max(20, 20 + 15, 20 + 7) = 35 (from 20 + 15)
+   - Max path sum = max(20, 20 + 15, 20 + 7, 20 + 15 + 7) = 42 (from 20 + 15 + 7)
+
+4. Process node 9:
+   - Node value: 9
+   - Left child: None, max branch sum = -∞
+   - Right child: None, max branch sum = -∞
+   - Max branch sum = max(9, 9 + (-∞), 9 + (-∞)) = 9
+   - Max path sum = 9
+
+5. Process root node -10:
+   - Node value: -10
+   - Left child: 9, max branch sum = 9
+   - Right child: 20, max branch sum = 35
+   - Max branch sum = max(-10, -10 + 9, -10 + 35) = 25 (from -10 + 35)
+   - Max path sum = max(-10, -10 + 9, -10 + 35, -10 + 9 + 35) = 34
+   - Overall max path sum = max(15, 7, 42, 9, 34) = 42
+
+Final result: 42</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the approach described above:
+        </p>
+
+        <pre>
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def maxPathSum(root):
+    <span class="comment">"""Find the maximum path sum in the binary tree.
+    
+    Args:
+        root: The root node of the binary tree
+        
+    Returns:
+        The maximum path sum
+    """</span>
+    # Helper function to compute both max branch sum and max path sum
+    def getMaxSumPath(node):
+        if not node:
+            return (float('-inf'), float('-inf'))  # (max_branch_sum, max_path_sum)
+        
+        # Recursively compute values for left and right subtrees
+        left_branch_max, left_max = getMaxSumPath(node.left)
+        right_branch_max, right_max = getMaxSumPath(node.right)
+        
+        # Determine the maximum branch value for current node
+        child_branch_max = max(left_branch_max, right_branch_max)
+        node_val = node.val
+        
+        # Calculate max branch sum that can extend to parent
+        # It's either just the node value or node plus best child branch
+        branch_and_node_max = max(child_branch_max + node_val, node_val)
+        
+        # Calculate max path sum at this node
+        # It could be the node alone, node plus one branch, or node connecting both branches
+        max_sum_at_node = max(
+            left_branch_max + right_branch_max + node_val,  # Path through node connecting both branches
+            branch_and_node_max  # Node alone or with one branch
+        )
+        
+        # The overall max path sum is the max of:
+        # - Max path sum in left subtree
+        # - Max path sum in right subtree
+        # - Max path sum through current node
+        max_sum = max(left_max, right_max, max_sum_at_node)
+        
+        return (branch_and_node_max, max_sum)
+    
+    # Call the helper function and return the second value (max path sum)
+    _, max_sum = getMaxSumPath(root)
+    return max_sum</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n) where n is the number of nodes in the tree. We visit each node exactly once.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(h) where h is the height of the tree, which corresponds to the maximum depth of the recursion stack. In the worst case (skewed tree), this could be O(n).
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation</h2>
+        <p>
+            Here's a slightly more concise implementation using a global variable to keep track of the maximum path sum:
+        </p>
+
+        <pre>
+def maxPathSum(root):
+    <span class="comment">"""Find the maximum path sum in the binary tree using a global variable.
+    
+    Args:
+        root: The root node of the binary tree
+        
+    Returns:
+        The maximum path sum
+    """</span>
+    # Global variable to keep track of maximum path sum
+    max_path_sum = float('-inf')
+    
+    def max_gain(node):
+        nonlocal max_path_sum
+        if not node:
+            return 0
+        
+        # Get the maximum path sum from left and right subtrees
+        # Note: we use max(0, ...) to ignore negative sums
+        left_gain = max(0, max_gain(node.left))
+        right_gain = max(0, max_gain(node.right))
+        
+        # Calculate the path sum through current node
+        current_path_sum = node.val + left_gain + right_gain
+        
+        # Update the global maximum if current path is better
+        max_path_sum = max(max_path_sum, current_path_sum)
+        
+        # Return the maximum single path sum through the current node
+        # (for use by the parent node)
+        return node.val + max(left_gain, right_gain)
+    
+    max_gain(root)  # Start the recursion
+    return max_path_sum</pre>
+
+        <p>
+            This implementation uses a technique where we ignore negative path sums (by taking max(0, gain)), which simplifies the logic. If a subtree would contribute a negative value, we simply don't include it in our path.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples provided in the problem:
+        </p>
+
+        <pre>
+# Example 1
+root1 = TreeNode(-10)
+root1.left = TreeNode(9)
+root1.right = TreeNode(20)
+root1.right.left = TreeNode(15)
+root1.right.right = TreeNode(7)
+
+print(maxPathSum(root1))  # Output: 42
+
+# Example 2
+root2 = TreeNode(1)
+root2.left = TreeNode(2)
+root2.right = TreeNode(3)
+
+print(maxPathSum(root2))  # Output: 6</pre>
+
+        <h3>Edge Cases</h3>
+        <p>
+            Let's consider a few edge cases to ensure our solution is robust:
+        </p>
+        <ul>
+            <li><strong>Single node:</strong> The maximum path sum would be the value of that node.</li>
+            <li><strong>All negative nodes:</strong> The maximum path sum would be the value of the least negative node.</li>
+            <li><strong>Mixed positive and negative nodes:</strong> Sometimes it's better to exclude negative nodes from the path.</li>
+            <li><strong>Deep tree:</strong> Our solution should handle deep trees without stack overflow issues.</li>
+        </ul>
+
+        <pre>
+# Single node
+root3 = TreeNode(5)
+print(maxPathSum(root3))  # Output: 5
+
+# All negative nodes
+root4 = TreeNode(-1)
+root4.left = TreeNode(-2)
+root4.right = TreeNode(-3)
+print(maxPathSum(root4))  # Output: -1 (just the root node)
+
+# Mixed positive and negative nodes
+root5 = TreeNode(1)
+root5.left = TreeNode(-2)
+root5.right = TreeNode(3)
+root5.left.left = TreeNode(4)
+root5.left.right = TreeNode(5)
+root5.right.left = TreeNode(-6)
+root5.right.right = TreeNode(2)
+print(maxPathSum(root5))  # Output: 10 (path: 5 -> -2 -> 1 -> 3 -> 3)</pre>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you've mastered this problem, you might want to try these related tree problems:
+        </p>
+        <ul>
+            <li><strong>Binary Tree Diameter:</strong> Find the length of the longest path between any two nodes in a tree.</li>
+            <li><strong>Path Sum III:</strong> Find the number of paths that sum to a given value.</li>
+            <li><strong>Longest Univalue Path:</strong> Find the length of the longest path where all nodes have the same value.</li>
+            <li><strong>Sum of Distances in Tree:</strong> Calculate the sum of the distances between all pairs of nodes in a tree.</li>
+            <li><strong>Distribute Coins in Binary Tree:</strong> Find the minimum number of moves required to distribute coins so that each node has exactly one coin.</li>
+        </ul>
+        <p>
+            These problems all involve traversing trees and often require similar recursive approaches with clever state tracking.
+        </p>
+    </div>
+</body>
+</html>

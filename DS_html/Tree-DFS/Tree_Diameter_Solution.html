@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Diameter Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tree-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 10px;
+            font-weight: bold;
+            position: relative;
+        }
+        .tree-node.path {
+            background-color: #e74c3c;
+            border: 2px solid #c0392b;
+        }
+        .tree-connector {
+            position: absolute;
+            height: 20px;
+            width: 2px;
+            background-color: #333;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .tree-connector.left {
+            transform: translateX(-50%) rotate(-30deg);
+            transform-origin: top;
+        }
+        .tree-connector.right {
+            transform: translateX(-50%) rotate(30deg);
+            transform-origin: top;
+        }
+        .path-highlight {
+            stroke: #e74c3c;
+            stroke-width: 3px;
+            stroke-linecap: round;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tree Diameter</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given the root of a binary tree, return the length of the <strong>diameter</strong> of the tree.
+        </p>
+        <p>
+            The <strong>diameter</strong> of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+        </p>
+        <p>
+            The length of a path between two nodes is represented by the number of edges between them.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node">1
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path">2
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                    <div class="tree-node">3</div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path">4</div>
+                    <div class="tree-node path">5</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [1,2,3,4,5]</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong> The diameter of the tree is the length of the path [4,2,5] which is 3 edges.</p>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node">1
+                        <div class="tree-connector left"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node">2</div>
+                </div>
+            </div>
+            <p><strong>Input:</strong> root = [1,2]</p>
+            <p><strong>Output:</strong> 1</p>
+        </div>
+        
+        <h3>Constraints:</h3>
+        <ul>
+            <li>The number of nodes in the tree is in the range [1, 10<sup>4</sup>].</li>
+            <li>-100 ≤ Node.val ≤ 100</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            Let's break down what we're looking for in this problem:
+        </p>
+        <ul>
+            <li>The diameter of a binary tree is defined as the length of the longest path between any two nodes.</li>
+            <li>This path may or may not pass through the root.</li>
+            <li>The length of the path is defined by the number of edges between nodes, not the number of nodes.</li>
+        </ul>
+        <p>
+            For example, in a tree with just one node, the diameter would be 0 because there are no edges. For a tree with two nodes, the diameter would be 1 because there's only one edge connecting the two nodes.
+        </p>
+        <p>
+            The key insight is that the diameter of a tree always passes through some node that acts as the "highest common ancestor" of the two farthest nodes. For each node, the diameter that passes through it would be the sum of the heights of its left and right subtrees.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Recursive Depth-First Search</h2>
+        <p>
+            We can solve this problem using a depth-first search (DFS) approach. For each node, we'll compute:
+        </p>
+        <ol>
+            <li>The height of its left subtree</li>
+            <li>The height of its right subtree</li>
+            <li>The potential diameter passing through this node (which is the sum of the heights of left and right subtrees)</li>
+        </ol>
+        <p>
+            While doing this, we'll keep track of the maximum diameter we've seen so far.
+        </p>
+        <p>
+            Here's the step-by-step approach:
+        </p>
+        <ol>
+            <li>Define a helper function to calculate the height of a tree rooted at a given node.</li>
+            <li>While calculating the height, also calculate the diameter for the current node.</li>
+            <li>Update the maximum diameter found so far.</li>
+            <li>Return the height of the subtree to the parent node's computation.</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>Let's trace through the algorithm for the first example:</p>
+            <pre>
+Tree:
+    1
+   / \
+  2   3
+ / \
+4   5
+
+1. Calculate height for node 1:
+   - Calculate height for its left child (2): 2
+   - Calculate height for its right child (3): 1
+   - Diameter passing through 1: 2 + 1 = 3
+   - Height of tree rooted at 1: max(2, 1) + 1 = 3
+
+2. Calculate height for node 2:
+   - Calculate height for its left child (4): 1
+   - Calculate height for its right child (5): 1
+   - Diameter passing through 2: 1 + 1 = 2
+   - Height of tree rooted at 2: max(1, 1) + 1 = 2
+
+3. Calculate height for node 3:
+   - No children, so height is 1
+   - Diameter passing through 3: 0 + 0 = 0
+
+4. Calculate height for node 4:
+   - No children, so height is 1
+   - Diameter passing through 4: 0 + 0 = 0
+
+5. Calculate height for node 5:
+   - No children, so height is 1
+   - Diameter passing through 5: 0 + 0 = 0
+
+Maximum diameter found: 3 (path: 4 -> 2 -> 5)</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of the approach described above:
+        </p>
+
+        <pre>
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def diameterOfBinaryTree(self, root):
+        <span class="comment">"""Calculate the diameter of the binary tree.
+        
+        Args:
+            root: The root node of the binary tree
+            
+        Returns:
+            The length of the diameter of the tree
+        """</span>
+        self.diameter = 0
+        self.calculateHeight(root)
+        return self.diameter
+    
+    def calculateHeight(self, node):
+        <span class="comment">"""Calculate the height of the tree rooted at node.
+        Also updates the diameter if the path through this node is longer.
+        
+        Args:
+            node: The current node being examined
+            
+        Returns:
+            The height of the tree rooted at node
+        """</span>
+        if not node:
+            return 0
+        
+        # Calculate the heights of left and right subtrees
+        leftHeight = self.calculateHeight(node.left)
+        rightHeight = self.calculateHeight(node.right)
+        
+        # Update the diameter if the path through this node is longer
+        currentDiameter = leftHeight + rightHeight
+        self.diameter = max(self.diameter, currentDiameter)
+        
+        # Return the height of the tree rooted at this node
+        return max(leftHeight, rightHeight) + 1</pre>
+
+        <p>
+            Here's a more compact version of the same solution:
+        </p>
+
+        <pre>
+def diameterOfBinaryTree(root):
+    <span class="comment">"""Calculate the diameter of the binary tree.
+    
+    Args:
+        root: The root node of the binary tree
+        
+    Returns:
+        The length of the diameter of the tree
+    """</span>
+    diameter = [0]  # Using a list to store the maximum diameter found so far
+    
+    def calculateHeight(node):
+        if not node:
+            return 0
+        
+        leftHeight = calculateHeight(node.left)
+        rightHeight = calculateHeight(node.right)
+        
+        # Update the maximum diameter
+        diameter[0] = max(diameter[0], leftHeight + rightHeight)
+        
+        # Return the height of the current subtree
+        return max(leftHeight, rightHeight) + 1
+    
+    calculateHeight(root)
+    return diameter[0]</pre>
+
+        <p>
+            Or using a class to store the diameter state:
+        </p>
+
+        <pre>
+def diameterOfBinaryTree(root):
+    <span class="comment">"""Calculate the diameter of the binary tree using a helper class.
+    
+    Args:
+        root: The root node of the binary tree
+        
+    Returns:
+        The length of the diameter of the tree
+    """</span>
+    class Info:
+        def __init__(self):
+            self.diameter = 0
+    
+    info = Info()
+    calculateHeight(root, info)
+    return info.diameter
+
+def calculateHeight(root, info):
+    if root is None:
+        return 0
+    
+    leftHeight = calculateHeight(root.left, info)
+    rightHeight = calculateHeight(root.right, info)
+    
+    # Update the maximum diameter
+    diameter = leftHeight + rightHeight
+    info.diameter = max(diameter, info.diameter)
+    
+    # Return the height of this subtree
+    return max(leftHeight, rightHeight) + 1</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n) where n is the number of nodes in the tree. We visit each node exactly once.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(h) where h is the height of the tree, which corresponds to the maximum depth of the recursion stack. In the worst case (skewed tree), this could be O(n).
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation: Iterative Approach</h2>
+        <p>
+            While the recursive approach is elegant and intuitive for this problem, we can also solve it using an iterative approach with a stack. This can be helpful in languages with limited stack size or for very deep trees.
+        </p>
+
+        <pre>
+def diameterOfBinaryTree_iterative(root):
+    <span class="comment">"""Calculate the diameter of the binary tree using an iterative approach.
+    
+    Args:
+        root: The root node of the binary tree
+        
+    Returns:
+        The length of the diameter of the tree
+    """</span>
+    if not root:
+        return 0
+    
+    max_diameter = 0
+    heights = {}  # Map to store height of each node
+    stack = []
+    last_visited = None
+    current = root
+    
+    # Perform a post-order traversal to calculate heights bottom-up
+    while stack or current:
+        if current:
+            stack.append(current)
+            current = current.left
+        else:
+            peek_node = stack[-1]
+            if peek_node.right and peek_node.right != last_visited:
+                current = peek_node.right
+            else:
+                node = stack.pop()
+                
+                # Calculate height of left and right subtrees
+                left_height = heights.get(node.left, 0)
+                right_height = heights.get(node.right, 0)
+                
+                # Update diameter if necessary
+                max_diameter = max(max_diameter, left_height + right_height)
+                
+                # Calculate height of current node
+                heights[node] = max(left_height, right_height) + 1
+                
+                last_visited = node
+    
+    return max_diameter</pre>
+
+        <p>
+            However, the recursive approach is generally preferred for this problem due to its simplicity and clarity.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples provided in the problem:
+        </p>
+
+        <pre>
+# Example 1
+root1 = TreeNode(1)
+root1.left = TreeNode(2)
+root1.right = TreeNode(3)
+root1.left.left = TreeNode(4)
+root1.left.right = TreeNode(5)
+
+print(diameterOfBinaryTree(root1))  # Output: 3
+
+# Example 2
+root2 = TreeNode(1)
+root2.left = TreeNode(2)
+
+print(diameterOfBinaryTree(root2))  # Output: 1</pre>
+
+        <h3>Edge Cases</h3>
+        <p>
+            Let's consider a few edge cases to make sure our solution is robust:
+        </p>
+        <ul>
+            <li><strong>Empty tree:</strong> Our solution returns 0, which is correct because there are no edges.</li>
+            <li><strong>Single node:</strong> Our solution returns 0, which is correct because there are no edges in a tree with a single node.</li>
+            <li><strong>Linear tree (all nodes have only one child):</strong> The diameter would be equal to the height of the tree.</li>
+            <li><strong>Balanced tree:</strong> The diameter likely passes through the root, and is the sum of the heights of the left and right subtrees.</li>
+            <li><strong>Skewed tree:</strong> The diameter is equal to the height of the tree.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you've mastered this problem, you might want to try these related tree problems:
+        </p>
+        <ul>
+            <li><strong>Maximum Path Sum:</strong> Find the path with the maximum sum in a binary tree (similar to diameter, but considering node values).</li>
+            <li><strong>Binary Tree Maximum Path Sum:</strong> A harder variation where the path must go through at least one node.</li>
+            <li><strong>Sum Root to Leaf Numbers:</strong> Find the sum of all numbers formed by the paths from root to leaf.</li>
+            <li><strong>Lowest Common Ancestor:</strong> Find the lowest common ancestor of two nodes in a binary tree.</li>
+            <li><strong>Path Sum III:</strong> Count the number of paths that sum to a given value.</li>
+        </ul>
+        <p>
+            These problems all involve traversing trees and often require a good understanding of recursion and tree properties.
+        </p>
+    </div>
+</body>
+</html>

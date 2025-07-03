@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Count Paths For a Sum Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .tree-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .tree-level {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .tree-node {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #4682b4;
+            color: white;
+            margin: 0 10px;
+            font-weight: bold;
+            position: relative;
+        }
+        .tree-node.path1 {
+            background-color: #e74c3c;
+        }
+        .tree-node.path2 {
+            background-color: #27ae60;
+        }
+        .tree-node.path3 {
+            background-color: #f39c12;
+        }
+        .tree-connector {
+            position: absolute;
+            height: 20px;
+            width: 2px;
+            background-color: #333;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .tree-connector.left {
+            transform: translateX(-50%) rotate(-30deg);
+            transform-origin: top;
+        }
+        .tree-connector.right {
+            transform: translateX(-50%) rotate(30deg);
+            transform-origin: top;
+        }
+    </style>
+</head>
+<body>
+    <h1>Count Paths for a Sum</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Given the root of a binary tree and an integer <code>targetSum</code>, return the number of paths where the sum of the values along the path equals <code>targetSum</code>.
+        </p>
+        <p>
+            The path does not need to start or end at the root or a leaf, but it must go downwards (i.e., traveling only from parent nodes to child nodes).
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <div class="tree-container">
+                <div class="tree-level">
+                    <div class="tree-node">10
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path1 path2">5
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                    <div class="tree-node">-3
+                        <div class="tree-connector right"></div>
+                    </div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path1">3
+                        <div class="tree-connector left"></div>
+                        <div class="tree-connector right"></div>
+                    </div>
+                    <div class="tree-node path2">2
+                        <div class="tree-connector right"></div>
+                    </div>
+                    <div style="width: 40px;"></div>
+                    <div class="tree-node path3">11</div>
+                </div>
+                <div class="tree-level">
+                    <div class="tree-node path1">3</div>
+                    <div class="tree-node">-2</div>
+                    <div style="width: 40px;"></div>
+                    <div class="tree-node path2">1</div>
+                </div>
+            </div>
+            
+            <p><strong>Input:</strong> root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>Path 1: 5 → 3 → 0 (sum = 8) shown in red</li>
+                <li>Path 2: 5 → 2 → 1 (sum = 8) shown in green</li>
+                <li>Path 3: -3 → 11 (sum = 8) shown in orange</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to find the number of paths in a binary tree where the sum of node values along the path equals a given target sum. Here are some key points to understand:
+        </p>
+        <ul>
+            <li>A path can start at <strong>any node</strong> in the tree (not necessarily the root).</li>
+            <li>A path must go <strong>downwards</strong> (from parent to child), but doesn't need to end at a leaf node.</li>
+            <li>Paths are defined as sequences of nodes where each node is a child of the previous node.</li>
+            <li>Node values can be negative, zero, or positive.</li>
+        </ul>
+        <p>
+            The challenge here is to consider all possible paths that could sum to the target value, not just paths that start at the root. This means for each node, we need to consider it as a potential starting point for a path.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Depth-First Search with Path Tracking</h2>
+        <p>
+            To solve this problem efficiently, we'll use a depth-first search (DFS) approach with a technique that tracks the path from the root to the current node. Here's the strategy:
+        </p>
+        <ol>
+            <li>Traverse the tree using DFS.</li>
+            <li>For each node, maintain an array of all node values from the root to the current node.</li>
+            <li>For each node, check all possible paths ending at that node by calculating sums from different starting points.</li>
+            <li>Count paths where the sum equals the target sum.</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>For the first example with targetSum = 8, let's trace through part of the algorithm:</p>
+            <pre>
+Tree:
+      10
+     /  \
+    5   -3
+   / \    \
+  3   2    11
+ / \   \
+3  -2   1
+
+Visit node 10:
+  - Path: [10]
+  - Check sum 10: Not equal to 8
+  - Continue to left child
+
+Visit node 5:
+  - Path: [10, 5]
+  - Check sums: 5, 10+5=15 (none equal to 8)
+  - Continue to left child
+
+Visit node 3:
+  - Path: [10, 5, 3]
+  - Check sums: 3, 5+3=8, 10+5+3=18
+  - Found match! 5+3=8 (Path 1)
+  - Continue to children...
+
+... and so on for all nodes</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of our approach:
+        </p>
+
+        <pre>
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def pathSum(root, targetSum):
+    <span class="comment">"""Count the number of paths in the tree that sum to targetSum.
+    
+    Args:
+        root: The root node of the binary tree
+        targetSum: The target sum to find in paths
+        
+    Returns:
+        Number of paths that sum to targetSum
+    """</span>
+    return getPathSum(root, targetSum, [])
+    
+
+def getPathSum(root, targetSum, path):
+    <span class="comment">"""Helper function to find paths with DFS traversal.
+    
+    Args:
+        root: Current node being processed
+        targetSum: The target sum to find
+        path: List containing values of nodes in current path from root
+        
+    Returns:
+        Number of paths found in this subtree
+    """</span>
+    # Base case: empty node
+    if root is None:
+        return 0
+    
+    # Add current node to path
+    path.append(root.val)
+    
+    # Count paths ending at current node
+    count = 0
+    path_sum = 0
+    
+    # Check all possible paths ending at current node
+    for i in range(len(path) - 1, -1, -1):
+        path_sum += path[i]
+        if path_sum == targetSum:
+            count += 1
+    
+    # Continue DFS traversal
+    count += getPathSum(root.left, targetSum, path)
+    count += getPathSum(root.right, targetSum, path)
+    
+    # Remove current node from path (backtrack)
+    path.pop()
+    
+    return count</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n²) where n is the number of nodes in the tree. In the worst case, for each node, we might need to traverse all nodes above it in the path.
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(h) where h is the height of the tree, which corresponds to the maximum depth of the recursion stack and the path array. In the worst case (skewed tree), this could be O(n).
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation: Prefix Sum Approach</h2>
+        <p>
+            We can optimize the solution using a prefix sum technique that reduces the time complexity for checking path sums:
+        </p>
+
+        <pre>
+def pathSum(root, targetSum):
+    <span class="comment">"""Count the number of paths in the tree that sum to targetSum using prefix sums.
+    
+    Args:
+        root: The root node of the binary tree
+        targetSum: The target sum to find in paths
+        
+    Returns:
+        Number of paths that sum to targetSum
+    """</span>
+    # Dictionary to store prefix sums and their frequencies
+    prefix_sum_count = {0: 1}
+    return count_paths_with_sum(root, targetSum, 0, prefix_sum_count)
+
+def count_paths_with_sum(node, target_sum, current_sum, prefix_sum_count):
+    if not node:
+        return 0
+    
+    # Update current sum
+    current_sum += node.val
+    
+    # Check if there's a prefix sum that can be removed to get target_sum
+    # That is, if (current_sum - target_sum) exists as a prefix sum,
+    # then there's a subpath that sums to target_sum
+    old_sum = current_sum - target_sum
+    count = prefix_sum_count.get(old_sum, 0)
+    
+    # Update prefix sum count
+    prefix_sum_count[current_sum] = prefix_sum_count.get(current_sum, 0) + 1
+    
+    # Recursively count paths in subtrees
+    count += count_paths_with_sum(node.left, target_sum, current_sum, prefix_sum_count)
+    count += count_paths_with_sum(node.right, target_sum, current_sum, prefix_sum_count)
+    
+    # Backtrack: remove current node's contribution to prefix sum count
+    prefix_sum_count[current_sum] -= 1
+    if prefix_sum_count[current_sum] == 0:
+        del prefix_sum_count[current_sum]
+    
+    return count</pre>
+
+        <p>
+            This implementation has a time complexity of O(n) since we only need to visit each node once and perform constant-time operations at each node.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with the examples provided in the problem:
+        </p>
+
+        <pre>
+# Example 1
+root1 = TreeNode(10)
+root1.left = TreeNode(5)
+root1.right = TreeNode(-3)
+root1.left.left = TreeNode(3)
+root1.left.right = TreeNode(2)
+root1.right.right = TreeNode(11)
+root1.left.left.left = TreeNode(3)
+root1.left.left.right = TreeNode(-2)
+root1.left.right.right = TreeNode(1)
+
+print(pathSum(root1, 8))  # Output: 3
+
+# Example 2
+root2 = TreeNode(5)
+root2.left = TreeNode(4)
+root2.right = TreeNode(8)
+root2.left.left = TreeNode(11)
+root2.right.left = TreeNode(13)
+root2.right.right = TreeNode(4)
+root2.left.left.left = TreeNode(7)
+root2.left.left.right = TreeNode(2)
+root2.right.right.left = TreeNode(5)
+root2.right.right.right = TreeNode(1)
+
+print(pathSum(root2, 22))  # Output: 3</pre>
+
+        <h3>Edge Cases</h3>
+        <p>
+            It's important to consider these edge cases:
+        </p>
+        <ul>
+            <li><strong>Empty tree:</strong> Should return 0</li>
+            <li><strong>Single node equal to targetSum:</strong> Should return 1</li>
+            <li><strong>Negative values:</strong> The solution handles them correctly</li>
+            <li><strong>Paths with zero nodes:</strong> Not allowed, as a path must contain at least one node</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you've understood this problem, you might want to try these related tree problems:
+        </p>
+        <ul>
+            <li><strong>Path Sum I & II:</strong> Finding if there's a root-to-leaf path with a given sum</li>
+            <li><strong>Binary Tree Maximum Path Sum:</strong> Finding the path with the maximum sum in a binary tree</li>
+            <li><strong>Sum Root to Leaf Numbers:</strong> Sum of all numbers formed by root-to-leaf paths</li>
+            <li><strong>Diameter of Binary Tree:</strong> Finding the longest path between any two nodes</li>
+        </ul>
+    </div>
+</body>
+</html>
