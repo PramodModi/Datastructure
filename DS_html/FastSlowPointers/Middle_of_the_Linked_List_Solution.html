@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Middle of the Linked List Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Middle of the Linked List Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Middle of the Linked List (LeetCode #876)</strong></p>
+        <p><a href="https://leetcode.com/problems/middle-of-the-linked-list/description/" target="_blank">https://leetcode.com/problems/middle-of-the-linked-list/description/</a></p>
+        <p>
+            Given the head of a singly linked list, return the middle node of the linked list.
+        </p>
+        <p>
+            If there are two middle nodes, return the second middle node.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2021/07/23/lc-midlist1.jpg" alt="Linked List Example 1">
+            <p><strong>Input:</strong> head = [1,2,3,4,5]</p>
+            <p><strong>Output:</strong> [3,4,5]</p>
+            <p><strong>Explanation:</strong> The middle node of the list is node 3.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2021/07/23/lc-midlist2.jpg" alt="Linked List Example 2">
+            <p><strong>Input:</strong> head = [1,2,3,4,5,6]</p>
+            <p><strong>Output:</strong> [4,5,6]</p>
+            <p><strong>Explanation:</strong> Since the list has two middle nodes with values 3 and 4, we return the second one.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The number of nodes in the list is in the range [1, 100].</li>
+            <li>1 <= Node.val <= 100</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find the middle node of a given linked list. If the linked list has an odd number of nodes, there's only one middle node. If the linked list has an even number of nodes, there are two middle nodes, and we need to return the second one.
+        </p>
+        <p>
+            For example:
+        </p>
+        <ul>
+            <li>In a linked list with 5 nodes: 1 → 2 → <strong>3</strong> → 4 → 5, the middle node is node 3.</li>
+            <li>In a linked list with 6 nodes: 1 → 2 → 3 → <strong>4</strong> → 5 → 6, there are two middle nodes (3 and 4), and we return the second one (node 4).</li>
+        </ul>
+        <p>
+            To solve this problem, we need to find the length of the linked list and then find the node at position length/2 (rounded up for even lengths). However, this would require two passes through the linked list - one to find the length and another to find the middle node.
+        </p>
+        <p>
+            Can we solve this problem more efficiently with just one pass? This is where the Fast & Slow pointers pattern comes in handy.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a Fast & Slow Pointers approach for this problem:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> If we have two pointers, one moving twice as fast as the other, then when the fast pointer reaches the end of the linked list, the slow pointer will be at the middle.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Initialize two pointers, <code>slow</code> and <code>fast</code>, both starting at the head of the linked list.</li>
+            <li>Move the slow pointer one node at a time.</li>
+            <li>Move the fast pointer two nodes at a time.</li>
+            <li>When the fast pointer reaches the end of the linked list (or the next node would be null), the slow pointer will be at the middle node.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach:</strong></p>
+            <pre>
+Example 1: head = [1,2,3,4,5]
+
+Initial state:
+slow = 1, fast = 1
+1 → 2 → 3 → 4 → 5
+↑     
+↑     
+S,F   
+
+Iteration 1:
+slow moves to 2, fast moves to 3
+1 → 2 → 3 → 4 → 5
+    ↑     ↑     
+    S     F     
+
+Iteration 2:
+slow moves to 3, fast moves to 5
+1 → 2 → 3 → 4 → 5
+        ↑     ↑ 
+        S     F 
+
+Iteration 3:
+fast.next is null, so we stop
+The middle node is at slow, which is 3
+
+
+Example 2: head = [1,2,3,4,5,6]
+
+Initial state:
+slow = 1, fast = 1
+1 → 2 → 3 → 4 → 5 → 6
+↑     
+↑     
+S,F   
+
+Iteration 1:
+slow moves to 2, fast moves to 3
+1 → 2 → 3 → 4 → 5 → 6
+    ↑     ↑     
+    S     F     
+
+Iteration 2:
+slow moves to 3, fast moves to 5
+1 → 2 → 3 → 4 → 5 → 6
+        ↑     ↑ 
+        S     F 
+
+Iteration 3:
+slow moves to 4, fast moves to null (past 6)
+1 → 2 → 3 → 4 → 5 → 6 → null
+            ↑         ↑
+            S         F
+
+fast is null, so we stop
+The middle node is at slow, which is 4</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the number of nodes in the linked list. We only need one pass through the linked list.</li>
+            <li><strong>Space Complexity:</strong> O(1) as we only use two pointers regardless of the size of the linked list.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Initialize pointers:</strong>
+                <ul>
+                    <li>Set <code>slow</code> pointer to the head of the linked list.</li>
+                    <li>Set <code>fast</code> pointer to the head of the linked list.</li>
+                    <li>Handle the edge case where the linked list has only one node.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Traverse the linked list:</strong>
+                <ul>
+                    <li>While <code>fast</code> and <code>fast.next</code> are not null:</li>
+                    <ul>
+                        <li>Move <code>slow</code> one step ahead: <code>slow = slow.next</code>.</li>
+                        <li>Move <code>fast</code> two steps ahead: <code>fast = fast.next.next</code>.</li>
+                    </ul>
+                </ul>
+            </li>
+            <li>
+                <strong>Return result:</strong>
+                <ul>
+                    <li>When the loop exits, <code>slow</code> is pointing at the middle node, so return <code>slow</code>.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+def middleNode(head):
+    <span class="comment">"""Find the middle node of a linked list.
+    
+    Args:
+        head: The head of the linked list
+        
+    Returns:
+        The middle node of the linked list
+    """</span>
+    slow = head
+    if head.next is None:  <span class="comment"># Handle edge case of a single node</span>
+        return slow
+        
+    fast = head
+    while fast and fast.next:  <span class="comment"># While we haven't reached the end of the list</span>
+        slow = slow.next       <span class="comment"># Move slow one step</span>
+        fast = fast.next.next  <span class="comment"># Move fast two steps</span>
+        
+    return slow  <span class="comment"># slow is now at the middle node</span></pre>
+        
+        <div class="example">
+            <p><strong>Example Implementation:</strong></p>
+            <pre class="command"><span class="comment"># Helper class for creating linked lists</span>
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+def insertNode(head, val):
+    newNode = Node(val)
+    if head == None:
+        head = newNode
+        return head
+    temp = head
+    while temp.next != None:
+        temp = temp.next
+    temp.next = newNode
+    return head
+
+<span class="comment"># Example 1: Creating a linked list [1,2,3,4,5]</span>
+head1 = None
+head1 = insertNode(head1, 1)
+head1 = insertNode(head1, 2)
+head1 = insertNode(head1, 3)
+head1 = insertNode(head1, 4)
+head1 = insertNode(head1, 5)
+
+<span class="comment"># Find the middle node</span>
+midNode1 = middleNode(head1)
+print(f"Example 1 - Middle node value: {midNode1.val}")
+
+<span class="comment"># Example 2: Creating a linked list [1,2,3,4,5,6]</span>
+head2 = None
+head2 = insertNode(head2, 1)
+head2 = insertNode(head2, 2)
+head2 = insertNode(head2, 3)
+head2 = insertNode(head2, 4)
+head2 = insertNode(head2, 5)
+head2 = insertNode(head2, 6)
+
+<span class="comment"># Find the middle node</span>
+midNode2 = middleNode(head2)
+print(f"Example 2 - Middle node value: {midNode2.val}")</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">Example 1 - Middle node value: 3
+Example 2 - Middle node value: 4</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Explanation of Code Execution:</strong>
+        </p>
+        <p>Let's trace through the execution of our algorithm for Example 1 (linked list [1,2,3,4,5]):</p>
+        <ol>
+            <li>We initialize <code>slow = head</code> (node with value 1) and <code>fast = head</code> (node with value 1).</li>
+            <li>Since <code>head.next</code> is not null, we continue with the algorithm.</li>
+            <li>First iteration of while loop:
+                <ul>
+                    <li><code>slow = slow.next</code> moves to the node with value 2.</li>
+                    <li><code>fast = fast.next.next</code> moves to the node with value 3.</li>
+                    <li>Both <code>fast</code> and <code>fast.next</code> are not null, so we continue.</li>
+                </ul>
+            </li>
+            <li>Second iteration of while loop:
+                <ul>
+                    <li><code>slow = slow.next</code> moves to the node with value 3.</li>
+                    <li><code>fast = fast.next.next</code> moves to the node with value 5.</li>
+                    <li><code>fast.next</code> is null, so we exit the loop.</li>
+                </ul>
+            </li>
+            <li>We return <code>slow</code>, which is pointing at the node with value 3, the middle of the list.</li>
+        </ol>
+        
+        <p>For Example 2 (linked list [1,2,3,4,5,6]):</p>
+        <ol>
+            <li>We initialize <code>slow = head</code> (node with value 1) and <code>fast = head</code> (node with value 1).</li>
+            <li>Since <code>head.next</code> is not null, we continue with the algorithm.</li>
+            <li>First iteration of while loop:
+                <ul>
+                    <li><code>slow = slow.next</code> moves to the node with value 2.</li>
+                    <li><code>fast = fast.next.next</code> moves to the node with value 3.</li>
+                    <li>Both <code>fast</code> and <code>fast.next</code> are not null, so we continue.</li>
+                </ul>
+            </li>
+            <li>Second iteration of while loop:
+                <ul>
+                    <li><code>slow = slow.next</code> moves to the node with value 3.</li>
+                    <li><code>fast = fast.next.next</code> moves to the node with value 5.</li>
+                    <li>Both <code>fast</code> and <code>fast.next</code> are not null, so we continue.</li>
+                </ul>
+            </li>
+            <li>Third iteration of while loop:
+                <ul>
+                    <li><code>slow = slow.next</code> moves to the node with value 4.</li>
+                    <li><code>fast = fast.next.next</code> would move beyond the end of the list, but since <code>fast.next</code> is null, we exit the loop.</li>
+                </ul>
+            </li>
+            <li>We return <code>slow</code>, which is pointing at the node with value 4, the second middle node of the list with even length.</li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Why Fast & Slow Pointers Work:</strong> The fast pointer moves at twice the speed of the slow pointer. By the time the fast pointer reaches the end of the list (or the last node), the slow pointer has covered exactly half the distance, which is the middle of the list.</p>
+        </div>
+        
+        <div class="key-insight">
+            <p><strong>Alternative Approach:</strong> Another way to solve this problem is to first count the number of nodes in the linked list in one pass, and then traverse to the middle node in a second pass. While this approach works, it requires two passes through the linked list instead of one, making it less efficient than the Fast & Slow pointers approach.</p>
+        </div>
+    </div>
+</body>
+</html>

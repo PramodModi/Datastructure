@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Number Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955; /* Green color for comments in code */
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef; /* Bright blue color for commands */
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c; /* Gray color for comments within command */
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Happy Number Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Happy Number (LeetCode #202)</strong></p>
+        <p><a href="https://leetcode.com/problems/happy-number/description/" target="_blank">https://leetcode.com/problems/happy-number/description/</a></p>
+        <p>
+            Write an algorithm to determine if a number n is happy.
+        </p>
+        <p>
+            A happy number is a number defined by the following process:
+        </p>
+        <ul>
+            <li>Starting with any positive integer, replace the number by the sum of the squares of its digits.</li>
+            <li>Repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1.</li>
+            <li>Those numbers for which this process ends in 1 are happy.</li>
+        </ul>
+        <p>
+            Return true if n is a happy number, and false if not.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> n = 19</p>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong></p>
+            <p>1² + 9² = 82</p>
+            <p>8² + 2² = 68</p>
+            <p>6² + 8² = 100</p>
+            <p>1² + 0² + 0² = 1</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> n = 2</p>
+            <p><strong>Output:</strong> false</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= n <= 2³¹ - 1</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to determine if a number is "happy" according to a specific definition:
+        </p>
+        <ul>
+            <li>A number is happy if, by repeatedly replacing it with the sum of the squares of its digits, we eventually reach 1.</li>
+            <li>If this process never reaches 1 and instead enters a cycle (repeats the same numbers), then the number is not happy.</li>
+        </ul>
+        <p>
+            The key observation is that this process will either:
+        </p>
+        <ol>
+            <li>Eventually reach 1 (happy number)</li>
+            <li>Enter a cycle that doesn't include 1 (not a happy number)</li>
+        </ol>
+        <p>
+            This is similar to detecting a cycle in a linked list, which makes it a good candidate for the Fast & Slow pointers pattern.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use a Fast & Slow Pointers approach for this problem:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> If a number is not happy, it will enter a cycle during the square-sum process. We can use the Fast & Slow pointers technique to detect this cycle efficiently.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Initialize two pointers (slow and fast) to the starting number.</li>
+            <li>Move the slow pointer one step (one square-sum calculation) and the fast pointer two steps (two square-sum calculations) at a time.</li>
+            <li>If the number is happy, the slow pointer will eventually reach 1.</li>
+            <li>If the number is not happy, the slow and fast pointers will eventually meet at a number within the cycle.</li>
+            <li>Return true if the slow pointer reaches 1, otherwise return false.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach:</strong></p>
+            <pre>
+ Example for n = 19 (Happy Number):           Example for n = 2 (Not Happy Number):
+
+ Iteration   Slow     Fast                     Iteration   Slow     Fast
+ ----------  ----    -----                    ----------  ----    -----
+ Start       19      19                        Start       2       2
+ 1           82      68                        1           4       16
+ 2           68      100                       2           16      37
+ 3           100     1                         3           37      58
+ 4           1       1  (slow = 1, return true) 4           58      89
+                                               5           89      145
+                                               6           145     42
+                                               7           42      20
+                                               8           20      145
+                                               9           4       89
+                                               10          16      145
+                                               11          37      42
+                                               12          58      20
+                                               13          89      4 (slow = fast, return false)
+            </pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(log n) - While it's difficult to analytically derive the exact time complexity, empirical studies suggest that for most numbers, the sequence quickly converges or enters a cycle.</li>
+            <li><strong>Space Complexity:</strong> O(1) - We only use a constant amount of space regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Define a function to calculate the sum of squares of digits:</strong>
+                <ul>
+                    <li>Create a function <code>getNewNumber</code> that takes a number as input.</li>
+                    <li>Initialize a variable <code>sum</code> to 0.</li>
+                    <li>While the number is greater than 0, extract its last digit, square it, and add to <code>sum</code>.</li>
+                    <li>Return the <code>sum</code>.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Implement the main function using Fast & Slow pointers:</strong>
+                <ul>
+                    <li>Initialize <code>slow</code> and <code>fast</code> pointers to the input number <code>n</code>.</li>
+                    <li>Enter a loop:</li>
+                    <ul>
+                        <li>Move the <code>slow</code> pointer one step by applying <code>getNewNumber</code> once.</li>
+                        <li>Move the <code>fast</code> pointer two steps by applying <code>getNewNumber</code> twice.</li>
+                        <li>If <code>slow</code> equals <code>1</code> or <code>slow</code> equals <code>fast</code>, break the loop.</li>
+                    </ul>
+                    <li>Return <code>slow == 1</code>, which will be true if we found 1 and false if we detected a cycle.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def isHappy(n):
+    slow = n
+    fast = n
+    while True:
+        slow = getNewNumber(slow)     <span class="comment"># Move slow pointer one step</span>
+        fast = getNewNumber(getNewNumber(fast))  <span class="comment"># Move fast pointer two steps</span>
+        if slow == fast or slow == 1:
+            break     <span class="comment"># Either we found a cycle or reached 1</span>
+    return slow == 1  <span class="comment"># If slow is 1, n is a happy number</span>
+
+def getNewNumber(num):
+    sum = 0
+    while num:
+        num, r = divmod(num, 10)  <span class="comment"># Extract the last digit</span>
+        sum += r*r               <span class="comment"># Add square of digit to sum</span>
+    return sum</pre>
+        
+        <div class="example">
+            <p><strong>Example Run:</strong></p>
+            <pre class="command"><span class="comment"># Example 1: n = 19</span>
+isHappy(19)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">True</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example Run 2:</strong></p>
+            <pre class="command"><span class="comment"># Example 2: n = 3</span>
+isHappy(3)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">False</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Trace for n = 19:</strong>
+        </p>
+        <ol>
+            <li>Initialize <code>slow = 19</code> and <code>fast = 19</code></li>
+            <li>
+                First iteration:
+                <ul>
+                    <li><code>slow = getNewNumber(19) = 1² + 9² = 1 + 81 = 82</code></li>
+                    <li><code>fast = getNewNumber(getNewNumber(19)) = getNewNumber(82) = 8² + 2² = 64 + 4 = 68</code></li>
+                    <li><code>slow != fast</code> and <code>slow != 1</code>, continue</li>
+                </ul>
+            </li>
+            <li>
+                Second iteration:
+                <ul>
+                    <li><code>slow = getNewNumber(82) = 8² + 2² = 64 + 4 = 68</code></li>
+                    <li><code>fast = getNewNumber(getNewNumber(68)) = getNewNumber(100) = 1² + 0² + 0² = 1</code></li>
+                    <li><code>slow != fast</code> and <code>slow != 1</code>, continue</li>
+                </ul>
+            </li>
+            <li>
+                Third iteration:
+                <ul>
+                    <li><code>slow = getNewNumber(68) = 6² + 8² = 36 + 64 = 100</code></li>
+                    <li><code>fast = getNewNumber(getNewNumber(1)) = getNewNumber(1) = 1</code></li>
+                    <li><code>slow != fast</code> and <code>slow != 1</code>, continue</li>
+                </ul>
+            </li>
+            <li>
+                Fourth iteration:
+                <ul>
+                    <li><code>slow = getNewNumber(100) = 1² + 0² + 0² = 1</code></li>
+                    <li><code>fast = getNewNumber(getNewNumber(1)) = getNewNumber(1) = 1</code></li>
+                    <li><code>slow == 1</code>, break</li>
+                </ul>
+            </li>
+            <li>Return <code>slow == 1</code>, which is <code>true</code></li>
+        </ol>
+        
+        <p>
+            <strong>Detailed Trace for n = 3:</strong>
+        </p>
+        <p>
+            For n = 3, the sequence would be: 3 → 9 → 81 → 65 → 61 → 37 → 58 → 89 → 145 → 42 → 20 → 4 → 16 → 37 ... and we can see that it repeats at 37, entering a cycle that doesn't include 1. The fast pointer would eventually catch up with the slow pointer, indicating a cycle and that 3 is not a happy number.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Alternative Approach:</strong> We could also solve this problem using a HashSet to keep track of numbers we've seen. If we encounter a number we've seen before, we know there's a cycle. However, the Fast & Slow pointers approach uses O(1) space instead of O(log n) space.</p>
+        </div>
+    </div>
+</body>
+</html>

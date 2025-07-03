@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start of LinkedList Cycle Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Start of LinkedList Cycle Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Linked List Cycle II (LeetCode #142)</strong></p>
+        <p><a href="https://leetcode.com/problems/linked-list-cycle-ii/description/" target="_blank">https://leetcode.com/problems/linked-list-cycle-ii/description/</a></p>
+        <p>
+            Given the head of a linked list, return the node where the cycle begins. If there is no cycle, return null.
+        </p>
+        <p>
+            There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, <code>pos</code> is used to denote the index of the node that tail's next pointer is connected to (0-indexed). It is -1 if there is no cycle. Note that <code>pos</code> is not passed as a parameter.
+        </p>
+        <p>
+            Do not modify the linked list.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2018/12/07/circularlinkedlist.png" alt="Linked List Cycle Example 1">
+            <p><strong>Input:</strong> head = [3,2,0,-4], pos = 1</p>
+            <p><strong>Output:</strong> tail connects to node index 1</p>
+            <p><strong>Explanation:</strong> There is a cycle in the linked list, where the tail connects to the second node (index 1).</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2018/12/07/circularlinkedlist_test2.png" alt="Linked List Cycle Example 2">
+            <p><strong>Input:</strong> head = [1,2], pos = 0</p>
+            <p><strong>Output:</strong> tail connects to node index 0</p>
+            <p><strong>Explanation:</strong> There is a cycle in the linked list, where the tail connects to the first node (index 0).</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2018/12/07/circularlinkedlist_test3.png" alt="Linked List Cycle Example 3">
+            <p><strong>Input:</strong> head = [1], pos = -1</p>
+            <p><strong>Output:</strong> no cycle</p>
+            <p><strong>Explanation:</strong> There is no cycle in the linked list.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The number of the nodes in the list is in the range [0, 10<sup>4</sup>].</li>
+            <li>-10<sup>5</sup> <= Node.val <= 10<sup>5</sup></li>
+            <li>pos is -1 or a valid index in the linked-list.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find the starting node of a cycle in a linked list if one exists. Let's understand the problem better:
+        </p>
+        <ul>
+            <li>A linked list cycle occurs when a node's next pointer points back to a previous node in the list.</li>
+            <li>We need to find the exact node where the cycle begins (i.e., the node that gets pointed to from the tail).</li>
+            <li>If there is no cycle, we should return null.</li>
+            <li>We are not allowed to modify the linked list.</li>
+        </ul>
+        <p>
+            In Example 1, the cycle begins at the node with value 2 (index 1). This is because the last node (-4) points back to this node.
+        </p>
+        <p>
+            In Example 2, the cycle begins at the node with value 1 (index 0). This is because the last node (2) points back to this node.
+        </p>
+        <p>
+            In Example 3, there's no cycle, so we return null.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We'll use the Floyd's Tortoise and Hare algorithm (also known as the Fast & Slow pointers technique) to solve this problem. This approach has two parts:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> If a cycle exists in the linked list, a slow pointer moving one step at a time and a fast pointer moving two steps at a time will eventually meet. Then, if we reset the slow pointer to the head and keep the fast pointer at the meeting point, and move both pointers one step at a time, they will meet again at the start of the cycle.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>Use two pointers, slow and fast, both initially positioned at the head of the list.</li>
+            <li>Move slow one step at a time and fast two steps at a time.</li>
+            <li>If there is a cycle, the two pointers will eventually meet. If they don't meet (i.e., fast reaches the end of the list), return null as there is no cycle.</li>
+            <li>Once they meet, reset the slow pointer to the head of the list, keeping the fast pointer at the meeting point.</li>
+            <li>Now, move both pointers one step at a time. The point where they meet again is the start of the cycle.</li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Mathematical Proof (Simplified):</strong></p>
+            <p>When slow and fast pointers meet inside the cycle:</p>
+            <ul>
+                <li>Let's call the distance from head to cycle start as 'L'</li>
+                <li>Let's call the distance from cycle start to meeting point as 'D'</li>
+                <li>Let's call the length of the cycle as 'C'</li>
+            </ul>
+            <p>When they meet, the slow pointer has moved L+D steps, while the fast pointer has moved L+D+n*C steps (for some integer n).</p>
+            <p>Since the fast pointer moves twice as fast: 2(L+D) = L+D+n*C</p>
+            <p>Simplifying: L+D = n*C</p>
+            <p>Which means: L = n*C - D</p>
+            <p>This means if we put slow back at head and move both one step at a time, they'll meet at cycle start.</p>
+        </div>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach:</strong></p>
+            <pre>
+Example 1: head = [3,2,0,-4], pos = 1
+
+Initial state:
+3 → 2 → 0 → -4
+↑     ↑
+S,F   ↓
+      ←←←
+
+Move pointers until they meet:
+3 → 2 → 0 → -4
+    ↑   ↑  ↑  ↑
+    F   ↓  S  ↓
+    ↓   ↓  ↓  ↓
+    ←←←←←←←←←←←
+
+Reset slow to head, keep fast at meeting point:
+3 → 2 → 0 → -4
+S   F   ↑  ↑
+    ↓   ↓  ↓
+    ←←←←←←←
+
+Move both one step at a time until they meet:
+3 → 2 → 0 → -4
+    ↑   ↑  ↑
+S,F  ↓  ↓  ↓
+    ←←←←←←←
+
+They meet at node with value 2, which is the start of the cycle.
+</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n) where n is the number of nodes in the linked list. In the worst case, we might need to traverse the entire list.</li>
+            <li><strong>Space Complexity:</strong> O(1) as we only use two pointers regardless of the size of the linked list.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Step 1: Check for edge cases</strong>
+                <ul>
+                    <li>If the head is null or there's only one node without a cycle, return null.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Step 2: Find the meeting point</strong>
+                <ul>
+                    <li>Initialize slow and fast pointers to the head.</li>
+                    <li>Move slow one step at a time and fast two steps at a time.</li>
+                    <li>If they meet, go to Step 3.</li>
+                    <li>If fast reaches null (i.e., the end of the list), return null (no cycle).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Step 3: Find the start of the cycle</strong>
+                <ul>
+                    <li>Reset the slow pointer to the head.</li>
+                    <li>Keep the fast pointer at the meeting point.</li>
+                    <li>Move both pointers one step at a time.</li>
+                    <li>Return the node where they meet again, which is the start of the cycle.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+
+def detectCycle(head):
+    <span class="comment">"""Find the node where the cycle begins in a linked list.
+    
+    Args:
+        head: The head of the linked list
+        
+    Returns:
+        The node where the cycle begins, or None if there is no cycle
+    """</span>
+    if head is None or head.next is None:  <span class="comment"># Handle edge cases</span>
+        return None
+        
+    slow = head  <span class="comment"># Initialize slow pointer</span>
+    fast = head  <span class="comment"># Initialize fast pointer</span>
+    
+    <span class="comment"># Step 1: Find the meeting point inside the cycle</span>
+    while fast and fast.next:
+        slow = slow.next       <span class="comment"># Move slow one step</span>
+        fast = fast.next.next  <span class="comment"># Move fast two steps</span>
+        
+        if slow == fast:  <span class="comment"># If they meet, there is a cycle</span>
+            <span class="comment"># Step 2: Find the start of the cycle</span>
+            slow = head  <span class="comment"># Reset slow to the head</span>
+            
+            <span class="comment"># Move both pointers one step at a time</span>
+            while slow != fast:
+                slow = slow.next
+                fast = fast.next
+                
+            return slow  <span class="comment"># Return the start of the cycle</span>
+            
+    return None  <span class="comment"># If fast reaches the end, there is no cycle</span></pre>
+        
+        <div class="example">
+            <p><strong>Example Implementation:</strong></p>
+            <pre class="command"><span class="comment"># Helper classes and functions</span>
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+def insertNode(head, val):
+    newNode = Node(val)
+    if head == None:
+        head = newNode
+        return head
+    temp = head
+    while temp.next != None:
+        temp = temp.next
+    temp.next = newNode
+    return head
+
+def createCycle(head, pos):
+    temp = head
+    ptr = head
+    cnt = 0
+    while temp.next != None:
+        if cnt != pos:
+            ptr = ptr.next
+            cnt += 1
+        temp = temp.next
+    temp.next = ptr
+
+<span class="comment"># Example 1: Create a linked list with a cycle</span>
+head1 = None
+head1 = insertNode(head1, 3)
+head1 = insertNode(head1, 2)
+head1 = insertNode(head1, 0)
+head1 = insertNode(head1, -4)
+createCycle(head1, 1)  <span class="comment"># Connect the last node to the node at index 1</span>
+
+<span class="comment"># Find the start of the cycle</span>
+cycleStart = detectCycle(head1)
+print(f"Example 1 - Start of cycle: {cycleStart.val if cycleStart else 'No cycle'}")  <span class="comment"># Should print 2</span>
+
+<span class="comment"># Example 2: Create another linked list with a cycle</span>
+head2 = None
+head2 = insertNode(head2, 1)
+head2 = insertNode(head2, 2)
+createCycle(head2, 0)  <span class="comment"># Connect the last node to the node at index 0</span>
+
+<span class="comment"># Find the start of the cycle</span>
+cycleStart = detectCycle(head2)
+print(f"Example 2 - Start of cycle: {cycleStart.val if cycleStart else 'No cycle'}")  <span class="comment"># Should print 1</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">Example 1 - Start of cycle: 2
+Example 2 - Start of cycle: 1</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Explanation of Code Execution for Example 1:</strong>
+        </p>
+        <ol>
+            <li>Initialize <code>slow = head</code> and <code>fast = head</code> (both at node with value 3).</li>
+            <li>First iteration: <code>slow</code> moves to node with value 2, <code>fast</code> moves to node with value 0.</li>
+            <li>Second iteration: <code>slow</code> moves to node with value 0, <code>fast</code> moves to node with value 2 (after going through -4).</li>
+            <li>Third iteration: <code>slow</code> moves to node with value -4, <code>fast</code> moves to node with value -4 (they meet).</li>
+            <li>Reset <code>slow</code> to head (node with value 3) and keep <code>fast</code> at the meeting point (node with value -4).</li>
+            <li>Move both one step at a time: <code>slow</code> to node with value 2, <code>fast</code> to node with value 2.</li>
+            <li>They meet at node with value 2, which is the start of the cycle.</li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Key Observation:</strong> The Fast & Slow pointers technique is powerful for detecting cycles in linked lists. This particular algorithm (Floyd's Tortoise and Hare) not only detects the presence of a cycle but also finds its starting point efficiently.</p>
+        </div>
+    </div>
+</body>
+</html>

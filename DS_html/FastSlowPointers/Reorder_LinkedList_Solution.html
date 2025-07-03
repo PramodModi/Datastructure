@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reorder LinkedList Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reorder LinkedList Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Reorder List (LeetCode #143)</strong></p>
+        <p><a href="https://leetcode.com/problems/reorder-list/description/" target="_blank">https://leetcode.com/problems/reorder-list/description/</a></p>
+        <p>
+            You are given the head of a singly linked-list. The list can be represented as:
+        </p>
+        <p>
+            L<sub>0</sub> → L<sub>1</sub> → … → L<sub>n-1</sub> → L<sub>n</sub>
+        </p>
+        <p>
+            Reorder the list to be on the following form:
+        </p>
+        <p>
+            L<sub>0</sub> → L<sub>n</sub> → L<sub>1</sub> → L<sub>n-1</sub> → L<sub>2</sub> → L<sub>n-2</sub> → …
+        </p>
+        <p>
+            You may not modify the values in the list's nodes. Only nodes themselves may be changed.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2021/03/04/reorder1linked-list.jpg" alt="Reorder List Example 1">
+            <p><strong>Input:</strong> head = [1,2,3,4]</p>
+            <p><strong>Output:</strong> [1,4,2,3]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> head = [1,2,3,4,5]</p>
+            <p><strong>Output:</strong> [1,5,2,4,3]</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The number of nodes in the list is in the range [1, 5 * 10<sup>4</sup>].</li>
+            <li>1 <= Node.val <= 1000</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to reorganize a singly linked list by interweaving the nodes from the beginning and the end. Specifically, we need to rearrange the list from:
+        </p>
+        <p>L<sub>0</sub> → L<sub>1</sub> → L<sub>2</sub> → ... → L<sub>n-1</sub> → L<sub>n</sub></p>
+        <p>to:</p>
+        <p>L<sub>0</sub> → L<sub>n</sub> → L<sub>1</sub> → L<sub>n-1</sub> → L<sub>2</sub> → L<sub>n-2</sub> → ...</p>
+        <p>
+            For example, if we have a list [1,2,3,4], we need to transform it to [1,4,2,3]. Similarly, a list [1,2,3,4,5] would be transformed to [1,5,2,4,3].
+        </p>
+        <p>
+            The key constraint is that we can only change the pointers in the nodes, not the values themselves. This means we need to physically rearrange the nodes in the list.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            This problem can be broken down into three distinct steps using the Fast & Slow pointers pattern as part of the solution:
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We can solve this problem by:</p>
+            <ol>
+                <li>Finding the middle of the linked list using the Fast & Slow pointers technique.</li>
+                <li>Reversing the second half of the linked list.</li>
+                <li>Interweaving the nodes from the first half and the reversed second half.</li>
+            </ol>
+        </div>
+        
+        <p>Let's look at each step in detail:</p>
+        <ol>
+            <li><strong>Find the middle of the linked list:</strong> We can use the Fast & Slow pointers technique to find the middle of the linked list. The slow pointer will be at the middle when the fast pointer reaches the end.</li>
+            <li><strong>Reverse the second half:</strong> Once we have the middle, we can reverse the second half of the linked list to make it easier to interweave.</li>
+            <li><strong>Interweave the two halves:</strong> Finally, we take nodes alternately from the first half and the reversed second half to form our reordered list.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: [1,2,3,4]</strong></p>
+            <pre>
+Step 1: Find the middle of the linked list
+1 -> 2 -> 3 -> 4
+^    ^         ^   
+slow        fast
+
+After finding the middle and splitting:
+First half: 1 -> 2 -> null
+Second half: 3 -> 4
+
+Step 2: Reverse the second half
+Second half (reversed): 4 -> 3 -> null
+
+Step 3: Interweave the two halves
+1 -> 4 -> 2 -> 3 -> null</pre>
+        </div>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 2: [1,2,3,4,5]</strong></p>
+            <pre>
+Step 1: Find the middle of the linked list
+1 -> 2 -> 3 -> 4 -> 5
+^    ^              ^   
+slow               fast
+
+After finding the middle and splitting:
+First half: 1 -> 2 -> 3 -> null
+Second half: 4 -> 5
+
+Step 2: Reverse the second half
+Second half (reversed): 5 -> 4 -> null
+
+Step 3: Interweave the two halves
+1 -> 5 -> 2 -> 4 -> 3 -> null</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n), where n is the number of nodes in the linked list. We traverse the list once to find the middle, once to reverse the second half, and once to interweave the halves.</li>
+            <li><strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Find the middle of the linked list and split it:</strong>
+                <ul>
+                    <li>Use the Fast & Slow pointers technique to find the middle of the linked list.</li>
+                    <li>Split the linked list into two halves by setting the next of the middle node to null.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Reverse the second half of the linked list:</strong>
+                <ul>
+                    <li>Initialize three pointers: prev (null), current (head of second half), and next.</li>
+                    <li>Iterate through the second half, reversing the direction of each next pointer.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Interweave the first half and the reversed second half:</strong>
+                <ul>
+                    <li>Initialize pointers to the heads of the first half and the reversed second half.</li>
+                    <li>Alternate between nodes from the first half and the reversed second half, updating the next pointers accordingly.</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def reorderList(head):
+    <span class="comment">"""Reorders a linked list according to the problem description.
+    
+    Args:
+        head: The head of the linked list
+        
+    Returns:
+        The head of the reordered linked list
+    """</span>
+    if head is None or head.next is None:
+        return head
+        
+    <span class="comment"># Step 1: Find the middle of the linked list and split it</span>
+    first = head
+    second = splitListInMid(head)
+    
+    <span class="comment"># Step 2: Reverse the second half of the linked list</span>
+    second = reverse(second)
+    
+    <span class="comment"># Step 3: Interweave the first half and the reversed second half</span>
+    newHead = interweaveList(first, second)
+    return newHead
+
+def splitListInMid(head):
+    <span class="comment">"""Splits the linked list into two halves at the middle.
+    
+    Args:
+        head: The head of the linked list
+        
+    Returns:
+        The head of the second half of the linked list
+    """</span>
+    if head.next is None:
+        return head
+    
+    slow = head
+    fast = head
+    
+    <span class="comment"># Find the middle using Fast & Slow pointers</span>
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    
+    <span class="comment"># Split the list into two halves</span>
+    midHead = slow.next
+    slow.next = None
+    
+    return midHead
+
+def reverse(head):
+    <span class="comment">"""Reverses a linked list.
+    
+    Args:
+        head: The head of the linked list to reverse
+        
+    Returns:
+        The new head of the reversed linked list
+    """</span>
+    cur = head
+    prev = None
+    
+    while cur:
+        temp = cur
+        cur = cur.next
+        temp.next = prev
+        prev = temp
+    
+    return prev
+
+def interweaveList(first, second):
+    <span class="comment">"""Interweaves two linked lists.
+    
+    Args:
+        first: The head of the first linked list
+        second: The head of the second linked list
+        
+    Returns:
+        The head of the interweaved linked list
+    """</span>
+    head = first
+    
+    while first and second:
+        <span class="comment"># Save the next nodes</span>
+        temp1 = first.next
+        temp2 = second.next
+        
+        <span class="comment"># Link the current nodes</span>
+        first.next = second
+        second.next = temp1
+        
+        <span class="comment"># Move to the next pair of nodes</span>
+        first = temp1
+        second = temp2
+    
+    return head</pre>
+        
+        <div class="example">
+            <p><strong>Example Implementation:</strong></p>
+            <pre class="command"><span class="comment"># Helper class for creating linked lists</span>
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+
+<span class="comment"># Helper function to insert a node at the end of the linked list</span>
+def insertNode(head, val):
+    newNode = Node(val)
+    if head is None:
+        head = newNode
+        return head
+    temp = head
+    while temp.next is not None:
+        temp = temp.next
+    temp.next = newNode
+    return head
+
+<span class="comment"># Helper function to print the linked list</span>
+def printList(head):
+    temp = head
+    while temp:
+        print(temp.val, end=" ")
+        temp = temp.next
+    print()
+
+<span class="comment"># Example 1: Reorder [1,2,3,4] to [1,4,2,3]</span>
+head1 = None
+head1 = insertNode(head1, 1)
+head1 = insertNode(head1, 2)
+head1 = insertNode(head1, 3)
+head1 = insertNode(head1, 4)
+
+print("Original list:")
+printList(head1)
+
+head1 = reorderList(head1)
+
+print("Reordered list:")
+printList(head1)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">Original list:
+1 2 3 4
+Reordered list:
+1 4 2 3</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command"><span class="comment"># Example 2: Reorder [1,2,3,4,5] to [1,5,2,4,3]</span>
+head2 = None
+head2 = insertNode(head2, 1)
+head2 = insertNode(head2, 2)
+head2 = insertNode(head2, 3)
+head2 = insertNode(head2, 4)
+head2 = insertNode(head2, 5)
+
+print("Original list:")
+printList(head2)
+
+head2 = reorderList(head2)
+
+print("Reordered list:")
+printList(head2)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">Original list:
+1 2 3 4 5
+Reordered list:
+1 5 2 4 3</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Explanation of Code Execution:</strong>
+        </p>
+        <p>
+            Let's trace through the execution of our algorithm for Example 1: [1,2,3,4]
+        </p>
+        <ol>
+            <li>
+                <strong>Find the middle and split:</strong> 
+                <ul>
+                    <li>We start with head = 1 -> 2 -> 3 -> 4.</li>
+                    <li>Using Fast & Slow pointers, slow ends up at node 2, and we split the list there.</li>
+                    <li>First half: 1 -> 2 -> null</li>
+                    <li>Second half: 3 -> 4</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Reverse the second half:</strong>
+                <ul>
+                    <li>The second half 3 -> 4 is reversed to 4 -> 3 -> null.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Interweave the lists:</strong>
+                <ul>
+                    <li>First half: 1 -> 2 -> null</li>
+                    <li>Reversed second half: 4 -> 3 -> null</li>
+                    <li>Iteration 1:
+                        <ul>
+                            <li>Set 1.next = 4</li>
+                            <li>Set 4.next = 2</li>
+                            <li>Move first to 2, second to 3</li>
+                        </ul>
+                    </li>
+                    <li>Iteration 2:
+                        <ul>
+                            <li>Set 2.next = 3</li>
+                            <li>Set 3.next = null (first's original next)</li>
+                            <li>first and second are now null, so we're done</li>
+                        </ul>
+                    </li>
+                    <li>The final list is 1 -> 4 -> 2 -> 3 -> null</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Key Observations:</strong></p>
+            <ul>
+                <li>The Fast & Slow pointers technique allows us to efficiently find the middle of the linked list in one pass.</li>
+                <li>The in-place reversal of the second half makes it easier to interweave the nodes.</li>
+                <li>Interweaving the nodes ensures that they are arranged according to the problem's requirement.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

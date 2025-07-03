@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cycle in Circular Array Problem</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cycle in Circular Array Problem</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Circular Array Loop (LeetCode #457)</strong></p>
+        <p><a href="https://leetcode.com/problems/circular-array-loop/description/" target="_blank">https://leetcode.com/problems/circular-array-loop/description/</a></p>
+        <p>
+            You are playing a game involving a circular array of non-zero integers <code>nums</code>. Each <code>nums[i]</code> denotes the number of indices forward/backward you must move if you are located at index <code>i</code>:
+        </p>
+        <ul>
+            <li>If <code>nums[i]</code> is positive, move <code>nums[i]</code> steps forward, and</li>
+            <li>If <code>nums[i]</code> is negative, move <code>nums[i]</code> steps backward.</li>
+        </ul>
+        <p>
+            Since the array is circular, you may assume that moving forward from the last element puts you on the first element, and moving backwards from the first element puts you on the last element.
+        </p>
+        <p>
+            A cycle in the array consists of a sequence of indices <code>seq</code> of length <code>k</code> where:
+        </p>
+        <ul>
+            <li>Following the movement rules above results in the repeating index sequence <code>seq[0] -> seq[1] -> ... -> seq[k - 1] -> seq[0] -> ...</code></li>
+            <li>Every <code>nums[seq[j]]</code> is either all positive or all negative.</li>
+            <li><code>k > 1</code></li>
+        </ul>
+        <p>
+            Return <code>true</code> if there is a cycle in <code>nums</code>, or <code>false</code> otherwise.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <img src="https://assets.leetcode.com/uploads/2022/09/01/img1.jpg" alt="Circular Array Loop Example 1">
+            <p><strong>Input:</strong> nums = [2,-1,1,2,2]</p>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong> The graph shows how the indices are connected. White nodes are jumping forward, while red is jumping backward. We can see the cycle 0 --> 2 --> 3 --> 0 --> ..., and all of its nodes are white (jumping in the same direction).</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> nums = [-1,-2,-3,-4,-5,6]</p>
+            <p><strong>Output:</strong> false</p>
+            <p><strong>Explanation:</strong> The only cycle is of size 1, so we return false.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> nums = [1,-1,5,1,4]</p>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong> We can see the cycle 3 --> 4 --> 3 --> ..., and all of its nodes are white (jumping in the same direction).</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= nums.length <= 5000</li>
+            <li>-1000 <= nums[i] <= 1000</li>
+            <li>nums[i] != 0</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            Let's break down the problem to understand it better:
+        </p>
+        <ul>
+            <li>We have a circular array of non-zero integers.</li>
+            <li>Each value tells us how many steps to move (forward for positive values, backward for negative values).</li>
+            <li>The array is circular, which means if we move beyond the end, we wrap around to the beginning.</li>
+            <li>We need to find if there exists a cycle that satisfies three conditions:
+                <ol>
+                    <li>Following the movement rules leads to a repeating sequence of indices.</li>
+                    <li>All elements in the cycle must have the same sign (either all positive or all negative).</li>
+                    <li>The cycle length must be greater than 1 (k > 1).</li>
+                </ol>
+            </li>
+        </ul>
+        <p>
+            For example, in [2,-1,1,2,2]:
+        </p>
+        <ul>
+            <li>Starting from index 0: The value is 2, so we move 2 steps forward to index 2.</li>
+            <li>At index 2: The value is 1, so we move 1 step forward to index 3.</li>
+            <li>At index 3: The value is 2, so we move 2 steps forward to index 0 (wrapping around).</li>
+            <li>Now we're back at index 0, which means we've found a cycle: 0 → 2 → 3 → 0.</li>
+            <li>All elements in this cycle (2, 1, 2) are positive, so the directions are all the same.</li>
+            <li>The cycle length is 3 (> 1), so this is a valid cycle.</li>
+        </ul>
+        <p>
+            An important point to note is that a cycle must consist of different indices. For example, if at index 0 the value is 0, it would point back to itself, but that doesn't count as a cycle for this problem (since k must be > 1).
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach</h2>
+        <p>
+            We can use the Fast & Slow pointers technique to detect cycles in the array. This is similar to detecting a cycle in a linked list, but with some additional constraints specific to this problem.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> If there is a cycle, a slow pointer moving one step at a time and a fast pointer moving two steps at a time will eventually meet. However, we must also ensure that the cycle follows the problem's additional constraints: all elements in the cycle must have the same sign, and the cycle length must be greater than 1.</p>
+        </div>
+        
+        <p>The approach can be summarized as follows:</p>
+        <ol>
+            <li>For each index in the array, start a new exploration (since cycles might exist starting from different indices).</li>
+            <li>Use slow and fast pointers to detect cycles. The slow pointer moves one step at a time, while the fast pointer moves two steps at a time.</li>
+            <li>Before moving the pointers, check if the next step maintains the same direction (all positive or all negative values).</li>
+            <li>Also check if the next step would lead to a single-element cycle (which is not valid for this problem).</li>
+            <li>If the slow and fast pointers meet, and all checks pass, we've found a valid cycle.</li>
+        </ol>
+        
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: nums = [2,-1,1,2,2]</strong></p>
+            <pre>
+Starting at index 0:
+
+Initial state:
+slow = 0, fast = 0
+nums[0] = 2 (positive, moving forward)
+
+Step 1:
+slow moves from 0 to 2 (0 + 2 = 2)
+fast moves from 0 to 2, then to 3 (0 + 2 = 2, then 2 + 1 = 3)
+slow = 2, fast = 3
+
+Step 2:
+slow moves from 2 to 3 (2 + 1 = 3)
+fast moves from 3 to 0, then to 2 (3 + 2 = 5 % 5 = 0, then 0 + 2 = 2)
+slow = 3, fast = 2
+
+Step 3:
+slow moves from 3 to 0 (3 + 2 = 5 % 5 = 0)
+fast moves from 2 to 3, then to 0 (2 + 1 = 3, then 3 + 2 = 5 % 5 = 0)
+slow = 0, fast = 0
+
+Slow and fast meet at index 0, and all elements in the cycle (2, 1, 2) are positive.
+The cycle length is 3 (> 1), so this is a valid cycle.
+
+Return true.</pre>
+        </div>
+        
+        <p>
+            <strong>Time and Space Complexity:</strong>
+        </p>
+        <ul>
+            <li><strong>Time Complexity:</strong> O(n²), where n is the length of the array. In the worst case, we might need to explore the array starting from each index, and each exploration might take up to n steps.</li>
+            <li><strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.</li>
+        </ul>
+    </div>
+
+    <div class="section steps">
+        <h2>Steps</h2>
+        <ol>
+            <li>
+                <strong>Define a helper function to get the next index:</strong>
+                <ul>
+                    <li>Check if the direction (sign) of the current element matches the expected direction. If not, return -1 to indicate an invalid cycle.</li>
+                    <li>Calculate the next index using modulo arithmetic to handle the circular nature of the array.</li>
+                    <li>Check if the next index is the same as the current index. If so, return -1 to indicate a single-element cycle.</li>
+                    <li>Return the valid next index.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>For each index in the array:</strong>
+                <ul>
+                    <li>Initialize slow and fast pointers at the current index.</li>
+                    <li>Determine the initial direction (positive or negative) based on the value at the current index.</li>
+                    <li>Move the slow pointer one step using the helper function.</li>
+                    <li>Move the fast pointer two steps using the helper function.</li>
+                    <li>If both pointers are valid (not -1) and they meet, we've found a valid cycle. Return true.</li>
+                    <li>If either pointer becomes invalid (-1), break the loop and try starting from the next index.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>If no valid cycle is found after checking all starting indices, return false.</strong>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def circularArrayLoop(nums):
+    <span class="comment">"""Find if there is a cycle in the circular array.
+    
+    Args:
+        nums: List of integers representing the circular array
+        
+    Returns:
+        True if there is a cycle, False otherwise
+    """</span>
+    n = len(nums)  <span class="comment"># Get the length of the array</span>
+    
+    <span class="comment"># Edge case: If the array has only one element, it can't have a cycle with length > 1</span>
+    if n == 1:
+        return False
+    
+    <span class="comment"># Try starting from each index in the array</span>
+    for i in range(n):
+        slow = i  <span class="comment"># Initialize slow pointer</span>
+        fast = i  <span class="comment"># Initialize fast pointer</span>
+        isForward = nums[i] > 0  <span class="comment"># Determine the direction</span>
+        
+        while True:
+            <span class="comment"># Move slow pointer one step</span>
+            slow = getNextIndex(nums, isForward, slow)
+            
+            <span class="comment"># Move fast pointer one step</span>
+            fast = getNextIndex(nums, isForward, fast)
+            if fast != -1:
+                <span class="comment"># Move fast pointer another step</span>
+                fast = getNextIndex(nums, isForward, fast)
+            
+            <span class="comment"># If either pointer is invalid or we found a cycle, break</span>
+            if slow == -1 or fast == -1 or slow == fast:
+                break
+        
+        <span class="comment"># If slow and fast pointers meet and are valid, we found a cycle</span>
+        if slow != -1 and slow == fast:
+            return True
+            
+    return False  <span class="comment"># No valid cycle found</span>
+
+def getNextIndex(nums, isForward, index):
+    <span class="comment">"""Get the next index in the circular array.
+    
+    Args:
+        nums: List of integers representing the circular array
+        isForward: Boolean indicating the expected direction (True for forward, False for backward)
+        index: Current index
+        
+    Returns:
+        Next valid index, or -1 if invalid
+    """</span>
+    <span class="comment"># Check if current element's direction matches the expected direction</span>
+    direction = nums[index] > 0
+    if isForward != direction:
+        return -1  <span class="comment"># Direction changed, invalid cycle</span>
+    
+    <span class="comment"># Calculate the next index with wraparound (circular array)</span>
+    nextIndex = (index + nums[index]) % len(nums)
+    if nextIndex < 0:  <span class="comment"># Handle negative indices</span>
+        nextIndex += len(nums)
+    
+    <span class="comment"># Check for single-element cycle (which is invalid for this problem)</span>
+    if nextIndex == index:
+        return -1
+    
+    return nextIndex</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">nums = [2,-1,1,2,2]
+circularArrayLoop(nums)  <span class="comment"># Output: True</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">True</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">nums = [-1,-2,-3,-4,-5,6]
+circularArrayLoop(nums)  <span class="comment"># Output: False</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">False</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">nums = [1,-1,5,1,4]
+circularArrayLoop(nums)  <span class="comment"># Output: True</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">True</pre>
+        </div>
+        
+        <p>
+            <strong>Detailed Execution for Example 1: [2,-1,1,2,2]</strong>
+        </p>
+        <p>
+            Let's trace through the execution of our algorithm for the example input [2,-1,1,2,2]:
+        </p>
+        <ol>
+            <li>
+                <strong>Start from index 0:</strong>
+                <ul>
+                    <li>slow = 0, fast = 0, isForward = True (nums[0] = 2 is positive)</li>
+                    <li>Move slow: nextIndex = (0 + 2) % 5 = 2, direction is positive, slow = 2</li>
+                    <li>Move fast: nextIndex = (0 + 2) % 5 = 2, direction is positive, fast = 2</li>
+                    <li>Move fast again: nextIndex = (2 + 1) % 5 = 3, direction is positive, fast = 3</li>
+                    <li>slow = 2, fast = 3</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Next iteration:</strong>
+                <ul>
+                    <li>Move slow: nextIndex = (2 + 1) % 5 = 3, direction is positive, slow = 3</li>
+                    <li>Move fast: nextIndex = (3 + 2) % 5 = 0, direction is positive, fast = 0</li>
+                    <li>Move fast again: nextIndex = (0 + 2) % 5 = 2, direction is positive, fast = 2</li>
+                    <li>slow = 3, fast = 2</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Next iteration:</strong>
+                <ul>
+                    <li>Move slow: nextIndex = (3 + 2) % 5 = 0, direction is positive, slow = 0</li>
+                    <li>Move fast: nextIndex = (2 + 1) % 5 = 3, direction is positive, fast = 3</li>
+                    <li>Move fast again: nextIndex = (3 + 2) % 5 = 0, direction is positive, fast = 0</li>
+                    <li>slow = 0, fast = 0</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Slow and fast pointers meet at index 0, and both are valid.</strong> We've found a valid cycle: 0 → 2 → 3 → 0. Return true.
+            </li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Key Observations:</strong></p>
+            <ul>
+                <li>The cycle we found (0 → 2 → 3 → 0) consists entirely of positive numbers (2, 1, 2), so they all move in the same direction (forward).</li>
+                <li>The cycle length is 3, which is > 1.</li>
+                <li>Therefore, this is a valid cycle according to the problem's definition.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
