@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliding Window Median Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .window-container {
+            display: flex;
+            flex-direction: column;
+            margin: 20px 0;
+        }
+        .window-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .window-cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc;
+            margin-right: 5px;
+        }
+        .window-cell.active {
+            background-color: #e3f2fd;
+            border: 2px solid #1976d2;
+        }
+        .window-cell.median {
+            background-color: #ffebee;
+            border: 2px solid #e53935;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sliding Window Median</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            The median is the middle value in an ordered integer list. If the size of the list is even, there is no middle value, so the median is the mean of the two middle values.
+        </p>
+        <ul>
+            <li>For example, if arr = [2, 3, 4], the median is 3.</li>
+            <li>For example, if arr = [1, 2, 3, 4], the median is (2 + 3) / 2 = 2.5.</li>
+        </ul>
+        <p>
+            You are given an integer array <code>nums</code> and an integer <code>k</code>. There is a sliding window of size <code>k</code> which is moving from the very left of the array to the very right. You can only see the <code>k</code> numbers in the window. Each time the sliding window moves right by one position.
+        </p>
+        <p>
+            Return the median array for each window in the original array.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+Output: [1.00000, -1.00000, -1.00000, 3.00000, 5.00000, 6.00000]
+
+Explanation:
+Window position                Median
+---------------                ------
+[1  3  -1] -3  5  3  6  7      1.0
+ 1 [3  -1  -3] 5  3  6  7     -1.0
+ 1  3 [-1  -3  5] 3  6  7     -1.0
+ 1  3  -1 [-3  5  3] 6  7      3.0
+ 1  3  -1  -3 [5  3  6] 7      5.0
+ 1  3  -1  -3  5 [3  6  7]     6.0</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: nums = [1, 2, 3, 4, 2, 3, 1, 4, 2], k = 3
+Output: [2.00000, 3.00000, 3.00000, 3.00000, 2.00000, 3.00000, 2.00000]</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>1 ≤ k ≤ nums.length ≤ 10<sup>5</sup></li>
+            <li>-2<sup>31</sup> ≤ nums[i] ≤ 2<sup>31</sup> - 1</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            This problem combines two key concepts:
+        </p>
+        <ol>
+            <li><strong>Sliding Window:</strong> We need to process the array through a window of fixed size k that slides from left to right.</li>
+            <li><strong>Median Finding:</strong> For each window position, we need to calculate the median of the k elements in the window.</li>
+        </ol>
+        <p>
+            The challenge is to efficiently calculate the median as the window slides through the array. A naive approach would be to extract the k elements of each window, sort them, and find the median. However, this would result in O(n·k·log(k)) time complexity, which is inefficient for large inputs.
+        </p>
+        <p>
+            We need a more efficient approach that maintains the sorted state of elements in the window and handles insertions and deletions efficiently as the window slides.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Using Two Heaps</h2>
+        <p>
+            We can use a similar approach to the "Find the Median of a Number Stream" problem, using two heaps:
+        </p>
+        <ul>
+            <li>A max heap for the smaller half of the window elements</li>
+            <li>A min heap for the larger half of the window elements</li>
+        </ul>
+        <p>
+            However, there's an additional challenge: as the window slides, we need to remove elements that fall outside the window. Regular heap operations don't allow for efficient removal of arbitrary elements.
+        </p>
+        <p>
+            We have two options to handle this:
+        </p>
+        <ol>
+            <li><strong>Lazy removal:</strong> Mark elements as "deleted" and ignore them when they reach the top of a heap. This is efficient but requires extra bookkeeping.</li>
+            <li><strong>Reheapify:</strong> Rebuild the heaps for each window. This is simpler but less efficient.</li>
+        </ol>
+        <p>
+            We'll implement the lazy removal approach for better efficiency:
+        </p>
+        <ol>
+            <li>Maintain two heaps (max heap for smaller half, min heap for larger half)</li>
+            <li>When adding elements, include their index so we can identify when they leave the window</li>
+            <li>Keep track of "deleted" elements using a hash map or similar structure</li>
+            <li>When retrieving the median, ensure we're not using deleted elements</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of Sliding Window with Two Heaps</h3>
+            <p>Let's visualize how this works with the first example: [1, 3, -1, -3, 5, 3, 6, 7] and k=3</p>
+            <pre>
+Initial window [1, 3, -1]:
+  Max heap (smaller half): [1]     Min heap (larger half): [-1, 3]
+  Median: (1 + -1) / 2 = 0.0 (Wait, that's wrong! Let's fix it)
+  Max heap (smaller half): [1]     Min heap (larger half): [-1, 3]
+  Median: 1.0 (middle element when sorted: [-1, 1, 3])
+
+Slide to [3, -1, -3]:
+  Remove 1, add -3
+  Max heap: [-1]    Min heap: [-3, 3]
+  After rebalancing: [-3]    Min heap: [-1, 3]
+  Median: -1.0 (middle element when sorted: [-3, -1, 3])
+
+Slide to [-1, -3, 5]:
+  Remove 3, add 5
+  Max heap: [-3]    Min heap: [-1, 5]
+  Median: -1.0 (middle element when sorted: [-3, -1, 5])
+
+Slide to [-3, 5, 3]:
+  Remove -1, add 3
+  Max heap: [-3]    Min heap: [3, 5]
+  Median: 3.0 (middle element when sorted: [-3, 3, 5])
+
+Slide to [5, 3, 6]:
+  Remove -3, add 6
+  Max heap: [3]     Min heap: [5, 6]
+  Median: 5.0 (middle element when sorted: [3, 5, 6])
+
+Slide to [3, 6, 7]:
+  Remove 5, add 7
+  Max heap: [3]     Min heap: [6, 7]
+  Median: 6.0 (middle element when sorted: [3, 6, 7])</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's how we can implement the sliding window median using Python and the two heaps approach:
+        </p>
+
+        <pre>
+import heapq
+
+def medianSlidingWindow(nums, k):
+    <span class="comment">"""Calculate the median for each sliding window of size k.
+    
+    Args:
+        nums: List of integers representing the input array
+        k: Size of the sliding window
+        
+    Returns:
+        List of medians for each window position
+    """</span>
+    result = []  # Will store the median for each window
+    
+    # Dictionary to keep track of elements to be removed
+    to_remove = {}
+    
+    # Max heap for the smaller half of elements
+    # We use negative values to simulate a max heap with a min heap
+    small = []  # Max heap (values negated)
+    
+    # Min heap for the larger half of elements
+    large = []  # Min heap
+    
+    for i in range(len(nums)):
+        # Add current element to the appropriate heap
+        if not small or -small[0] >= nums[i]:
+            heapq.heappush(small, -nums[i])
+        else:
+            heapq.heappush(large, nums[i])
+            
+        # Balance the heaps
+        # The size of small should be equal to or one more than large
+        if len(small) > len(large) + 1:
+            heapq.heappush(large, -heapq.heappop(small))
+        elif len(large) > len(small):
+            heapq.heappush(small, -heapq.heappop(large))
+            
+        # Remove element that falls out of the window
+        if i >= k:
+            out_num = nums[i - k]
+            
+            # Keep track of elements to remove
+            to_remove[out_num] = to_remove.get(out_num, 0) + 1
+            
+            # Remove from the appropriate heap
+            if out_num <= -small[0]:  # The number is in small heap
+                if out_num == -small[0]:
+                    heapq.heappop(small)
+                else:
+                    to_remove[out_num] -= 1
+            else:  # The number is in large heap
+                if out_num == large[0]:
+                    heapq.heappop(large)
+                else:
+                    to_remove[out_num] -= 1
+                    
+            # Rebalance if necessary after removal
+            while small and to_remove.get(-small[0], 0) > 0:
+                to_remove[-small[0]] -= 1
+                heapq.heappop(small)
+                
+            while large and to_remove.get(large[0], 0) > 0:
+                to_remove[large[0]] -= 1
+                heapq.heappop(large)
+                
+            # Balance the heaps again after removal
+            if len(small) > len(large) + 1:
+                heapq.heappush(large, -heapq.heappop(small))
+            elif len(large) > len(small):
+                heapq.heappush(small, -heapq.heappop(large))
+        
+        # Calculate median once window is complete
+        if i >= k - 1:
+            if k % 2 == 1:  # Odd window size
+                median = -small[0]
+            else:  # Even window size
+                median = (-small[0] + large[0]) / 2
+            result.append(median)
+            
+    return result</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n log k), where n is the length of the input array and k is the window size.
+            <ul>
+                <li>For each of the n elements, we perform heap operations that take O(log k) time.</li>
+                <li>The removal of elements uses a lazy approach and might require multiple heap operations, but on average still maintains O(log k) per operation.</li>
+            </ul>
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(k + n)
+            <ul>
+                <li>O(k) for the two heaps which together hold k elements</li>
+                <li>O(k) for the dictionary tracking elements to remove (worst case)</li>
+                <li>O(n - k + 1) for the output array (which holds a median for each window)</li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation: Two Heaps with Custom Class</h2>
+        <p>
+            Here's an alternative implementation that uses a custom MedianFinder class for cleaner code:
+        </p>
+
+        <pre>
+import heapq
+
+class MedianFinder:
+    def __init__(self):
+        <span class="comment">"""Initialize the data structure."""
+</span>        self.small = []  # max heap for the smaller half
+        self.large = []  # min heap for the larger half
+        self.count = 0   # count of elements
+        self.balance = 0  # small_size - large_size
+        
+    def addNum(self, num):
+        <span class="comment">"""Add a number to the data structure."""
+</span>        if self.balance == 0:  # both heaps have same size
+            # Add to large heap, then move min to small
+            heapq.heappush(self.large, num)
+            val = heapq.heappop(self.large)
+            heapq.heappush(self.small, -val)
+            self.balance += 1
+        else:  # small has one more element than large
+            # Add to small heap, then move max to large
+            heapq.heappush(self.small, -num)
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+            self.balance -= 1
+            
+        self.count += 1
+        
+    def removeNum(self, num):
+        <span class="comment">"""Remove a number from the data structure."""
+</span>        if num <= self.getMedian():
+            # Number is in small heap
+            self.small.remove(-num)
+            heapq.heapify(self.small)
+            self.balance -= 1
+        else:
+            # Number is in large heap
+            self.large.remove(num)
+            heapq.heapify(self.large)
+            self.balance += 1
+            
+        self.count -= 1
+        
+        # Rebalance if necessary
+        if self.balance < 0:  # large has more elements
+            heapq.heappush(self.small, -heapq.heappop(self.large))
+            self.balance += 2
+        elif self.balance > 1:  # small has more than one extra element
+            heapq.heappush(self.large, -heapq.heappop(self.small))
+            self.balance -= 2
+        
+    def getMedian(self):
+        <span class="comment">"""Find the median of all elements."""
+</span>        if self.count % 2 == 1:
+            return -self.small[0]  # odd count, return middle element
+        else:
+            return (-self.small[0] + self.large[0]) / 2  # even count, return average
+
+def medianSlidingWindow(nums, k):
+    <span class="comment">"""Calculate median for each sliding window."""
+</span>    result = []
+    finder = MedianFinder()
+    
+    # Initialize the first window
+    for i in range(k):
+        finder.addNum(nums[i])
+    result.append(finder.getMedian())
+    
+    # Slide the window
+    for i in range(k, len(nums)):
+        finder.removeNum(nums[i-k])  # Remove element leaving the window
+        finder.addNum(nums[i])       # Add new element
+        result.append(finder.getMedian())
+        
+    return result</pre>
+
+        <p>
+            Note that this implementation uses a naive approach for <code>removeNum</code> by rebuilding the heap after removal. For very large windows, the lazy removal approach in the previous implementation would be more efficient.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Step-by-Step Example</h2>
+        <p>
+            Let's walk through the first example step by step to see how our algorithm works:
+        </p>
+        <p>Input: nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3</p>
+
+        <table>
+            <tr>
+                <th>Window</th>
+                <th>Sorted Window</th>
+                <th>Small Heap (max)</th>
+                <th>Large Heap (min)</th>
+                <th>Median</th>
+            </tr>
+            <tr>
+                <td>[1, 3, -1]</td>
+                <td>[-1, 1, 3]</td>
+                <td>[1]</td>
+                <td>[-1, 3]</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>[3, -1, -3]</td>
+                <td>[-3, -1, 3]</td>
+                <td>[-1]</td>
+                <td>[-3, 3]</td>
+                <td>-1</td>
+            </tr>
+            <tr>
+                <td>[-1, -3, 5]</td>
+                <td>[-3, -1, 5]</td>
+                <td>[-1]</td>
+                <td>[-3, 5]</td>
+                <td>-1</td>
+            </tr>
+            <tr>
+                <td>[-3, 5, 3]</td>
+                <td>[-3, 3, 5]</td>
+                <td>[3]</td>
+                <td>[-3, 5]</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>[5, 3, 6]</td>
+                <td>[3, 5, 6]</td>
+                <td>[3]</td>
+                <td>[5, 6]</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>[3, 6, 7]</td>
+                <td>[3, 6, 7]</td>
+                <td>[3]</td>
+                <td>[6, 7]</td>
+                <td>6</td>
+            </tr>
+        </table>
+
+        <p>Output: [1.0, -1.0, -1.0, 3.0, 5.0, 6.0]</p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Common Issues and Edge Cases</h2>
+        <p>
+            When implementing this algorithm, be aware of these common issues:
+        </p>
+        <ul>
+            <li><strong>Efficient removal:</strong> Removing elements from a heap is not a standard operation. Our lazy removal approach addresses this, but it requires careful implementation.</li>
+            <li><strong>Heap balancing:</strong> Ensuring that the heaps remain balanced after both additions and removals is crucial.</li>
+            <li><strong>Duplicate elements:</strong> The implementation should handle duplicates correctly, which might require additional logic to ensure the right element is removed.</li>
+        </ul>
+        <p>
+            Some edge cases to consider:
+        </p>
+        <ul>
+            <li><strong>k = 1:</strong> When the window size is 1, the median is simply each element of the array.</li>
+            <li><strong>All identical elements:</strong> If all elements in a window are identical, both heaps might have identical elements, and the median calculation should handle this correctly.</li>
+            <li><strong>k = array length:</strong> When the window covers the entire array, there's only one median to calculate.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you've mastered this problem, you might want to try these related problems:
+        </p>
+        <ul>
+            <li><strong>Find the Median of a Number Stream:</strong> Similar to this problem but without the sliding window aspect.</li>
+            <li><strong>Sliding Window Maximum:</strong> Instead of finding the median in a sliding window, find the maximum value.</li>
+            <li><strong>K Closest Points to Origin:</strong> Uses the concept of heaps to efficiently find the k closest points.</li>
+            <li><strong>Kth Largest Element in an Array:</strong> Uses a similar approach of maintaining a heap of fixed size.</li>
+            <li><strong>Maximum Number of Events That Can Be Attended:</strong> Uses priority queues (heaps) to solve a more complex scheduling problem.</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Interval Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .interval-container {
+            display: flex;
+            flex-direction: column;
+            margin: 20px 0;
+        }
+        .interval-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .interval {
+            border: 1px solid #666;
+            padding: 5px 15px;
+            margin-right: 15px;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            min-width: 80px;
+            text-align: center;
+        }
+        .interval.next {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .arrow {
+            font-size: 24px;
+            margin-right: 15px;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Next Interval</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            You are given an array of intervals, where intervals[i] = [start<sub>i</sub>, end<sub>i</sub>] and each start<sub>i</sub> is unique.
+        </p>
+        <p>
+            The <strong>right interval</strong> for an interval i is an interval j such that start<sub>j</sub> ≥ end<sub>i</sub> and start<sub>j</sub> is minimized. Note that i may equal j.
+        </p>
+        <p>
+            Return an array of right interval indices for each interval i. If no right interval exists for interval i, then put -1 at index i.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: intervals = [[1,2]]
+Output: [-1]
+Explanation: There is only one interval in the collection, so it outputs -1.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: intervals = [[3,4],[2,3],[1,2]]
+Output: [-1,0,1]
+Explanation: 
+- There is no right interval for [3,4].
+- The right interval for [2,3] is [3,4] since start0 = 3 is the smallest start that is >= end1 = 3.
+- The right interval for [1,2] is [2,3] since start1 = 2 is the smallest start that is >= end2 = 2.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 3:</h3>
+            <pre>
+Input: intervals = [[1,4],[2,3],[3,4]]
+Output: [-1,2,-1]
+Explanation: 
+- There is no right interval for [1,4] and [3,4].
+- The right interval for [2,3] is [3,4] since start2 = 3 is the smallest start that is >= end1 = 3.</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>1 ≤ intervals.length ≤ 2 * 10<sup>4</sup></li>
+            <li>intervals[i].length == 2</li>
+            <li>-10<sup>6</sup> ≤ start<sub>i</sub> ≤ end<sub>i</sub> ≤ 10<sup>6</sup></li>
+            <li>The start point of each interval is unique.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            This problem asks us to find the "next" interval for each interval in an array. For an interval [start, end], the next interval is one where its start time is greater than or equal to the current interval's end time. If multiple such intervals exist, we want the one with the smallest start time.
+        </p>
+        <p>
+            More precisely, for each interval [start<sub>i</sub>, end<sub>i</sub>], we need to find the interval [start<sub>j</sub>, end<sub>j</sub>] such that:
+        </p>
+        <ul>
+            <li>start<sub>j</sub> ≥ end<sub>i</sub></li>
+            <li>start<sub>j</sub> is minimized among all intervals satisfying the first condition</li>
+        </ul>
+        <p>
+            If no such interval exists, we output -1 for that position. The result should be an array where the ith element is the index of the next interval for the ith interval in the input array (or -1 if none exists).
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Binary Search</h2>
+        <p>
+            We could solve this problem with a brute force approach by checking each interval against all others, but that would be O(n²). Instead, we can use a more efficient approach using binary search, which gives us O(n log n) time complexity.
+        </p>
+        <p>
+            Here's the approach:
+        </p>
+        <ol>
+            <li>Create an array of pairs (start time, index) for all intervals</li>
+            <li>Sort this array by start time</li>
+            <li>For each interval, find the next interval using binary search on the sorted array</li>
+            <li>Return the result array</li>
+        </ol>
+        <p>
+            The binary search is used to efficiently find the smallest start time that is greater than or equal to the current interval's end time.
+        </p>
+
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>Let's visualize how this works with Example 2: intervals = [[3,4], [2,3], [1,2]]</p>
+            <pre>
+Step 1: Create array of (start time, index) pairs:
+  [(3, 0), (2, 1), (1, 2)]
+
+Step 2: Sort by start time:
+  [(1, 2), (2, 1), (3, 0)]
+
+Step 3: Process each interval:
+
+  Interval 0: [3,4]
+  - End time = 4
+  - Use binary search to find the smallest start time >= 4 in [(1,2), (2,1), (3,0)]
+  - No such start time exists, so result[0] = -1
+
+  Interval 1: [2,3]
+  - End time = 3
+  - Use binary search to find the smallest start time >= 3 in [(1,2), (2,1), (3,0)]
+  - Found (3,0), so result[1] = 0
+
+  Interval 2: [1,2]
+  - End time = 2
+  - Use binary search to find the smallest start time >= 2 in [(1,2), (2,1), (3,0)]
+  - Found (2,1), so result[2] = 1
+
+Final result: [-1, 0, 1]</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation using the binary search approach:
+        </p>
+
+        <pre>
+def findRightInterval(intervals):
+    <span class="comment">"""Find the right interval for each interval in the array.
+    
+    Args:
+        intervals: List of intervals where each interval is [start, end]
+        
+    Returns:
+        List of indices of the right intervals (or -1 if none exists)
+    """</span>
+    # Create array of (start time, index) pairs
+    startTimes = [(interval[0], i) for i, interval in enumerate(intervals)]
+    
+    # Sort by start time
+    startTimes.sort()
+    
+    # For each interval, find the right interval using binary search
+    result = [-1] * len(intervals)
+    for i, interval in enumerate(intervals):
+        endTime = interval[1]
+        nextIndex = binarySearch(startTimes, endTime)
+        result[i] = nextIndex
+    
+    return result
+
+def binarySearch(startTimes, target):
+    <span class="comment">"""Find the index of the interval with the smallest start time >= target.
+    
+    Args:
+        startTimes: Sorted list of (start time, original index) pairs
+        target: The end time to find a matching start time for
+        
+    Returns:
+        Index of the right interval, or -1 if none exists
+    """</span>
+    left, right = 0, len(startTimes) - 1
+    nextIndex = -1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        
+        if startTimes[mid][0] < target:
+            # Start time is too small, look in the right half
+            left = mid + 1
+        elif startTimes[mid][0] > target:
+            # Start time is too large, look in the left half
+            # But it might be a potential answer, so save it
+            right = mid - 1
+        else:
+            # Found exact match, return the original index
+            return startTimes[mid][1]
+    
+    # Check if we found any potential answer
+    if left < len(startTimes):
+        nextIndex = startTimes[left][1]
+    
+    return nextIndex</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O(n log n), where n is the number of intervals
+            <ul>
+                <li>Sorting the start times takes O(n log n)</li>
+                <li>Binary search for each of the n intervals takes O(log n) time each, for a total of O(n log n)</li>
+            </ul>
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n) for storing the start times array and the result array
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation: Using Heaps</h2>
+        <p>
+            Since this problem is in the Heap pattern category, let's also provide a solution using heaps:
+        </p>
+
+        <pre>
+import heapq
+
+def findRightInterval(intervals):
+    <span class="comment">"""Find the right interval using min heaps."""
+</span>
+    n = len(intervals)
+    result = [-1] * n
+    
+    # Create max heap for end times (negative for max heap in Python)
+    maxEndHeap = []
+    # Create min heap for start times
+    minStartHeap = []
+    
+    for i in range(n):
+        heapq.heappush(maxEndHeap, (-intervals[i][1], i))  # (-end_time, index)
+        heapq.heappush(minStartHeap, (intervals[i][0], i))  # (start_time, index)
+    
+    # Process all end times (largest to smallest)
+    while maxEndHeap:
+        # Get interval with largest end time
+        end, endIndex = heapq.heappop(maxEndHeap)
+        end = -end  # Convert back to positive
+        result[endIndex] = -1  # Default if no right interval exists
+        
+        # Find the first start time that is >= end time
+        while minStartHeap and minStartHeap[0][0] < end:
+            heapq.heappop(minStartHeap)  # Remove start times that are too small
+        
+        if minStartHeap:  # If we have any valid start times
+            # If multiple start times are equal to end, find the one with smallest index
+            temp = []
+            minIndex = -1
+            minStart = float('inf')
+            
+            # Find all start times equal to the end time
+            while minStartHeap and minStartHeap[0][0] == end:
+                start, startIndex = heapq.heappop(minStartHeap)
+                if startIndex < minIndex or minIndex == -1:
+                    minIndex = startIndex
+                temp.append((start, startIndex))
+                
+            # Put back all those start times
+            for item in temp:
+                heapq.heappush(minStartHeap, item)
+                
+            # If we found an exact match, use that
+            if minIndex != -1:
+                result[endIndex] = minIndex
+            # Otherwise, use the smallest start time that's greater than end
+            elif minStartHeap:
+                result[endIndex] = minStartHeap[0][1]
+    
+    return result</pre>
+
+        <p>
+            This implementation is more complex than the binary search approach and actually less efficient with O(n²) worst-case time complexity. The binary search approach is generally preferable for this problem.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Visualizing the Next Intervals</h2>
+        <p>
+            Here's a visual representation of the next intervals for Example 2:
+        </p>
+
+        <div class="interval-container">
+            <div class="interval-row">
+                <div class="interval">[3,4]</div>
+                <div class="arrow">→</div>
+                <div class="interval">No next interval</div>
+            </div>
+            <div class="interval-row">
+                <div class="interval">[2,3]</div>
+                <div class="arrow">→</div>
+                <div class="interval next">[3,4]</div>
+            </div>
+            <div class="interval-row">
+                <div class="interval">[1,2]</div>
+                <div class="arrow">→</div>
+                <div class="interval next">[2,3]</div>
+            </div>
+        </div>
+
+        <p>
+            And for Example 3:
+        </p>
+
+        <div class="interval-container">
+            <div class="interval-row">
+                <div class="interval">[1,4]</div>
+                <div class="arrow">→</div>
+                <div class="interval">No next interval</div>
+            </div>
+            <div class="interval-row">
+                <div class="interval">[2,3]</div>
+                <div class="arrow">→</div>
+                <div class="interval next">[3,4]</div>
+            </div>
+            <div class="interval-row">
+                <div class="interval">[3,4]</div>
+                <div class="arrow">→</div>
+                <div class="interval">No next interval</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Edge Cases and Optimizations</h2>
+        <p>
+            When implementing this solution, be mindful of these edge cases:
+        </p>
+        <ul>
+            <li><strong>Single interval:</strong> If there's only one interval, it has no next interval.</li>
+            <li><strong>All intervals have the same end time:</strong> The binary search correctly handles this case.</li>
+            <li><strong>No right intervals exist for any interval:</strong> The result would be all -1s.</li>
+        </ul>
+        <p>
+            A potential optimization for very large inputs would be to use a sorted dictionary or a balanced tree structure that allows for efficient searching of the next greater or equal element. However, the binary search approach is already quite efficient for most practical purposes.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you've mastered this problem, you might want to try these related interval and binary search problems:
+        </p>
+        <ul>
+            <li><strong>Merge Intervals:</strong> Merging overlapping intervals</li>
+            <li><strong>Insert Interval:</strong> Inserting and possibly merging a new interval into a set of non-overlapping intervals</li>
+            <li><strong>Meeting Rooms II:</strong> Finding the minimum number of conference rooms required</li>
+            <li><strong>Minimum Number of Arrows to Burst Balloons:</strong> A problem involving interval overlaps</li>
+            <li><strong>Search in Rotated Sorted Array:</strong> Another application of binary search with a twist</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximize Capital Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Maximize Capital</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Suppose LeetCode will start its IPO soon. In order to sell a good price of its shares to Venture Capital, LeetCode would like to work on some projects to increase its capital before the IPO. Since it has limited resources, it can only finish at most k distinct projects before the IPO. Help LeetCode design the best way to maximize its total capital after finishing at most k distinct projects.
+        </p>
+        <p>
+            You are given n projects where the ith project has a pure profit <code>profits[i]</code> and a minimum capital of <code>capital[i]</code> is needed to start it.
+        </p>
+        <p>
+            Initially, you have w capital. When you finish a project, you will obtain its pure profit and the profit will be added to your total capital.
+        </p>
+        <p>
+            Pick a list of at most k distinct projects from given projects to maximize your final capital, and return the final maximized capital.
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+Input: k = 2, w = 0, profits = [1,2,3], capital = [0,1,1]
+Output: 4
+Explanation: 
+- Since your initial capital is 0, you can only start the project indexed 0.
+- After finishing it, you will obtain profit 1 and your capital becomes 1.
+- With capital 1, you can either start project indexed 1 or 2.
+- Since you can choose at most 2 projects, you need to finish the project indexed 2 to get the maximum capital.
+- Therefore, output the final maximized capital, which is 0 + 1 + 3 = 4.</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2:</h3>
+            <pre>
+Input: k = 3, w = 0, profits = [1,2,3], capital = [0,1,2]
+Output: 6</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>1 ≤ k ≤ 10<sup>5</sup></li>
+            <li>0 ≤ w ≤ 10<sup>9</sup></li>
+            <li>n == profits.length</li>
+            <li>n == capital.length</li>
+            <li>1 ≤ n ≤ 10<sup>5</sup></li>
+            <li>0 ≤ profits[i] ≤ 10<sup>4</sup></li>
+            <li>0 ≤ capital[i] ≤ 10<sup>9</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            In this problem, we need to select at most k projects that will maximize our final capital. The key constraints are:
+        </p>
+        <ul>
+            <li>Each project has a minimum capital requirement to start it</li>
+            <li>We can only start a project if our current capital meets or exceeds its minimum capital requirement</li>
+            <li>After completing a project, we add its profit to our capital</li>
+            <li>We can complete at most k projects</li>
+        </ul>
+        <p>
+            The challenge is to determine the optimal sequence of projects to undertake to maximize the final capital. This is a greedy problem where at each step we want to select the project with the highest profit among all projects that can be started with our current capital.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Greedy Algorithm with Two Heaps</h2>
+        <p>
+            We can solve this problem efficiently using a greedy approach with two heaps:
+        </p>
+        <ol>
+            <li>A min heap to store projects sorted by their minimum capital requirements</li>
+            <li>A max heap to store available projects' profits (projects we can start with our current capital)</li>
+        </ol>
+        <p>
+            The algorithm works as follows:
+        </p>
+        <ol>
+            <li>Initialize a min heap of projects sorted by capital requirements</li>
+            <li>For each of the k iterations (or until no more projects can be started):
+                <ul>
+                    <li>Move all projects that can be started with current capital from the min heap to the max heap</li>
+                    <li>If there are available projects, pick the one with the highest profit</li>
+                    <li>Add the profit to the current capital</li>
+                </ul>
+            </li>
+            <li>Return the final capital</li>
+        </ol>
+
+        <div class="visualization">
+            <h3>Visualization of the Algorithm</h3>
+            <p>Let's walk through Example 1: k = 2, w = 0, profits = [1,2,3], capital = [0,1,1]</p>
+            <pre>
+Initialization:
+- Initial capital w = 0
+- Projects: [(capital, profit)]: [(0,1), (1,2), (1,3)]
+- Min Heap (sorted by capital): [(0,1), (1,2), (1,3)]
+- Max Heap (available projects by profit): []
+
+Iteration 1 (k = 1):
+- Current capital w = 0
+- Projects with capital ≤ w: only project (0,1)
+- Move (0,1) from Min Heap to Max Heap
+- Min Heap: [(1,2), (1,3)]
+- Max Heap: [-1] (negated for max heap implementation)
+- Take highest profit project: 1
+- New capital w = 0 + 1 = 1
+
+Iteration 2 (k = 2):
+- Current capital w = 1
+- Projects with capital ≤ w: both (1,2) and (1,3)
+- Move both to Max Heap
+- Min Heap: []
+- Max Heap: [-3, -2] (negated for max heap implementation)
+- Take highest profit project: 3
+- New capital w = 1 + 3 = 4
+
+Final capital: 4</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's the Python implementation of our approach:
+        </p>
+
+        <pre>
+import heapq
+
+def findMaximizedCapital(k: int, w: int, profits: list, capital: list) -> int:
+    <span class="comment">"""Find the maximum capital after completing at most k projects.
+    
+    Args:
+        k: Maximum number of projects to complete
+        w: Initial capital
+        profits: List of profits for each project
+        capital: List of capital requirements for each project
+        
+    Returns:
+        The maximum capital after completing at most k projects
+    """</span>
+    # Create a min heap for projects sorted by capital requirement
+    projects = []  
+    # Create a max heap for available projects' profits
+    available_projects = []  
+    
+    # Populate the projects min heap with (capital, profit) pairs
+    for i in range(len(profits)):
+        heapq.heappush(projects, (capital[i], profits[i]))
+    
+    # Process at most k projects
+    for _ in range(k):
+        # Move all projects that can be started with current capital to max heap
+        while projects and projects[0][0] <= w:
+            cap, profit = heapq.heappop(projects)
+            # Use negative profit for max heap implementation
+            heapq.heappush(available_projects, -profit)
+        
+        # If there are no available projects, break
+        if not available_projects:
+            break
+        
+        # Take the project with the highest profit
+        w += -heapq.heappop(available_projects)
+    
+    return w</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong> O((n + k) log n), where n is the number of projects
+            <ul>
+                <li>Building the initial min heap takes O(n log n) time</li>
+                <li>In each of the k iterations, we might move all n projects from the min heap to the max heap, which takes O(n log n) time in the worst case</li>
+                <li>Extracting the max profit from the max heap takes O(log n) time per iteration</li>
+            </ul>
+        </p>
+        <p>
+            <strong>Space Complexity:</strong> O(n) for storing the projects in the two heaps
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Step-by-Step Example</h2>
+        <p>
+            Let's trace through Example 2: k = 3, w = 0, profits = [1,2,3], capital = [0,1,2]
+        </p>
+
+        <table>
+            <tr>
+                <th>Iteration</th>
+                <th>Current Capital (w)</th>
+                <th>Projects Min Heap</th>
+                <th>Available Projects Max Heap</th>
+                <th>Action</th>
+                <th>New Capital</th>
+            </tr>
+            <tr>
+                <td>Start</td>
+                <td>0</td>
+                <td>[(0,1), (1,2), (2,3)]</td>
+                <td>[]</td>
+                <td>Initialize</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>0</td>
+                <td>[(1,2), (2,3)]</td>
+                <td>[-1]</td>
+                <td>Take profit 1</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>1</td>
+                <td>[(2,3)]</td>
+                <td>[-2]</td>
+                <td>Take profit 2</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>3</td>
+                <td>[]</td>
+                <td>[-3]</td>
+                <td>Take profit 3</td>
+                <td>6</td>
+            </tr>
+        </table>
+        <p>
+            Final capital: 6
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation with Sorting</h2>
+        <p>
+            Here's an alternative implementation that sorts the projects by capital requirement first:
+        </p>
+
+        <pre>
+import heapq
+
+def findMaximizedCapital(k: int, w: int, profits: list, capital: list) -> int:
+    <span class="comment">"""Alternative implementation using sorting."""
+</span>    # Combine profits and capital into pairs and sort by capital
+    projects = sorted(zip(capital, profits))
+    
+    # Index to track the next available project
+    i = 0
+    
+    # Max heap to store available projects by profit
+    available = []
+    
+    # Process at most k projects
+    for _ in range(k):
+        # Add all projects that can be started with current capital
+        while i < len(projects) and projects[i][0] <= w:
+            heapq.heappush(available, -projects[i][1])  # Negate for max heap
+            i += 1
+        
+        # If no projects are available, break
+        if not available:
+            break
+        
+        # Take the project with the highest profit
+        w += -heapq.heappop(available)
+    
+    return w</pre>
+
+        <p>
+            This implementation has a similar time complexity of O(n log n + k log n), but might be slightly more efficient in practice as it sorts the projects once at the beginning rather than using a heap operation for each project.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Edge Cases and Considerations</h2>
+        <p>
+            When implementing this solution, consider these edge cases:
+        </p>
+        <ul>
+            <li><strong>No projects can be started with initial capital:</strong> If w is too low to start any project, the function returns the initial capital.</li>
+            <li><strong>k is larger than the number of available projects:</strong> The function will complete all available projects and then return.</li>
+            <li><strong>All projects have equal profit:</strong> The greedy approach still works because it prioritizes projects with lower capital requirements first.</li>
+            <li><strong>Some projects have zero profit:</strong> The algorithm will only select such projects if no better options are available.</li>
+        </ul>
+        <p>
+            This algorithm is optimal because at each step, we're always choosing the most profitable project among those we can start, which is the greedy choice property. Since profits are added to our capital, maximizing profit at each step leads to maximizing our final capital.
+        </p>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you found this problem interesting, you might want to try these related problems that use similar heap-based techniques:
+        </p>
+        <ul>
+            <li><strong>Task Scheduler:</strong> Arranging tasks with cooldown periods to minimize completion time</li>
+            <li><strong>Meeting Rooms II:</strong> Finding the minimum number of meeting rooms needed</li>
+            <li><strong>Minimum Cost to Hire K Workers:</strong> Another problem involving selection with constraints</li>
+            <li><strong>The Skyline Problem:</strong> Using heaps to process building heights</li>
+            <li><strong>Kth Smallest Element in a Sorted Matrix:</strong> Using heaps for efficient searching in a matrix</li>
+        </ul>
+    </div>
+</body>
+</html>

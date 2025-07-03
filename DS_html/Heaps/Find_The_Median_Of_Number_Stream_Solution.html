@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Median of a Number Stream Solution</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .implementation {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find the Median of a Number Stream</h1>
+
+    <div class="section problem">
+        <h2>Problem Statement</h2>
+        <p>
+            Design a data structure that supports the following two operations:
+        </p>
+        <ul>
+            <li><code>addNum(int num)</code>: Adds an integer number from the data stream to the data structure.</li>
+            <li><code>findMedian()</code>: Returns the median of all elements so far.</li>
+        </ul>
+        <p>
+            The median is the middle value in an ordered integer list. If the size of the list is even, the median is the average of the two middle values.
+        </p>
+
+        <div class="example">
+            <h3>Example:</h3>
+            <pre>
+MedianFinder medianFinder = new MedianFinder();
+medianFinder.addNum(1);    // arr = [1]
+medianFinder.addNum(2);    // arr = [1, 2]
+medianFinder.findMedian(); // return 1.5 (i.e., (1 + 2) / 2)
+medianFinder.addNum(3);    // arr = [1, 2, 3]
+medianFinder.findMedian(); // return 2.0</pre>
+        </div>
+
+        <h3>Constraints:</h3>
+        <ul>
+            <li>-10<sup>5</sup> &lt;= num &lt;= 10<sup>5</sup></li>
+            <li>There will be at least one element in the data structure before calling <code>findMedian</code>.</li>
+            <li>At most 5 * 10<sup>4</sup> calls will be made to <code>addNum</code> and <code>findMedian</code>.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding the Problem</h2>
+        <p>
+            This problem asks us to implement a data structure that can efficiently handle two operations:
+        </p>
+        <ol>
+            <li>Adding numbers to a collection one at a time</li>
+            <li>Finding the median of all numbers added so far</li>
+        </ol>
+        <p>
+            The challenge here is to find a data structure that allows us to efficiently maintain the median as new numbers are added. A naive approach would be to keep an array of all numbers, sort it each time we add a number, and then find the median. However, this would be inefficient, especially as the number of elements grows.
+        </p>
+        <p>
+            We need to find a more efficient approach that allows us to maintain the order of elements without performing a complete sort every time, and also provides quick access to the middle element(s).
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Using Two Heaps</h2>
+        <p>
+            A clever approach to this problem is to use two heaps:
+        </p>
+        <ol>
+            <li>A <strong>max heap</strong> to store the smaller half of the numbers</li>
+            <li>A <strong>min heap</strong> to store the larger half of the numbers</li>
+        </ol>
+        <p>
+            With this structure, we can ensure that:
+        </p>
+        <ul>
+            <li>All elements in the max heap are less than or equal to all elements in the min heap</li>
+            <li>The two heaps are either of equal size, or the max heap has at most one more element than the min heap</li>
+            <li>The median can be easily derived from the top elements of the heaps</li>
+        </ul>
+
+        <h3>How It Works</h3>
+        <ul>
+            <li>If the heaps are of equal size, the median is the average of the top elements of both heaps</li>
+            <li>If the max heap has one more element, the median is the top element of the max heap</li>
+        </ul>
+
+        <div class="visualization">
+            <h3>Visualization of the Two Heaps Approach</h3>
+            <p>Let's visualize how this works with an example sequence: [5, 15, 1, 3, 2, 8, 7, 9, 10, 6, 11, 4]</p>
+            <pre>
+After adding 5:
+  Max Heap: [5]          Min Heap: []          Median: 5
+
+After adding 15:
+  Max Heap: [5]          Min Heap: [15]        Median: (5+15)/2 = 10
+
+After adding 1:
+  Max Heap: [5, 1]       Min Heap: [15]        Median: 5
+
+After adding 3:
+  Max Heap: [5, 1, 3]    Min Heap: [15]        Median: 5
+  After balancing:
+  Max Heap: [3, 1]       Min Heap: [5, 15]     Median: (3+5)/2 = 4
+
+After adding 2:
+  Max Heap: [3, 1, 2]    Min Heap: [5, 15]     Median: 3
+
+After adding 8:
+  Max Heap: [3, 1, 2]    Min Heap: [5, 15, 8]  Median: (3+5)/2 = 4
+
+After adding 7:
+  Max Heap: [3, 1, 2]    Min Heap: [5, 15, 8, 7] Median: (3+5)/2 = 4
+  After balancing:
+  Max Heap: [5, 3, 2, 1] Min Heap: [7, 15, 8]  Median: 5</pre>
+        </div>
+    </div>
+
+    <div class="section implementation">
+        <h2>Implementation</h2>
+        <p>
+            Here's how we can implement the MedianFinder class using Python's heapq module:
+        </p>
+
+        <pre>
+import heapq
+
+class MedianFinder:
+    def __init__(self):
+        <span class="comment">"""Initialize the MedianFinder data structure."""
+</span>        self.small = []  # Max heap for smaller half (implemented as a min heap with negative values)
+        self.large = []  # Min heap for larger half
+        
+    def addNum(self, num: int) -> None:
+        <span class="comment">"""Add a number to the data structure.
+        
+        Args:
+            num: The number to be added
+        """
+</span>        # Always push to max heap first
+        heapq.heappush(self.small, -num)
+        
+        # Ensure all elements in small <= all elements in large
+        if self.small and self.large and -self.small[0] > self.large[0]:
+            # If the max of small is greater than min of large, move it to large
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+        
+        # Ensure balanced heaps (size differs by at most 1)
+        if len(self.small) > len(self.large) + 1:
+            # If small has more than 1 extra element, move one to large
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+        elif len(self.large) > len(self.small):
+            # If large has more elements, move one to small
+            val = heapq.heappop(self.large)
+            heapq.heappush(self.small, -val)
+            
+    def findMedian(self) -> float:
+        <span class="comment">"""Return the median of all elements added so far.
+        
+        Returns:
+            float: The median value
+        """
+</span>        if len(self.small) > len(self.large):
+            # If odd total elements, median is the max of small
+            return -self.small[0]
+        else:
+            # If even total elements, median is average of max of small and min of large
+            return (-self.small[0] + self.large[0]) / 2</pre>
+
+        <h3>Time and Space Complexity</h3>
+        <p>
+            <strong>Time Complexity:</strong>
+        </p>
+        <ul>
+            <li><code>addNum</code>: O(log n) due to heap operations (insertion and balancing)</li>
+            <li><code>findMedian</code>: O(1) as we just access the top elements of the heaps</li>
+        </ul>
+        <p>
+            <strong>Space Complexity:</strong> O(n) to store n elements across two heaps
+        </p>
+    </div>
+
+    <div class="section code">
+        <h2>Alternative Implementation</h2>
+        <p>
+            Here's an alternative implementation that calculates the median on each insertion:
+        </p>
+
+        <pre>
+import heapq
+
+class MedianFinder:
+    def __init__(self):
+        <span class="comment">"""Initialize the MedianFinder with two heaps and a median tracker."""
+</span>        self.lowerHeap = []  # Max heap (using negated values)
+        self.upperHeap = []  # Min heap
+        self.median = None   # Track current median
+        
+    def addNum(self, num: int) -> None:
+        <span class="comment">"""Add a number and update the median."""
+</span>        # Always add to max heap first
+        heapq.heappush(self.lowerHeap, -num)
+        
+        # Rebalance the heaps
+        self.rebalanceHeap()
+        
+        # Calculate the new median
+        self.calculateMedian()
+        
+    def rebalanceHeap(self) -> None:
+        <span class="comment">"""Ensure the heap property and balanced distribution."""
+</span>        # Ensure max of lower heap <= min of upper heap
+        if self.lowerHeap and self.upperHeap and -self.lowerHeap[0] > self.upperHeap[0]:
+            heapq.heappush(self.upperHeap, -heapq.heappop(self.lowerHeap))
+            
+        # Balance the heap sizes
+        if len(self.lowerHeap) - len(self.upperHeap) == 2:
+            heapq.heappush(self.upperHeap, -heapq.heappop(self.lowerHeap))
+            
+        if len(self.upperHeap) - len(self.lowerHeap) == 2:
+            heapq.heappush(self.lowerHeap, -heapq.heappop(self.upperHeap))
+            
+    def calculateMedian(self) -> None:
+        <span class="comment">"""Update the current median based on heap contents."""
+</span>        if len(self.lowerHeap) == len(self.upperHeap):
+            self.median = (-self.lowerHeap[0] + self.upperHeap[0]) / 2
+        elif len(self.lowerHeap) > len(self.upperHeap):
+            self.median = -self.lowerHeap[0]
+        else:
+            self.median = self.upperHeap[0]
+            
+    def findMedian(self) -> float:
+        <span class="comment">"""Return the current median."""
+</span>        return self.median</pre>
+    </div>
+
+    <div class="section approach">
+        <h2>Testing the Solution</h2>
+        <p>
+            Let's test our implementation with a few examples:
+        </p>
+
+        <div class="example">
+            <h3>Example 1:</h3>
+            <pre>
+medianFinder = MedianFinder()
+medianFinder.addNum(1)      # heaps: [1] and []
+                           # median: 1
+medianFinder.addNum(2)      # heaps: [1] and [2]
+                           # median: 1.5
+print(medianFinder.findMedian())  # Output: 1.5
+medianFinder.addNum(3)      # heaps: [1] and [2, 3]
+                           # median: 2
+print(medianFinder.findMedian())  # Output: 2.0</pre>
+        </div>
+
+        <div class="example">
+            <h3>Example 2 (with more numbers):</h3>
+            <pre>
+medianFinder = MedianFinder()
+for num in [41, 35, 62, 5, 97, 108]:
+    medianFinder.addNum(num)
+    print(f"After adding {num}, median is {medianFinder.findMedian()}")
+
+# Output:
+# After adding 41, median is 41.0
+# After adding 35, median is 38.0
+# After adding 62, median is 41.0
+# After adding 5, median is 38.0
+# After adding 97, median is 41.0
+# After adding 108, median is 51.5</pre>
+        </div>
+
+        <h3>Edge Cases</h3>
+        <p>
+            It's important to consider these edge cases:
+        </p>
+        <ul>
+            <li><strong>Single element:</strong> The median is just that element</li>
+            <li><strong>Duplicate elements:</strong> The solution handles duplicates correctly by treating them as separate entries</li>
+            <li><strong>Large range of values:</strong> The heap approach works efficiently regardless of the range of values</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Related Problems</h2>
+        <p>
+            If you've mastered this problem, you might want to try these related heap problems:
+        </p>
+        <ul>
+            <li><strong>Sliding Window Median:</strong> Finding the median in a sliding window of a given size over an array</li>
+            <li><strong>Kth Largest Element in an Array:</strong> Finding the kth largest element in an unsorted array</li>
+            <li><strong>Find K Pairs with Smallest Sums:</strong> Finding k pairs with the smallest sums from two arrays</li>
+            <li><strong>Top K Frequent Elements:</strong> Finding the k most frequent elements in an array</li>
+            <li><strong>Merge K Sorted Lists:</strong> Merging k sorted linked lists into one sorted list</li>
+        </ul>
+    </div>
+</body>
+</html>
