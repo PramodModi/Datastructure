@@ -181,10 +181,10 @@
 </head>
 <body>
     <header>
-        <h1>Data Structure Solutions</h1>
+        <h1>Most Asked Coding Problem based on Companies</h1>
     </header>
     
-    <button id="mobile-menu-toggle" class="mobile-menu-toggle">Show Patterns</button>
+    <button id="mobile-menu-toggle" class="mobile-menu-toggle">Select Company</button>
     
     <div class="container">
         <!-- Left sidebar for folders -->
@@ -214,7 +214,7 @@
             username: 'PramodModi', // Your GitHub username
             repository: 'Datastructure', // Your repository name
             branch: 'master', // The branch name (usually 'main' or 'master')
-            path: 'DS_html' // The path to your DS_html folder in the repository
+            path: 'DS_Company' // The path to your DS_Company folder in the repository
         };
 
         // Function to format the file name for display
@@ -261,7 +261,7 @@
             
             htmlFiles.forEach(file => {
                 const displayName = formatFileName(file.name);
-                const filePath = file.path.replace('DS_html/', ''); // Remove the base path
+                const filePath = file.path.replace('DS_Company/', ''); // Remove the base path
                 html += `<li><a href="${filePath}" target="_blank">${displayName}</a></li>`;
             });
             
