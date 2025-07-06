@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check if a Parentheses String Can Be Valid</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .alternative {
+            background-color: #f6ffed;
+            border-left: 5px solid #52c41a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Check if a Parentheses String Can Be Valid</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Check if a Parentheses String Can Be Valid</strong></p>
+        <p><a href="https://leetcode.com/problems/check-if-a-parentheses-string-can-be-valid/" target="_blank">LeetCode 2116: https://leetcode.com/problems/check-if-a-parentheses-string-can-be-valid/</a></p>
+        <p>
+            A parentheses string is a non-empty string consisting only of '(' and ')'. It is valid if any of the following conditions is true:
+        </p>
+        <ul>
+            <li>It is ().</li>
+            <li>It can be written as AB (A concatenated with B), where A and B are valid parentheses strings.</li>
+            <li>It can be written as (A), where A is a valid parentheses string.</li>
+        </ul>
+        <p>
+            You are given a parentheses string s and a string locked, both of length n. locked is a binary string consisting only of '0's and '1's. For each index i of locked:
+        </p>
+        <ul>
+            <li>If locked[i] is '1', you cannot change s[i].</li>
+            <li>But if locked[i] is '0', you can change s[i] to either '(' or ')'.</li>
+        </ul>
+        <p>
+            Return true if you can make s a valid parentheses string. Otherwise, return false.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "))()))", locked = "010100"</p>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong> locked[1] == '1' and locked[3] == '1', so we cannot change s[1] or s[3].
+                <br>We change s[0] and s[4] to '(' while leaving s[2] and s[5] unchanged to make s valid.
+            </p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = "()()", locked = "0000"</p>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong> We do not need to make any changes because s is already valid.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> s = ")", locked = "0"</p>
+            <p><strong>Output:</strong> false</p>
+            <p><strong>Explanation:</strong> locked permits us to change s[0].
+                <br>Changing s[0] to either '(' or ')' will not make s valid.
+            </p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 4:</strong></p>
+            <p><strong>Input:</strong> s = "(((())(((())", locked = "111111010111"</p>
+            <p><strong>Output:</strong> true</p>
+            <p><strong>Explanation:</strong> locked permits us to change s[6] and s[8].
+                <br>We change s[6] and s[8] to ')' to make s valid.
+            </p>
+        </div>
+
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>n == s.length == locked.length</li>
+            <li>1 <= n <= 10<sup>5</sup></li>
+            <li>s[i] is either '(' or ')'.</li>
+            <li>locked[i] is either '0' or '1'.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem is about determining if we can make a parentheses string valid by modifying certain characters that are "unlocked" (can be changed).
+        </p>
+        
+        <p>
+            Let's break down the key aspects of this problem:
+        </p>
+        <ol>
+            <li><strong>Valid Parentheses String:</strong> A string is valid if it has properly matched opening and closing parentheses, with each opening parenthesis having a corresponding closing parenthesis that comes after it.</li>
+            <li><strong>Locked and Unlocked Characters:</strong> The "locked" string tells us which characters in s can be modified:
+                <ul>
+                    <li>If locked[i] = '1', we cannot change s[i].</li>
+                    <li>If locked[i] = '0', we can change s[i] to either '(' or ')'.</li>
+                </ul>
+            </li>
+            <li><strong>Goal:</strong> Determine if it's possible to make the string valid by changing only the unlocked characters.</li>
+        </ol>
+        
+        <p>
+            Before diving into the solution, let's make some key observations:
+        </p>
+        <ol>
+            <li>A valid parentheses string must have an equal number of '(' and ')' characters.</li>
+            <li>At any point while reading the string from left to right, the number of opening parentheses must be greater than or equal to the number of closing parentheses (to ensure proper nesting).</li>
+            <li>If the string has an odd length, it can never be valid since we need pairs of parentheses.</li>
+        </ol>
+        
+        <p>
+            Let's analyze some examples to understand better:
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong> s = "))()))", locked = "010100"</p>
+            <p>Analyzing character by character:</p>
+            <table>
+                <tr>
+                    <th>Index</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                </tr>
+                <tr>
+                    <td>s</td><td>)</td><td>)</td><td>(</td><td>)</td><td>)</td><td>)</td>
+                </tr>
+                <tr>
+                    <td>locked</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td>
+                </tr>
+                <tr>
+                    <td>Can change?</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>Yes</td><td>Yes</td>
+                </tr>
+            </table>
+            <p>To make this string valid, we can change:</p>
+            <ul>
+                <li>s[0] from ')' to '('</li>
+                <li>s[4] from ')' to '('</li>
+            </ul>
+            <p>This gives us "((())(", which is a valid parentheses string.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong> s = ")", locked = "0"</p>
+            <p>Since the string has odd length (1), it can never be valid, so we return false.</p>
+        </div>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Two Passes with Stack Management</h2>
+        <p>
+            Our approach will be based on a key insight: we need to ensure two conditions for the parentheses string to be valid:
+        </p>
+        <ol>
+            <li>The total number of opening parentheses equals the total number of closing parentheses.</li>
+            <li>At any point while reading the string from left to right, we should be able to maintain a non-negative balance of opening vs. closing parentheses.</li>
+        </ol>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We can track unmatched characters using stacks, with separate handling for locked characters that must remain unchanged and unlocked characters that can be modified as needed to balance the expression.</p>
+        </div>
+        
+        <p>
+            The approach uses a greedy strategy:
+        </p>
+        <ol>
+            <li>First, check if the string has an even length (a necessary condition).</li>
+            <li>Process the string from left to right, keeping track of:
+                <ul>
+                    <li>Locked opening parentheses that need a closing match</li>
+                    <li>Unlocked characters that can be adjusted</li>
+                    <li>Locked closing parentheses that need a preceding opening match</li>
+                </ul>
+            </li>
+            <li>Prioritize using unlocked characters to match locked closing parentheses that appear early in the string.</li>
+            <li>After processing, match any remaining opening parentheses with available unlocked characters.</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Check String Length:</strong>
+                    <ul>
+                        <li>If the length of string s is odd, return false immediately (a valid parentheses string must have an even number of characters).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Initialize Data Structures:</strong>
+                    <ul>
+                        <li>Create a stack to keep track of indices of locked opening parentheses.</li>
+                        <li>Create another list to store indices of unlocked characters.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>First Pass (Left to Right):</strong>
+                    <ul>
+                        <li>Iterate through the string s:
+                            <ul>
+                                <li>If the character is unlocked (locked[i] == '0'), add its index to the unlocked list.</li>
+                                <li>If the character is locked as an opening parenthesis ('(' and locked[i] == '1'), push its index onto the stack.</li>
+                                <li>If the character is locked as a closing parenthesis (')' and locked[i] == '1'):
+                                    <ul>
+                                        <li>If there's an opening parenthesis on the stack, pop it (they match).</li>
+                                        <li>Else if there's an unlocked character available, use one (by removing it from the unlocked list).</li>
+                                        <li>Otherwise, return false (we can't make the string valid).</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Handle Remaining Characters:</strong>
+                    <ul>
+                        <li>While there are still opening parentheses on the stack and unlocked characters available:
+                            <ul>
+                                <li>If the opening parenthesis comes after the unlocked character, we can't use it to balance, so return false.</li>
+                                <li>Otherwise, match them by popping both.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Check Final Balance:</strong>
+                    <ul>
+                        <li>Return true if all opening parentheses have been matched (the stack is empty); otherwise, return false.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1: s = "))()))", locked = "010100"</strong></p>
+            <pre>
+Initial state:
+s = "))())), locked = "010100"
+stack = [] (for tracking locked opening parentheses)
+change = [] (for tracking unlocked characters)
+
+Iteration 0: s[0] = ')', locked[0] = '0'
+- Character is unlocked, add index to change: change = [0]
+
+Iteration 1: s[1] = ')', locked[1] = '1'
+- Character is locked closing parenthesis
+- No opening parentheses in stack
+- Have unlocked characters: change = [0], pop one: change = []
+
+Iteration 2: s[2] = '(', locked[2] = '0'
+- Character is unlocked, add index to change: change = [2]
+
+Iteration 3: s[3] = ')', locked[3] = '1'
+- Character is locked closing parenthesis
+- No opening parentheses in stack
+- Have unlocked characters: change = [2], pop one: change = []
+
+Iteration 4: s[4] = ')', locked[4] = '0'
+- Character is unlocked, add index to change: change = [4]
+
+Iteration 5: s[5] = ')', locked[5] = '0'
+- Character is unlocked, add index to change: change = [4, 5]
+
+After iteration:
+stack = [] (no unmatched locked opening parentheses)
+change = [4, 5] (two unlocked characters remaining)
+
+Final check:
+stack is empty, so return true.
+
+This means we can change s[0], s[2], s[4], and s[5] to make the string valid.
+For example, we can set: s[0]='(', s[2]='(', s[4]='(', s[5]=')'
+Resulting in: "()()()".
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the length of the string s. We iterate through the string once and perform constant time operations for each character.</li>
+                <li><strong>Space Complexity:</strong> O(n) in the worst case, as we might need to store all indices in our stack and change list.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def canBeValid(s, locked):
+    <span class="comment">"""
+    Determine if a parentheses string can be made valid by modifying unlocked characters.
+    
+    Args:
+        s: String of parentheses
+        locked: Binary string indicating which characters are locked ('1') or unlocked ('0')
+        
+    Returns:
+        True if s can be made into a valid parentheses string, False otherwise
+    """</span>
+    # If the length is odd, it can never be valid
+    if len(s) % 2 != 0:
+        return False
+    
+    # Initialize stacks to track characters
+    stack = []  # For tracking indices of locked opening parentheses
+    change = []  # For tracking indices of unlocked characters
+    
+    # First pass: Process characters from left to right
+    for i in range(len(s)):
+        c = s[i]
+        
+        # If the character is unlocked, we can change it as needed
+        if locked[i] == "0":
+            change.append(i)
+            
+        # If it's a locked opening parenthesis, track it
+        elif c == "(":
+            stack.append(i)
+            
+        # If it's a locked closing parenthesis
+        elif c == ")":
+            # If we have an unmatched opening parenthesis, match it
+            if stack:
+                stack.pop()
+            # Otherwise, use an unlocked character if available
+            elif change:
+                change.pop()
+            # If we can't match or substitute, the string can't be valid
+            else:
+                return False
+    
+    # After processing all characters, try to match remaining opening parentheses
+    # with remaining unlocked characters
+    while stack and change and stack[-1] < change[-1]:
+        stack.pop()
+        change.pop()
+    
+    # If all opening parentheses are matched, the string can be made valid
+    return len(stack) == 0</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">s = "))()))"
+locked = "010100"
+print(canBeValid(s, locked))  <span class="comment"># Output: true</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">True</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 4:</strong></p>
+            <pre class="command">s = "(((())(((())"
+locked = "111111010111"
+print(canBeValid(s, locked))  <span class="comment"># Output: true</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 4:</strong></p>
+            <pre class="command">True</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="alternative">
+            <h3>Two-Pass Approach (Left-to-Right and Right-to-Left)</h3>
+            <p>
+                Another way to solve this problem is to use a two-pass approach, scanning the string from left to right and then from right to left.
+            </p>
+            <pre>
+def canBeValid_twoPass(s, locked):
+    <span class="comment">"""Alternative solution using two passes."""</span>
+    if len(s) % 2 == 1:
+        return False
+        
+    # Left to right pass to check closing parentheses
+    balance = 0
+    for i in range(len(s)):
+        if s[i] == '(' or locked[i] == '0':
+            balance += 1
+        else:
+            balance -= 1
+        
+        if balance < 0:
+            return False
+    
+    # Right to left pass to check opening parentheses
+    balance = 0
+    for i in range(len(s)-1, -1, -1):
+        if s[i] == ')' or locked[i] == '0':
+            balance += 1
+        else:
+            balance -= 1
+        
+        if balance < 0:
+            return False
+    
+    return True</pre>
+            <p><strong>Complexity:</strong> O(n) time, O(1) space</p>
+            <p>
+                This approach checks two key conditions:
+            </p>
+            <ol>
+                <li>At any point reading from left to right, we should never have more closing parentheses than opening ones.</li>
+                <li>At any point reading from right to left, we should never have more opening parentheses than closing ones.</li>
+            </ol>
+            <p>
+                If both conditions are met, the string can be made valid.
+            </p>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>Stack-based</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>Provides detailed tracking of indices</td>
+                    <td>Higher space complexity</td>
+                </tr>
+                <tr>
+                    <td>Two-Pass</td>
+                    <td>O(n)</td>
+                    <td>O(1)</td>
+                    <td>More space-efficient</td>
+                    <td>May be less intuitive to understand</td>
+                </tr>
+            </table>
+            <p>
+                While both approaches correctly solve the problem with linear time complexity, the two-pass approach has the advantage of constant space complexity. However, the stack-based approach might be more intuitive for those familiar with stack solutions for parentheses problems.
+            </p>
+        </div>
+    </div>
+
+    <div class="section applications">
+        <h2>Related Problems and Applications</h2>
+        <ol>
+            <li>
+                <strong>Parentheses Problems:</strong>
+                <p>This problem is a variant of the classic valid parentheses problem, with the additional constraint of locked and unlocked characters.</p>
+            </li>
+            <li>
+                <strong>Similar LeetCode Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/valid-parentheses/" target="_blank">LeetCode 20: Valid Parentheses</a></li>
+                    <li><a href="https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/" target="_blank">LeetCode 1249: Minimum Remove to Make Valid Parentheses</a></li>
+                    <li><a href="https://leetcode.com/problems/valid-parenthesis-string/" target="_blank">LeetCode 678: Valid Parenthesis String</a></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Real-world Applications:</strong>
+                <p>
+                    Parentheses validation is important in:
+                </p>
+                <ul>
+                    <li>Compiler design and syntax checking</li>
+                    <li>Mathematical expression evaluation</li>
+                    <li>Code editors for bracket matching and highlighting</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

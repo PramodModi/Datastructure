@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Length of the Longest Common Prefix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .trie-visualization {
+            font-family: monospace;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find the Length of the Longest Common Prefix</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Find the Length of the Longest Common Prefix</strong></p>
+        <p><a href="https://leetcode.com/problems/find-the-length-of-the-longest-common-prefix/" target="_blank">LeetCode 3043: https://leetcode.com/problems/find-the-length-of-the-longest-common-prefix/</a></p>
+        <p>
+            You are given two arrays with positive integers <code>arr1</code> and <code>arr2</code>.
+        </p>
+        <p>
+            A prefix of a positive integer is an integer formed by one or more of its digits, starting from its leftmost digit.
+            For example, 123 is a prefix of the integer 12345, while 234 is not.
+        </p>
+        <p>
+            A common prefix of two integers a and b is an integer c, such that c is a prefix of both a and b.
+            For example, 5655359 and 56554 have common prefixes 565 and 5655 while 1223 and 43456 do not have a common prefix.
+        </p>
+        <p>
+            You need to find the length of the longest common prefix between all pairs of integers (x, y) such that x belongs to arr1 and y belongs to arr2.
+        </p>
+        <p>
+            Return the length of the longest common prefix among all pairs. If no common prefix exists among them, return 0.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> arr1 = [1,10,100], arr2 = [1000]</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong> There are 3 pairs (arr1[i], arr2[j]):
+                <br>- The longest common prefix of (1, 1000) is 1, with length 1.
+                <br>- The longest common prefix of (10, 1000) is 10, with length 2.
+                <br>- The longest common prefix of (100, 1000) is 100, with length 3.
+                <br>The longest common prefix is 100 with a length of 3.
+            </p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> arr1 = [1,2,3], arr2 = [4,4,4]</p>
+            <p><strong>Output:</strong> 0</p>
+            <p><strong>Explanation:</strong> There exists no common prefix for any pair (arr1[i], arr2[j]), hence we return 0.
+                <br>Note that common prefixes between elements of the same array do not count.
+            </p>
+        </div>
+
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 ≤ arr1.length, arr2.length ≤ 5 * 10<sup>4</sup></li>
+            <li>1 ≤ arr1[i], arr2[i] ≤ 10<sup>8</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find the length of the longest common prefix between any pair of integers where one integer comes from arr1 and the other comes from arr2.
+        </p>
+        
+        <p>
+            Let's break down the key concepts:
+        </p>
+        <ul>
+            <li><strong>Prefix:</strong> A prefix of a number is formed by taking one or more digits from the left. For example, for the number 12345, valid prefixes are 1, 12, 123, 1234, and 12345.</li>
+            <li><strong>Common Prefix:</strong> A common prefix between two numbers is a prefix that both numbers share. For instance, 1234 and 1256 have common prefixes 1, 12, but not 123.</li>
+            <li><strong>Task:</strong> Find the length (number of digits) of the longest common prefix among all possible pairs from arr1 and arr2.</li>
+        </ul>
+        
+        <p>
+            Let's analyze the examples to understand the problem better:
+        </p>
+        
+        <p><strong>Example 1:</strong> arr1 = [1,10,100], arr2 = [1000]</p>
+        <p>
+            We need to find the longest common prefix for each pair:
+        </p>
+        <ol>
+            <li>(1, 1000): Common prefix is "1" with length 1</li>
+            <li>(10, 1000): Common prefix is "10" with length 2</li>
+            <li>(100, 1000): Common prefix is "100" with length 3</li>
+        </ol>
+        <p>
+            The maximum length among all pairs is 3, so we return 3.
+        </p>
+        
+        <p><strong>Example 2:</strong> arr1 = [1,2,3], arr2 = [4,4,4]</p>
+        <p>
+            In this case, none of the pairs have a common prefix:
+        </p>
+        <ol>
+            <li>(1, 4): No common prefix</li>
+            <li>(2, 4): No common prefix</li>
+            <li>(3, 4): No common prefix</li>
+        </ol>
+        <p>
+            Since there's no common prefix, we return 0.
+        </p>
+        
+        <p>
+            An important observation is that we're dealing with digits of integers, not the integers themselves. So we'll need to convert the integers to strings to work with their individual digits.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Using Trie Data Structure</h2>
+        <p>
+            To efficiently find the longest common prefix among all pairs, we can use a Trie (Prefix Tree) data structure. A Trie is particularly well-suited for this problem because it specializes in prefix operations.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Instead of comparing each pair individually (which would be O(n<sup>2</sup> * m) where m is the average number of digits), we can store all numbers from arr1 in a Trie and then query the Trie for each number in arr2 to find the longest matching prefix.</p>
+        </div>
+        
+        <p>
+            The overall approach is as follows:
+        </p>
+        <ol>
+            <li>Convert all integers in arr1 to strings and insert them into a Trie.</li>
+            <li>For each integer in arr2 (converted to a string), traverse the Trie to find the length of the longest matching prefix.</li>
+            <li>Keep track of the maximum prefix length found.</li>
+        </ol>
+
+        <div class="visualization">
+            <p><strong>What is a Trie?</strong></p>
+            <p>
+                A Trie is a tree-like data structure that stores strings. Each node in a Trie represents a single character, and the path from the root to any node represents a prefix of one or more strings stored in the Trie.
+            </p>
+            
+            <p>
+                For example, if we insert "1", "10", and "100" into a Trie, it would look like:
+            </p>
+            
+            <div class="trie-visualization">
+                <pre>
+root
+ |
+ 1 → (end of "1")
+ |
+ 0 → (end of "10")
+ |
+ 0 → (end of "100")
+                </pre>
+            </div>
+            
+            <p>
+                When we want to find the longest common prefix between "1000" and this Trie, we would traverse as far as possible:
+            </p>
+            <ol>
+                <li>Start at root</li>
+                <li>Check if '1' exists in root's children: Yes → move to node '1'</li>
+                <li>Check if '0' exists in node '1's children: Yes → move to node '0'</li>
+                <li>Check if '0' exists in node '0's children: Yes → move to node '0'</li>
+                <li>Check if '0' exists in node '0's children: No → stop</li>
+            </ol>
+            <p>
+                At this point, we've traversed "100", which has a length of 3, so the longest common prefix is 3.
+            </p>
+        </div>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Create a Trie:</strong>
+                    <ul>
+                        <li>Implement a Trie data structure with an add method to insert strings.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Build the Trie:</strong>
+                    <ul>
+                        <li>Convert each integer in arr1 to a string.</li>
+                        <li>Insert each string into the Trie.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Query the Trie:</strong>
+                    <ul>
+                        <li>For each integer in arr2, convert it to a string.</li>
+                        <li>Traverse the Trie to find how many characters match from the beginning.</li>
+                        <li>Update the maximum length found so far.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return the Result:</strong>
+                    <ul>
+                        <li>Return the maximum length of the common prefix found.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li>
+                    <strong>Time Complexity:</strong>
+                    <ul>
+                        <li>Building the Trie: O(L1), where L1 is the total number of digits in all integers in arr1.</li>
+                        <li>Querying the Trie: O(L2), where L2 is the total number of digits in all integers in arr2.</li>
+                        <li>Overall: O(L1 + L2)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Space Complexity:</strong>
+                    <ul>
+                        <li>O(L1) for storing the Trie, where L1 is the total number of digits in all integers in arr1.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+class Trie:
+    def __init__(self):
+        <span class="comment">"""Initialize a Trie data structure with an empty root dictionary."""</span>
+        self.root = {}
+        
+    def add(self, num):
+        <span class="comment">"""Add a number to the Trie by converting it to string and inserting each digit."""</span>
+        num_str = str(num)
+        cur_root = self.root
+        for idx in num_str:
+            if idx not in cur_root:
+                cur_root[idx] = {}
+            cur_root = cur_root[idx]
+
+def longestCommonPrefix(arr1, arr2):
+    <span class="comment">"""
+    Find the length of the longest common prefix between any pair of integers
+    where one integer is from arr1 and the other is from arr2.
+    
+    Args:
+        arr1: List of positive integers
+        arr2: List of positive integers
+        
+    Returns:
+        Length of the longest common prefix
+    """</span>
+    # Create and build the Trie with all numbers from arr1
+    trie = Trie()
+    for num in arr1:
+        trie.add(num)
+    
+    # Find the longest common prefix by querying the Trie with each number from arr2
+    max_len = 0
+    for num in arr2:
+        length = 0
+        root = trie.root
+        str_num = str(num)
+        
+        # Traverse the Trie as far as possible for the current number
+        for idx in str_num:
+            if idx in root:
+                root = root[idx]
+                length += 1
+            else:
+                break
+        
+        # Update maximum length found so far
+        max_len = max(max_len, length)
+        
+    return max_len</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">arr1 = [1, 10, 100]
+arr2 = [1000]
+print(longestCommonPrefix(arr1, arr2))  <span class="comment"># Output: 3</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">3</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">arr1 = [1, 2, 3]
+arr2 = [4, 4, 4]
+print(longestCommonPrefix(arr1, arr2))  <span class="comment"># Output: 0</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">0</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="comparison">
+            <h3>1. Brute Force Approach</h3>
+            <pre>
+def longestCommonPrefix_bruteForce(arr1, arr2):
+    <span class="comment">"""Brute force approach comparing each pair of numbers."""</span>
+    max_len = 0
+    
+    for num1 in arr1:
+        str_num1 = str(num1)
+        for num2 in arr2:
+            str_num2 = str(num2)
+            
+            # Find common prefix length
+            prefix_len = 0
+            for i in range(min(len(str_num1), len(str_num2))):
+                if str_num1[i] == str_num2[i]:
+                    prefix_len += 1
+                else:
+                    break
+            
+            max_len = max(max_len, prefix_len)
+    
+    return max_len</pre>
+            <p><strong>Complexity:</strong> O(n*m*k) time, where n is the size of arr1, m is the size of arr2, and k is the average length of the numbers.</p>
+        </div>
+        
+        <div class="comparison">
+            <h3>2. Set-Based Approach</h3>
+            <pre>
+def longestCommonPrefix_sets(arr1, arr2):
+    <span class="comment">"""Set-based approach storing all prefixes."""</span>
+    prefixes1 = set()
+    
+    # Generate all prefixes from arr1
+    for num in arr1:
+        str_num = str(num)
+        for i in range(1, len(str_num) + 1):
+            prefixes1.add(str_num[:i])
+    
+    max_len = 0
+    
+    # Check each prefix of numbers in arr2 against prefixes from arr1
+    for num in arr2:
+        str_num = str(num)
+        for i in range(1, len(str_num) + 1):
+            prefix = str_num[:i]
+            if prefix in prefixes1:
+                max_len = max(max_len, len(prefix))
+    
+    return max_len</pre>
+            <p><strong>Complexity:</strong> O(L1 + L2) time, where L1 and L2 are the total number of digits in arr1 and arr2. O(L1) space for storing all prefixes.</p>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>Trie</td>
+                    <td>O(L1 + L2)</td>
+                    <td>O(L1)</td>
+                    <td>Efficient for prefix operations</td>
+                    <td>More complex implementation</td>
+                </tr>
+                <tr>
+                    <td>Brute Force</td>
+                    <td>O(n*m*k)</td>
+                    <td>O(1)</td>
+                    <td>Simple implementation</td>
+                    <td>Inefficient for large inputs</td>
+                </tr>
+                <tr>
+                    <td>Set-Based</td>
+                    <td>O(L1 + L2)</td>
+                    <td>O(L1)</td>
+                    <td>Simpler than Trie</td>
+                    <td>Less memory-efficient than Trie for certain inputs</td>
+                </tr>
+            </table>
+            <p>
+                While all approaches correctly solve the problem, the Trie approach is particularly efficient for this type of prefix-matching problem. The set-based approach is a good alternative with similar complexity but might be easier to implement. The brute force approach, while simplest to understand, becomes inefficient for large input arrays.
+            </p>
+        </div>
+    </div>
+
+    <div class="section applications">
+        <h2>Applications and Related Problems</h2>
+        <ol>
+            <li>
+                <strong>Autocomplete Systems:</strong>
+                <p>Tries are commonly used in implementing autocomplete features, where finding prefixes is essential.</p>
+            </li>
+            <li>
+                <strong>Spell Checkers:</strong>
+                <p>Finding common prefixes can help in suggesting corrections for misspelled words.</p>
+            </li>
+            <li>
+                <strong>Related Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/longest-common-prefix/" target="_blank">LeetCode 14: Longest Common Prefix</a> (Finding the longest common prefix string amongst an array of strings)</li>
+                    <li><a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank">LeetCode 208: Implement Trie (Prefix Tree)</a></li>
+                </ul>
+            </li>
+            <li>
+                <strong>IP Routing:</strong>
+                <p>Tries are used in IP routing algorithms to find the longest prefix match.</p>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

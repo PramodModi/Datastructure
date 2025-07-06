@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge 3 Sorted Arrays</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Merge 3 Sorted Arrays</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Merge 3 Sorted Arrays</strong></p>
+        <p>
+            Given 3 arrays A[], B[], and C[] that are sorted in ascending order, the task is to merge them together in ascending order and output the resulting array.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong></p>
+            <p>A = [1, 2, 3, 4, 5]</p>
+            <p>B = [2, 3, 4]</p>
+            <p>C = [4, 5, 6, 7]</p>
+            <p><strong>Output:</strong> [1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 6, 7]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong></p>
+            <p>A = [1, 2, 3, 5]</p>
+            <p>B = [6, 7, 8, 9]</p>
+            <p>C = [10, 11, 12]</p>
+            <p><strong>Output:</strong> [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12]</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to merge three sorted arrays into a single sorted array. The key points are:
+        </p>
+        <ul>
+            <li>All three input arrays are already sorted in ascending order.</li>
+            <li>We need to maintain the sort order in the output array.</li>
+            <li>If duplicate elements exist across arrays, they should all appear in the final array.</li>
+        </ul>
+        
+        <p>
+            Let's analyze the examples:
+        </p>
+        
+        <p><strong>Example 1:</strong></p>
+        <p>
+            A = [1, 2, 3, 4, 5], B = [2, 3, 4], C = [4, 5, 6, 7]
+        </p>
+        <ul>
+            <li>The output contains all elements from all three arrays.</li>
+            <li>Duplicate elements like 2, 3, 4, and 5 appear multiple times in the output - once for each occurrence in the input arrays.</li>
+            <li>The final array is sorted in ascending order: [1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 6, 7]</li>
+        </ul>
+        
+        <p><strong>Example 2:</strong></p>
+        <p>
+            A = [1, 2, 3, 5], B = [6, 7, 8, 9], C = [10, 11, 12]
+        </p>
+        <ul>
+            <li>In this case, the three arrays contain completely different ranges of numbers with no overlap.</li>
+            <li>The output is simply the concatenation of the three arrays in order: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12]</li>
+        </ul>
+        
+        <p>
+            This problem is an extension of the classic "merge two sorted arrays" problem, which is a fundamental operation in the merge sort algorithm. The challenge is to efficiently merge three arrays while maintaining the sorted order.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach 1: Three-Pointer Technique</h2>
+        <p>
+            The first approach is to use three pointers, one for each array, and at each step, we pick the smallest element pointed to by these pointers.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> At each step, find the minimum value among the three elements currently pointed to by the three pointers. Add this minimum value to the result and advance the pointer that pointed to this value.</p>
+        </div>
+        
+        <p>
+            This approach extends the merge operation in merge sort from two arrays to three arrays:
+        </p>
+        <ol>
+            <li>Initialize three pointers, one for each input array, starting at the beginning of each array.</li>
+            <li>Compare the elements pointed to by the three pointers and add the smallest one to the output array.</li>
+            <li>Advance the pointer that pointed to the smallest element.</li>
+            <li>Repeat until we've processed all elements from all three arrays.</li>
+            <li>If one or two arrays are exhausted before others, continue the merge process with the remaining arrays.</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps for Approach 1:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>Initialize three pointers i, j, and k to 0 (pointing to the first elements of A, B, and C, respectively).</li>
+                        <li>Initialize an empty array 'output' to store the merged result.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Main Merge:</strong>
+                    <ul>
+                        <li>While all three arrays have elements left (i < len(A), j < len(B), k < len(C)):
+                            <ul>
+                                <li>Find the minimum among A[i], B[j], and C[k].</li>
+                                <li>Append this minimum value to the output array.</li>
+                                <li>Increment the pointer corresponding to the minimum value.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Handle Remaining Elements:</strong>
+                    <ul>
+                        <li>If array A and B still have elements, merge them into the output array.</li>
+                        <li>If array A and C still have elements, merge them into the output array.</li>
+                        <li>If array B and C still have elements, merge them into the output array.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Handle Single Array Remainders:</strong>
+                    <ul>
+                        <li>If array A still has elements, append them all to the output array.</li>
+                        <li>If array B still has elements, append them all to the output array.</li>
+                        <li>If array C still has elements, append them all to the output array.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return Result:</strong>
+                    <ul>
+                        <li>Return the output array containing all merged elements.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1:</strong></p>
+            <pre>
+A = [1, 2, 3, 4, 5]
+B = [2, 3, 4]
+C = [4, 5, 6, 7]
+
+Initialize:
+- i = 0, j = 0, k = 0
+- output = []
+
+Iteration 1:
+- Compare A[0]=1, B[0]=2, C[0]=4
+- Minimum is A[0]=1
+- Add 1 to output: output = [1]
+- Increment i: i = 1
+
+Iteration 2:
+- Compare A[1]=2, B[0]=2, C[0]=4
+- Minimum is A[1]=2 or B[0]=2 (both equal, let's pick A[1])
+- Add 2 to output: output = [1, 2]
+- Increment i: i = 2
+
+Iteration 3:
+- Compare A[2]=3, B[0]=2, C[0]=4
+- Minimum is B[0]=2
+- Add 2 to output: output = [1, 2, 2]
+- Increment j: j = 1
+
+Iteration 4:
+- Compare A[2]=3, B[1]=3, C[0]=4
+- Minimum is A[2]=3 or B[1]=3 (both equal, let's pick A[2])
+- Add 3 to output: output = [1, 2, 2, 3]
+- Increment i: i = 3
+
+... (continue iterations) ...
+
+Final output: [1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 6, 7]
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis for Approach 1:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n1 + n2 + n3), where n1, n2, and n3 are the lengths of the three input arrays. We need to process each element exactly once.</li>
+                <li><strong>Space Complexity:</strong> O(n1 + n2 + n3) for the output array. If we don't count the output array, the auxiliary space is O(1) as we only use a constant amount of extra space.</li>
+            </ul>
+        </div>
+
+        <h2>Approach 2: Using Min Heap</h2>
+        <p>
+            Another approach is to use a min heap (priority queue) to efficiently find the minimum element among the three arrays at each step.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> A min heap allows us to efficiently find the minimum element among a collection of elements in O(log k) time, where k is the number of elements in the heap (in this case, k=3 at most).</p>
+        </div>
+        
+        <p>
+            This approach generalizes well to merging k sorted arrays and is especially useful when k is large:
+        </p>
+        <ol>
+            <li>Initialize a min heap and insert the first element from each array along with its array index and position.</li>
+            <li>Extract the minimum element from the heap and add it to the output array.</li>
+            <li>Insert the next element from the array that the extracted element came from into the heap.</li>
+            <li>Repeat until all elements are processed.</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps for Approach 2:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>Initialize an empty array 'output' to store the merged result.</li>
+                        <li>Initialize a min heap.</li>
+                        <li>Insert the first element from each array into the heap as (value, array_index, element_index) tuples.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Main Merge:</strong>
+                    <ul>
+                        <li>While the heap is not empty:
+                            <ul>
+                                <li>Extract the minimum element (value, array_index, element_index) from the heap.</li>
+                                <li>Add the value to the output array.</li>
+                                <li>If there are more elements in the array that the extracted element came from, insert the next element into the heap.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return Result:</strong>
+                    <ul>
+                        <li>Return the output array containing all merged elements.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Approach 2:</strong></p>
+            <pre>
+A = [1, 2, 3, 4, 5]
+B = [2, 3, 4]
+C = [4, 5, 6, 7]
+
+Initialize:
+- output = []
+- min_heap = [(1, 0, 0), (2, 1, 0), (4, 2, 0)] 
+  where each tuple is (value, array_index, element_index)
+
+Iteration 1:
+- Extract min (1, 0, 0)
+- Add 1 to output: output = [1]
+- Insert next element from A: (2, 0, 1)
+- min_heap = [(2, 0, 1), (2, 1, 0), (4, 2, 0)]
+
+Iteration 2:
+- Extract min (2, 0, 1) 
+- Add 2 to output: output = [1, 2]
+- Insert next element from A: (3, 0, 2)
+- min_heap = [(2, 1, 0), (3, 0, 2), (4, 2, 0)]
+
+... (continue iterations) ...
+
+Final output: [1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 6, 7]
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis for Approach 2:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O((n1 + n2 + n3) * log(3)), where n1, n2, and n3 are the lengths of the three input arrays. Each heap operation takes O(log 3) time, and we perform such operations for each element.</li>
+                <li><strong>Space Complexity:</strong> O(n1 + n2 + n3) for the output array, plus O(3) = O(1) for the heap which stores at most 3 elements at a time.</li>
+            </ul>
+        </div>
+
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>Three Pointers</td>
+                    <td>O(n1 + n2 + n3)</td>
+                    <td>O(1) auxiliary</td>
+                    <td>Simpler to implement, more efficient for small k</td>
+                    <td>Doesn't scale well to large k</td>
+                </tr>
+                <tr>
+                    <td>Min Heap</td>
+                    <td>O((n1 + n2 + n3) * log(3))</td>
+                    <td>O(3) = O(1) auxiliary</td>
+                    <td>Generalizes well to k arrays</td>
+                    <td>Slight overhead for small k</td>
+                </tr>
+            </table>
+            <p>For this specific problem with k=3, the three-pointer approach is likely more efficient and simpler. However, the min heap approach is more scalable and would be preferred if we were merging many sorted arrays (large k).</p>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <h3>Approach 1: Three-Pointer Technique</h3>
+        <pre>
+def mergeThreeSortedArrays(arr1, arr2, arr3):
+    <span class="comment">"""Merge three sorted arrays into a single sorted array.
+    
+    Args:
+        arr1, arr2, arr3: Three arrays sorted in ascending order
+        
+    Returns:
+        A single array containing all elements from arr1, arr2, and arr3 in sorted order
+    """</span>
+    l1 = len(arr1)
+    l2 = len(arr2)
+    l3 = len(arr3)
+    i, j, k = 0, 0, 0  <span class="comment"># Initialize pointers</span>
+    output = []  <span class="comment"># Result array</span>
+    
+    <span class="comment"># Phase 1: Process elements while all three arrays have elements left</span>
+    while i < l1 and j < l2 and k < l3:
+        minval = min(arr1[i], arr2[j], arr3[k])
+        output.append(minval)
+        if minval == arr1[i]:
+            i += 1
+        elif minval == arr2[j]:
+            j += 1
+        else:
+            k += 1
+    
+    <span class="comment"># Phase 2: Process remaining elements when one array is exhausted</span>
+    <span class="comment"># Handle case when array C is exhausted but A and B have elements</span>
+    while i < l1 and j < l2:
+        if arr1[i] < arr2[j]:
+            output.append(arr1[i])
+            i += 1
+        else:
+            output.append(arr2[j])
+            j += 1
+    
+    <span class="comment"># Handle case when array B is exhausted but A and C have elements</span>
+    while i < l1 and k < l3:
+        if arr1[i] < arr3[k]:
+            output.append(arr1[i])
+            i += 1
+        else:
+            output.append(arr3[k])
+            k += 1
+    
+    <span class="comment"># Handle case when array A is exhausted but B and C have elements</span>
+    while j < l2 and k < l3:
+        if arr2[j] < arr3[k]:
+            output.append(arr2[j])
+            j += 1
+        else:
+            output.append(arr3[k])
+            k += 1
+    
+    <span class="comment"># Phase 3: Process any remaining elements in individual arrays</span>
+    while i < l1:
+        output.append(arr1[i])
+        i += 1
+    
+    while j < l2:
+        output.append(arr2[j])
+        j += 1
+    
+    while k < l3:
+        output.append(arr3[k])
+        k += 1
+    
+    return output</pre>
+        
+        <h3>Approach 2: Using Min Heap</h3>
+        <pre>
+import heapq
+
+def mergeThreeSortedArraysHeap(arr1, arr2, arr3):
+    <span class="comment">"""Merge three sorted arrays using a min heap.
+    
+    Args:
+        arr1, arr2, arr3: Three arrays sorted in ascending order
+        
+    Returns:
+        A single array containing all elements from arr1, arr2, and arr3 in sorted order
+    """</span>
+    output = []
+    heap = []
+    
+    <span class="comment"># Arrays to process</span>
+    arrays = [arr1, arr2, arr3]
+    
+    <span class="comment"># Initialize the heap with the first element from each array</span>
+    for i, arr in enumerate(arrays):
+        if arr:  <span class="comment"># Check if array is not empty</span>
+            <span class="comment"># (value, array_index, element_index)</span>
+            heapq.heappush(heap, (arr[0], i, 0))
+    
+    <span class="comment"># Process elements from the heap</span>
+    while heap:
+        val, arr_idx, elem_idx = heapq.heappop(heap)
+        output.append(val)
+        
+        <span class="comment"># If there are more elements in the array, add the next one to the heap</span>
+        if elem_idx + 1 < len(arrays[arr_idx]):
+            heapq.heappush(heap, (arrays[arr_idx][elem_idx + 1], arr_idx, elem_idx + 1))
+    
+    return output</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">A = [1, 2, 3, 4, 5]
+B = [2, 3, 4]
+C = [4, 5, 6, 7]
+print(mergeThreeSortedArrays(A, B, C))  <span class="comment"># Output: [1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 6, 7]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">[1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 6, 7]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">A = [1, 2, 3, 5]
+B = [6, 7, 8, 9]
+C = [10, 11, 12]
+print(mergeThreeSortedArrays(A, B, C))  <span class="comment"># Output: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">[1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12]</pre>
+        </div>
+    </div>
+
+    <div class="section extensions">
+        <h2>Extensions and Applications</h2>
+        <p>
+            This problem has several extensions and practical applications:
+        </p>
+        <ol>
+            <li>
+                <strong>Merging K Sorted Arrays:</strong>
+                <p>The min heap approach generalizes naturally to merging any number of sorted arrays. For k arrays, the time complexity would be O(N*log(k)) where N is the total number of elements across all arrays.</p>
+            </li>
+            <li>
+                <strong>External Sorting:</strong>
+                <p>When dealing with data too large to fit in memory, we often sort chunks that fit in memory and then merge these sorted chunks, which is essentially merging multiple sorted arrays.</p>
+            </li>
+            <li>
+                <strong>Database Operations:</strong>
+                <p>In database systems, merge operations are common for sorted datasets, especially in operations like merge joins.</p>
+            </li>
+            <li>
+                <strong>Variations:</strong>
+                <p>
+                    Several variations of this problem exist:
+                </p>
+                <ul>
+                    <li>Merging sorted arrays while removing duplicates.</li>
+                    <li>Finding the k-th smallest element across multiple sorted arrays.</li>
+                    <li>Merging arrays with different sorting orders (some ascending, some descending).</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

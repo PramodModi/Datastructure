@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flatten Binary Tree to Linked List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .tree-diagram {
+            text-align: center;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flatten Binary Tree to Linked List</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Flatten Binary Tree to Linked List</strong></p>
+        <p><a href="https://leetcode.com/problems/flatten-binary-tree-to-linked-list/" target="_blank">LeetCode 114: https://leetcode.com/problems/flatten-binary-tree-to-linked-list/</a></p>
+        <p>
+            Given the root of a binary tree, flatten the tree into a "linked list":
+        </p>
+        <ul>
+            <li>The "linked list" should use the same TreeNode class where the right child pointer points to the next node in the list and the left child pointer is always null.</li>
+            <li>The "linked list" should be in the same order as a pre-order traversal of the binary tree.</li>
+        </ul>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> root = [1,2,5,3,4,null,6]</p>
+            <div class="tree-diagram">
+                  1
+                 / \
+                2   5
+               / \   \
+              3   4   6
+            </div>
+            <p><strong>Output:</strong> [1,null,2,null,3,null,4,null,5,null,6]</p>
+            <div class="tree-diagram">
+            1
+             \
+              2
+               \
+                3
+                 \
+                  4
+                   \
+                    5
+                     \
+                      6
+            </div>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> root = []</p>
+            <p><strong>Output:</strong> []</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> root = [0]</p>
+            <p><strong>Output:</strong> [0]</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to transform a binary tree into a "flattened" structure that resembles a linked list. Let's break down the key requirements:
+        </p>
+        <ol>
+            <li>The resulting structure should still use the <code>TreeNode</code> class, but with a different pattern.</li>
+            <li>Every node in the flattened tree should have its left child set to <code>null</code>.</li>
+            <li>The right child of each node should point to the next node in the sequence.</li>
+            <li>The sequence of nodes should follow a pre-order traversal (root, left subtree, right subtree).</li>
+        </ol>
+        
+        <p>
+            To understand pre-order traversal, we visit nodes in this order: first the root, then recursively the left subtree, and finally recursively the right subtree.
+        </p>
+        
+        <p>
+            For Example 1, the pre-order traversal of the given tree [1,2,5,3,4,null,6] is:
+        </p>
+        <ul>
+            <li>Root: 1</li>
+            <li>Left subtree of 1: 2 → 3 → 4 (in pre-order)</li>
+            <li>Right subtree of 1: 5 → 6 (in pre-order)</li>
+        </ul>
+        <p>
+            So the complete pre-order traversal is: 1, 2, 3, 4, 5, 6
+        </p>
+        
+        <p>
+            The flattened tree should have each node's right pointer pointing to the next node in this sequence, forming a right-skewed tree (which resembles a linked list).
+        </p>
+        
+        <div class="visualization">
+            <p><strong>Initial Binary Tree:</strong></p>
+            <pre>
+      1
+     / \
+    2   5
+   / \   \
+  3   4   6
+</pre>
+            <p><strong>Flattened Tree (as a right-skewed tree/linked list):</strong></p>
+            <pre>
+1
+ \
+  2
+   \
+    3
+     \
+      4
+       \
+        5
+         \
+          6
+</pre>
+        </div>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Morris Traversal</h2>
+        <p>
+            There are multiple approaches to solve this problem:
+        </p>
+        <ol>
+            <li>Recursive approach with pre-order traversal and tree manipulation</li>
+            <li>Iterative approach using a stack to simulate pre-order traversal</li>
+            <li>Morris Traversal approach (O(1) extra space)</li>
+        </ol>
+        
+        <p>
+            We'll focus on the Morris Traversal approach, which allows us to flatten the tree in O(n) time with O(1) extra space, without using recursion or a stack.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Morris Traversal modifies the tree structure temporarily to establish links between nodes, allowing traversal without recursion or extra space. For this problem, we can adapt it to permanently restructure the tree into our desired linked list format.</p>
+        </div>
+        
+        <p>
+            The basic idea of the approach is:
+        </p>
+        <ol>
+            <li>Start from the root node as the current node.</li>
+            <li>For each node, if it has a left child:
+                <ul>
+                    <li>Find the rightmost node in its left subtree (the predecessor in the pre-order traversal).</li>
+                    <li>Connect this predecessor's right pointer to the current node's right child.</li>
+                    <li>Move the left subtree to be the right child of the current node.</li>
+                    <li>Set the left child of the current node to null.</li>
+                </ul>
+            </li>
+            <li>Move to the next node (current.right).</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>Set <code>current</code> to the root node.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Iterate Through the Tree:</strong>
+                    <ul>
+                        <li>While <code>current</code> is not null:
+                            <ul>
+                                <li>If <code>current</code> has a left child:
+                                    <ul>
+                                        <li>Find the rightmost node in the left subtree (predecessor).</li>
+                                        <li>Make the right child of the current node the right child of the predecessor.</li>
+                                        <li>Make the left child of the current node its right child.</li>
+                                        <li>Set the left child of the current node to null.</li>
+                                    </ul>
+                                </li>
+                                <li>Move <code>current</code> to its right child.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return:</strong>
+                    <ul>
+                        <li>Return the root node, which now represents the head of the flattened tree.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1:</strong></p>
+            <pre>
+Initial tree:
+      1
+     / \
+    2   5
+   / \   \
+  3   4   6
+
+Step 1:
+- current = 1
+- 1 has left child (2), so find its rightmost node (4)
+- Connect 4.right = 1.right = 5
+- Move 1.left to 1.right: 1.right = 2
+- Set 1.left = null
+Tree becomes:
+      1
+       \
+        2
+       / \
+      3   4
+           \
+            5
+             \
+              6
+
+Step 2:
+- current = 2
+- 2 has left child (3), so find its rightmost node (3)
+- Connect 3.right = 2.right = 4
+- Move 2.left to 2.right: 2.right = 3
+- Set 2.left = null
+Tree becomes:
+      1
+       \
+        2
+         \
+          3
+           \
+            4
+             \
+              5
+               \
+                6
+
+Step 3:
+- current = 3
+- 3 has no left child, move to right
+- current = 4
+
+Step 4:
+- current = 4
+- 4 has no left child, move to right
+- current = 5
+
+Step 5:
+- current = 5
+- 5 has no left child, move to right
+- current = 6
+
+Step 6:
+- current = 6
+- 6 has no left child, move to right
+- current = null (exit loop)
+
+Final flattened tree:
+1
+ \
+  2
+   \
+    3
+     \
+      4
+       \
+        5
+         \
+          6
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the number of nodes in the tree. Each node is visited at most twice (once as the current node and at most once as a predecessor).</li>
+                <li><strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size. No recursion stack or additional data structures are needed.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+class Node(object):
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def flatten(root):
+    <span class="comment">"""Flatten a binary tree to a linked list in-place using Morris Traversal.
+    
+    Args:
+        root: Root of the binary tree
+        
+    Returns:
+        Root of the flattened tree (head of the linked list)
+    """</span>
+    # Edge case
+    if not root:
+        return None
+    
+    # Morris Traversal (preorder) approach
+    current = root
+    
+    while current:
+        # If left child exists
+        if current.left:
+            # Find the rightmost node in left subtree
+            predecessor = current.left
+            while predecessor.right:
+                predecessor = predecessor.right
+            
+            # Make current's right child as the right child of predecessor
+            predecessor.right = current.right
+            
+            # Move current's left subtree to right
+            current.right = current.left
+            current.left = None
+        
+        # Move to the next node
+        current = current.right
+    
+    return root
+
+def printList(head):
+    <span class="comment">"""Print the values of nodes in the flattened tree."""</span>
+    cur = head
+    while cur:
+        print(cur.val)
+        cur = cur.right</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command"># Create the tree from Example 1: [1,2,5,3,4,null,6]
+root = Node(1, Node(2, Node(3), Node(4)), Node(5, None, Node(6)))
+
+# Flatten the tree
+head = flatten(root)
+
+# Print the flattened tree
+printList(head)  <span class="comment"># Output: 1 2 3 4 5 6</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">1
+2
+3
+4
+5
+6</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="comparison">
+            <h3>1. Recursive Approach</h3>
+            <pre>
+def flatten_recursive(root):
+    <span class="comment">"""Flatten a binary tree using a recursive approach."""</span>
+    # Helper function to do the recursion
+    def flatten_helper(node):
+        if not node:
+            return None
+        
+        # If leaf node, return itself
+        if not node.left and not node.right:
+            return node
+        
+        # Flatten left and right subtrees
+        left_tail = flatten_helper(node.left)
+        right_tail = flatten_helper(node.right)
+        
+        # If left subtree exists, connect it
+        if left_tail:
+            left_tail.right = node.right
+            node.right = node.left
+            node.left = None
+        
+        # Return the tail of the flattened tree
+        return right_tail if right_tail else left_tail
+    
+    flatten_helper(root)
+    return root</pre>
+            <p><strong>Complexity:</strong> O(n) time, O(h) space where h is the height of the tree (due to recursion stack)</p>
+        </div>
+        
+        <div class="comparison">
+            <h3>2. Iterative Approach with Stack</h3>
+            <pre>
+def flatten_iterative(root):
+    <span class="comment">"""Flatten a binary tree using an iterative approach with stack."""</span>
+    if not root:
+        return None
+    
+    stack = [root]
+    prev = None
+    
+    # Simulate pre-order traversal
+    while stack:
+        current = stack.pop()
+        
+        # Connect previous node to current
+        if prev:
+            prev.right = current
+            prev.left = None
+        
+        # Push right then left onto stack (to process left first when popping)
+        if current.right:
+            stack.append(current.right)
+        if current.left:
+            stack.append(current.left)
+        
+        prev = current
+    
+    # Clean up the last node
+    if prev:
+        prev.left = None
+    
+    return root</pre>
+            <p><strong>Complexity:</strong> O(n) time, O(n) space in worst case for the stack</p>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>Morris Traversal</td>
+                    <td>O(n)</td>
+                    <td>O(1)</td>
+                    <td>Constant extra space</td>
+                    <td>More complex implementation</td>
+                </tr>
+                <tr>
+                    <td>Recursive</td>
+                    <td>O(n)</td>
+                    <td>O(h)</td>
+                    <td>Cleaner, more intuitive code</td>
+                    <td>Uses recursion stack space</td>
+                </tr>
+                <tr>
+                    <td>Iterative with Stack</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>Avoids recursion</td>
+                    <td>Uses explicit stack space</td>
+                </tr>
+            </table>
+            <p>The Morris Traversal approach is the most space-efficient but can be harder to understand. The recursive approach is more intuitive but uses stack space. The iterative approach with a stack offers a middle ground.</p>
+        </div>
+    </div>
+
+    <div class="section applications">
+        <h2>Applications and Related Problems</h2>
+        <ol>
+            <li>
+                <strong>Serialization and Deserialization:</strong>
+                <p>Flattening a tree can be useful as part of serialization algorithms for binary trees.</p>
+            </li>
+            <li>
+                <strong>Tree Traversal:</strong>
+                <p>This problem demonstrates creative ways to perform tree traversals, which are fundamental operations in many tree algorithms.</p>
+            </li>
+            <li>
+                <strong>Related Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/convert-binary-search-tree-to-sorted-doubly-linked-list/" target="_blank">Convert Binary Search Tree to Sorted Doubly Linked List</a></li>
+                    <li><a href="https://leetcode.com/problems/binary-tree-inorder-traversal/" target="_blank">Binary Tree Inorder Traversal</a></li>
+                    <li><a href="https://leetcode.com/problems/recover-binary-search-tree/" target="_blank">Recover Binary Search Tree</a></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Morris Traversal Applications:</strong>
+                <p>The Morris Traversal technique used here is also applicable to other tree problems where constant space traversal is required.</p>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>
