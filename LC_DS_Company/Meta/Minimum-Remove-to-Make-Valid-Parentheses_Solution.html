@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Remove to Make Valid Parentheses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minimum Remove to Make Valid Parentheses</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Minimum Remove to Make Valid Parentheses</strong></p>
+        <p><a href="https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses" target="_blank">https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses</a></p>
+        <p>
+            Given a string s of '(' , ')' and lowercase English characters.
+        </p>
+        <p>
+            Your task is to remove the minimum number of parentheses ( '(' or ')', in any positions )
+            so that the resulting parentheses string is valid and return any valid string.
+        </p>
+        <p>
+            Formally, a parentheses string is valid if and only if:
+        </p>
+        <ul>
+            <li>It is the empty string, contains only lowercase characters, or</li>
+            <li>It can be written as AB (A concatenated with B), where A and B are valid strings, or</li>
+            <li>It can be written as (A), where A is a valid string.</li>
+        </ul>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "lee(t(c)o)de)"</p>
+            <p><strong>Output:</strong> "lee(t(c)o)de"</p>
+            <p><strong>Explanation:</strong> "lee(t(co)de)" , "lee(t(c)ode)" would also be accepted.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = "a)b(c)d"</p>
+            <p><strong>Output:</strong> "ab(c)d"</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> s = "))(("</p>
+            <p><strong>Output:</strong> ""</p>
+            <p><strong>Explanation:</strong> An empty string is also valid.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= s.length <= 10<sup>5</sup></li>
+            <li>s[i] is either '(', ')', or lowercase English letter.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to remove the minimum number of parentheses to make the string valid.
+        </p>
+        <p>
+            A string with parentheses is considered valid if:
+        </p>
+        <ul>
+            <li>For every opening parenthesis '(', there is a matching closing parenthesis ')'.</li>
+            <li>Every closing parenthesis ')' has a corresponding opening parenthesis '(' that comes before it.</li>
+        </ul>
+        <p>
+            Let's break down the examples to understand the problem better:
+        </p>
+        <ol>
+            <li>
+                <p>For the string "lee(t(c)o)de)":</p>
+                <ul>
+                    <li>The last ')' is unmatched since there are not enough '(' before it.</li>
+                    <li>If we remove this unmatched ')', we get "lee(t(c)o)de", which is valid.</li>
+                </ul>
+            </li>
+            <li>
+                <p>For the string "a)b(c)d":</p>
+                <ul>
+                    <li>The first ')' is unmatched as there is no '(' before it.</li>
+                    <li>If we remove this unmatched ')', we get "ab(c)d", which is valid.</li>
+                </ul>
+            </li>
+            <li>
+                <p>For the string "))((":</p>
+                <ul>
+                    <li>Both ')' characters are unmatched as there are no '(' before them.</li>
+                    <li>Both '(' characters are unmatched as there are no ')' after them.</li>
+                    <li>Removing all parentheses gives us an empty string, which is considered valid.</li>
+                </ul>
+            </li>
+        </ol>
+        <p>
+            The key challenge is to identify which parentheses need to be removed to make the string valid while keeping the removal count minimal.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We need to identify two types of invalid parentheses:</p>
+            <ol>
+                <li>Closing parentheses ')' with no matching opening parenthesis '(' before them.</li>
+                <li>Opening parentheses '(' with no matching closing parenthesis ')' after them.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach 1: Using a Stack</h2>
+        <p>
+            In this approach, we make two passes through the string:
+        </p>
+        <ol>
+            <li>First pass: Remove all closing parentheses that don't have a matching opening parenthesis.</li>
+            <li>Second pass: Remove opening parentheses that don't have a matching closing parenthesis.</li>
+        </ol>
+        <p>
+            During the first pass, we keep track of the count of opening and closing parentheses. If at any point, the count of closing parentheses exceeds the count of opening parentheses, we know we've found an unmatched closing parenthesis, which we don't add to our stack.
+        </p>
+        <p>
+            During the second pass (as we pop from the stack), if we encounter an opening parenthesis and there are more opening parentheses than closing parentheses, we know it's an unmatched opening parenthesis, which we don't add to our result.
+        </p>
+
+        <div class="steps">
+            <h3>Steps for Approach 1:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize variables:</strong>
+                    <ul>
+                        <li>Initialize an empty stack to store characters.</li>
+                        <li>Initialize counters for opening and closing parentheses (open = 0, close = 0).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>First pass (left to right):</strong>
+                    <ul>
+                        <li>Iterate through each character in the string.</li>
+                        <li>If the character is '(', increment the open counter.</li>
+                        <li>If the character is ')', increment the close counter.</li>
+                        <li>If close > open, we have an unmatched closing parenthesis, so decrement close and don't add it to the stack.</li>
+                        <li>Otherwise, add the character to the stack.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Second pass (right to left):</strong>
+                    <ul>
+                        <li>Initialize an empty result list.</li>
+                        <li>Pop characters from the stack one by one.</li>
+                        <li>If the character is '(' and open > close, we have an unmatched opening parenthesis, so decrement open and don't add it to the result.</li>
+                        <li>Otherwise, add the character to the result.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Construct the final result:</strong>
+                    <ul>
+                        <li>Reverse the result list (since we processed from right to left).</li>
+                        <li>Join the characters to form the result string.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="code">
+            <h3>Code for Approach 1:</h3>
+            <pre>
+def minRemoveToMakeValid(s):
+    <span class="comment">"""Remove the minimum number of parentheses to make the string valid.
+    
+    Args:
+        s: Input string with parentheses and lowercase letters
+        
+    Returns:
+        A valid string with minimum parentheses removed
+    """</span>
+    stack = []
+    open = 0
+    close = 0
+    
+    <span class="comment"># First pass: process the string from left to right</span>
+    for i in range(len(s)):
+        c = s[i]
+        if c == "(":
+            open += 1
+        elif c == ")":
+            close += 1
+        
+        <span class="comment"># If we have more closing parentheses than opening ones</span>
+        if close > open:
+            close -= 1  <span class="comment"># Discard this closing parenthesis</span>
+        else:
+            stack.append(c)
+    
+    <span class="comment"># Second pass: process the string from right to left</span>
+    res = []
+    while stack:
+        c = stack.pop()
+        if c == "(" and open > close:
+            open -= 1  <span class="comment"># Discard this opening parenthesis</span>
+        else:
+            res.append(c)
+    
+    <span class="comment"># Reverse the result since we processed from right to left</span>
+    return "".join(res[::-1])</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis for Approach 1:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the length of the string. We make two passes through the string, each taking O(n) time.</li>
+                <li><strong>Space Complexity:</strong> O(n), as we need to store the characters in the stack and result list in the worst case.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach 2: Without Using a Stack</h2>
+        <p>
+            In this approach, we make two passes through the string:
+        </p>
+        <ol>
+            <li>First pass (left to right): Mark any closing parenthesis ')' for removal if there is no matching opening parenthesis '(' before it.</li>
+            <li>Second pass (right to left): Mark any opening parenthesis '(' for removal if there is no matching closing parenthesis ')' after it.</li>
+            <li>Final pass: Construct the result by omitting all marked characters.</li>
+        </ol>
+        <p>
+            This approach is more space-efficient as we work directly with the characters in place.
+        </p>
+        
+        <div class="visualization">
+            <p><strong>Visualization of Approach 2 for Example 1: s = "lee(t(c)o)de)"</strong></p>
+            <pre>
+Initialize: open = 0, s_list = ['l', 'e', 'e', '(', 't', '(', 'c', ')', 'o', ')', 'd', 'e', ')']
+
+First Pass (left to right):
+- Iterate through s_list:
+  - 'l', 'e', 'e': Not parentheses, skip
+  - '(': open = 1
+  - 't': Not a parenthesis, skip
+  - '(': open = 2
+  - 'c': Not a parenthesis, skip
+  - ')': open = 1
+  - 'o': Not a parenthesis, skip
+  - ')': open = 0
+  - 'd', 'e': Not parentheses, skip
+  - ')': No matching '(' (open = 0), mark for removal by replacing with '*'
+  
+s_list after first pass: ['l', 'e', 'e', '(', 't', '(', 'c', ')', 'o', ')', 'd', 'e', '*']
+
+Second Pass (right to left):
+- Iterate through s_list from right to left:
+  - '*': Already marked for removal, skip
+  - 'e', 'd': Not parentheses, skip
+  - ')': Has a matching '(', skip
+  - 'o': Not a parenthesis, skip
+  - ')': Has a matching '(', skip
+  - 'c': Not a parenthesis, skip
+  - '(': Has a matching ')', skip
+  - 't': Not a parenthesis, skip
+  - '(': Has a matching ')', skip
+  - 'e', 'e', 'l': Not parentheses, skip
+  
+s_list after second pass: ['l', 'e', 'e', '(', 't', '(', 'c', ')', 'o', ')', 'd', 'e', '*']
+
+Final Pass:
+- Remove all '*' characters
+- Result: "lee(t(c)o)de"</pre>
+        </div>
+
+        <div class="steps">
+            <h3>Steps for Approach 2:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize variables:</strong>
+                    <ul>
+                        <li>Initialize an open counter to 0.</li>
+                        <li>Convert the string to a list for easy manipulation.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>First pass (left to right):</strong>
+                    <ul>
+                        <li>Iterate through each character in the list.</li>
+                        <li>If the character is '(', increment the open counter.</li>
+                        <li>If the character is ')' and open is 0, mark this character for removal (replace with '*').</li>
+                        <li>If the character is ')' and open > 0, decrement the open counter (matching a pair).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Second pass (right to left):</strong>
+                    <ul>
+                        <li>Iterate through the list from right to left.</li>
+                        <li>If the character is '(' and open > 0, decrement the open counter and mark this character for removal (replace with '*').</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Construct the final result:</strong>
+                    <ul>
+                        <li>Create a new list by copying only the characters that are not marked for removal.</li>
+                        <li>Join the characters to form the result string.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="code">
+            <h3>Code for Approach 2:</h3>
+            <pre>
+def minRemoveToMakeValid(s):
+    <span class="comment">"""Remove the minimum number of parentheses to make the string valid.
+    
+    Args:
+        s: Input string with parentheses and lowercase letters
+        
+    Returns:
+        A valid string with minimum parentheses removed
+    """</span>
+    open = 0
+    s_list = list(s)
+    
+    <span class="comment"># First pass: mark unmatched closing parentheses</span>
+    for i in range(len(s_list)):
+        c = s_list[i]
+        if c == "(":
+            open += 1
+        elif c == ")":
+            if open == 0:  <span class="comment"># No matching opening parenthesis</span>
+                s_list[i] = "*"  <span class="comment"># Mark for removal</span>
+            else:
+                open -= 1
+    
+    <span class="comment"># Second pass: mark unmatched opening parentheses</span>
+    for i in range(len(s_list)-1, -1, -1):
+        c = s_list[i]
+        if c == "(" and open > 0:
+            open -= 1
+            s_list[i] = "*"  <span class="comment"># Mark for removal</span>
+    
+    <span class="comment"># Final pass: construct result by removing marked characters</span>
+    p = 0
+    for i in range(len(s_list)):
+        if s_list[i] != "*":
+            s_list[p] = s_list[i]
+            p += 1
+    
+    return "".join(s_list[:p])</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis for Approach 2:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the length of the string. We make three passes through the string, each taking O(n) time.</li>
+                <li><strong>Space Complexity:</strong> O(n), as we convert the string to a list of characters.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section example-outputs">
+        <h2>Examples and Outputs</h2>
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">s = "lee(t(c)o)de)"
+minRemoveToMakeValid(s)  <span class="comment"># Output: "lee(t(c)o)de"</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">lee(t(c)o)de</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">s = "a)b(c)d"
+minRemoveToMakeValid(s)  <span class="comment"># Output: "ab(c)d"</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">ab(c)d</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">s = "))(("
+minRemoveToMakeValid(s)  <span class="comment"># Output: ""</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command"></pre>
+        </div>
+    </div>
+</body>
+</html>

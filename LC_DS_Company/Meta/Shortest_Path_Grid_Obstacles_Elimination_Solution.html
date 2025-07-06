@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Path in a Grid with Obstacles Elimination</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .grid-cell {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            margin: 2px;
+        }
+        .grid-empty {
+            background-color: #e0ffff;
+        }
+        .grid-obstacle {
+            background-color: #f08080;
+        }
+        .grid-path {
+            background-color: #90ee90;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shortest Path in a Grid with Obstacles Elimination</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Shortest Path in a Grid with Obstacles Elimination</strong></p>
+        <p><a href="https://leetcode.com/problems/shortest-path-in-a-grid-with-obstacles-elimination/" target="_blank">https://leetcode.com/problems/shortest-path-in-a-grid-with-obstacles-elimination/</a></p>
+        <p>
+            You are given an m x n integer matrix grid where each cell is either 0 (empty) or 1 (obstacle). 
+            You can move up, down, left, or right from and to an empty cell in one step.
+        </p>
+        <p>
+            Return the minimum number of steps to walk from the upper left corner (0, 0) to the lower right corner (m - 1, n - 1) 
+            given that you can eliminate at most k obstacles. If it is not possible to find such walk return -1.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> grid = [[0,0,0],[1,1,0],[0,0,0],[0,1,1],[0,0,0]], k = 1</p>
+            <p><strong>Output:</strong> 6</p>
+            <p><strong>Explanation:</strong></p>
+            <p>The shortest path without eliminating any obstacle is 10.</p>
+            <p>The shortest path with one obstacle elimination at position (3,2) is 6. Such path is (0,0) → (0,1) → (0,2) → (1,2) → (2,2) → (3,2) → (4,2).</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> grid = [[0,1,1],[1,1,1],[1,0,0]], k = 1</p>
+            <p><strong>Output:</strong> -1</p>
+            <p><strong>Explanation:</strong> We need to eliminate at least two obstacles to find such a walk.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>m == grid.length</li>
+            <li>n == grid[i].length</li>
+            <li>1 <= m, n <= 40</li>
+            <li>1 <= k <= m * n</li>
+            <li>grid[i][j] is either 0 or 1.</li>
+            <li>grid[0][0] == grid[m - 1][n - 1] == 0</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the shortest path from the top-left corner to the bottom-right corner of a grid,
+            with the ability to eliminate at most k obstacles along the way.
+        </p>
+        <p>
+            Let's understand the key aspects of the problem:
+        </p>
+        <ul>
+            <li>We can move in four directions: up, down, left, right.</li>
+            <li>We can eliminate at most k obstacles (cells with value 1).</li>
+            <li>We need to find the minimum number of steps to reach the destination.</li>
+            <li>If it's not possible to reach the destination even after eliminating k obstacles, we return -1.</li>
+        </ul>
+
+        <p>Let's analyze the examples:</p>
+        
+        <p><strong>Example 1:</strong></p>
+        <p>Grid:</p>
+        <div style="font-family: monospace; white-space: pre;">
+            0 0 0
+            1 1 0
+            0 0 0
+            0 1 1
+            0 0 0
+        </div>
+        <p>With k = 1, we can eliminate one obstacle.</p>
+        <p>The shortest path without eliminating obstacles would require us to go around all obstacles, which would take 10 steps.</p>
+        <p>However, if we eliminate the obstacle at position (3,2), we can take a shorter path with just 6 steps:
+            (0,0) → (0,1) → (0,2) → (1,2) → (2,2) → (3,2) → (4,2)</p>
+
+        <p><strong>Example 2:</strong></p>
+        <p>Grid:</p>
+        <div style="font-family: monospace; white-space: pre;">
+            0 1 1
+            1 1 1
+            1 0 0
+        </div>
+        <p>With k = 1, we can eliminate one obstacle. However, to reach the destination, we would need to eliminate at least two obstacles. Since k = 1, it's not possible to reach the destination, so we return -1.</p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: BFS with State Tracking</h2>
+        <p>
+            This problem is a classic shortest path problem with an additional constraint: we can eliminate at most k obstacles.
+            We'll use Breadth-First Search (BFS) to find the shortest path.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> In traditional BFS for shortest path, we mark cells as visited to avoid revisiting them. However, in this problem, the decision to eliminate an obstacle can lead to different states. A cell can be reached with different numbers of remaining eliminations. Therefore, our visited state needs to include not just the position (row, col) but also the number of remaining eliminations.</p>
+        </div>
+
+        <p>
+            We'll use a queue to perform BFS. Each element in the queue will represent a state, which includes:
+        </p>
+        <ul>
+            <li>The current position (row, col)</li>
+            <li>The number of obstacles we can still eliminate (remaining k)</li>
+            <li>The number of steps taken so far</li>
+        </ul>
+
+        <p>
+            We'll also maintain a visited set to track states we've already explored. A state is uniquely identified by the position and the number of remaining eliminations.
+        </p>
+
+        <p>
+            During BFS, we'll explore all four possible directions from the current position. If we encounter an obstacle and we can still eliminate it (remaining k > 0), we'll add that state to the queue with one less elimination available. If we encounter an empty cell, we'll simply add that state to the queue with the same number of eliminations available.
+        </p>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>Create a queue and add the initial state: (0, 0, k, 0) representing (row, col, remaining eliminations, steps)</li>
+                        <li>Create a visited set and add the initial state: (0, 0, k)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>BFS:</strong>
+                    <ul>
+                        <li>While the queue is not empty:
+                            <ul>
+                                <li>Dequeue a state (row, col, remaining eliminations, steps)</li>
+                                <li>For each of the four directions (up, down, left, right):
+                                    <ul>
+                                        <li>Calculate the new position (new_row, new_col)</li>
+                                        <li>Check if the new position is valid (within bounds)</li>
+                                        <li>If the new position is the destination, return steps + 1</li>
+                                        <li>If the new position has an obstacle and we have eliminations left, add a new state with one less elimination</li>
+                                        <li>If the new position is empty, add a new state with the same number of eliminations</li>
+                                        <li>Mark the new state as visited</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return:</strong>
+                    <ul>
+                        <li>If we've exhausted all possible states without reaching the destination, return -1</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1:</strong></p>
+            <p>Grid:</p>
+            <div style="font-family: monospace; white-space: pre;">
+                0 0 0
+                1 1 0
+                0 0 0
+                0 1 1
+                0 0 0
+            </div>
+            <p>Starting BFS with initial state: (0,0,k=1,steps=0)</p>
+            <pre>
+Queue: [(0,0,1,0)]
+Visited: {(0,0,1)}
+
+Iteration 1:
+- Dequeue: (0,0,1,0)
+- Explore neighbors:
+  - Down (1,0): It's an obstacle, we can eliminate it, k becomes 0
+    - Add (1,0,0,1) to queue
+    - Add (1,0,0) to visited
+  - Right (0,1): It's empty
+    - Add (0,1,1,1) to queue
+    - Add (0,1,1) to visited
+
+Queue: [(1,0,0,1), (0,1,1,1)]
+Visited: {(0,0,1), (1,0,0), (0,1,1)}
+
+Iteration 2:
+- Dequeue: (1,0,0,1)
+- Explore neighbors:
+  - Down (2,0): It's empty
+    - Add (2,0,0,2) to queue
+    - Add (2,0,0) to visited
+  - Right (1,1): It's an obstacle, but k=0, so we can't eliminate it
+
+Queue: [(0,1,1,1), (2,0,0,2)]
+Visited: {(0,0,1), (1,0,0), (0,1,1), (2,0,0)}
+
+... (continuing BFS) ...
+
+Eventually, we'll reach (4,2) with 6 steps, which is our answer.
+</pre>
+        </div>
+
+        <div class="code">
+            <h3>Code:</h3>
+            <pre>
+from collections import deque
+
+def shortestPath(grid, k):
+    <span class="comment">"""Find the shortest path from top-left to bottom-right with at most k obstacle eliminations.
+    
+    Args:
+        grid: m x n grid where 0 is empty and 1 is obstacle
+        k: maximum number of obstacles that can be eliminated
+        
+    Returns:
+        Minimum number of steps to reach bottom-right or -1 if not possible
+    """</span>
+    n = len(grid)
+    m = len(grid[0])
+    
+    <span class="comment"># Edge case: If grid is 1x1, we're already at the destination</span>
+    if n == 1 and m == 1:
+        return 0
+    
+    <span class="comment"># Initialize queue with starting position, remaining eliminations, and steps</span>
+    q = deque([(0, 0, k, 0)])  <span class="comment"># (row, col, remaining k, steps)</span>
+    visited = set()
+    visited.add((0, 0, k))  <span class="comment"># (row, col, remaining k)</span>
+    
+    <span class="comment"># BFS</span>
+    while q:
+        r, c, remaining_k, steps = q.popleft()
+        
+        <span class="comment"># Try all four directions</span>
+        for x, y in [(-1, 0), (1, 0), (0, -1), (0, 1)]:  <span class="comment"># up, down, left, right</span>
+            row = x + r
+            col = y + c
+            
+            <span class="comment"># Check if new position is valid</span>
+            if 0 <= row < n and 0 <= col < m:
+                <span class="comment"># If we encounter an obstacle and have eliminations left</span>
+                if grid[row][col] == 1 and remaining_k > 0 and (row, col, remaining_k-1) not in visited:
+                    q.append((row, col, remaining_k-1, steps + 1))
+                    visited.add((row, col, remaining_k-1))
+                <span class="comment"># If we encounter an empty cell</span>
+                elif grid[row][col] == 0 and (row, col, remaining_k) not in visited:
+                    <span class="comment"># If we've reached the destination</span>
+                    if row == n - 1 and col == m - 1:
+                        return steps + 1
+                    q.append((row, col, remaining_k, steps + 1))
+                    visited.add((row, col, remaining_k))
+    
+    <span class="comment"># If we've exhausted all possibilities without reaching the destination</span>
+    return -1</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(m * n * k), where m is the number of rows, n is the number of columns, and k is the maximum number of obstacles that can be eliminated. In the worst case, we might visit each cell with each possible value of remaining k.</li>
+                <li><strong>Space Complexity:</strong> O(m * n * k) for the queue and visited set, as we might need to store a state for each cell with each possible value of remaining k.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section example-outputs">
+        <h2>Examples and Outputs</h2>
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">grid = [[0,0,0],[1,1,0],[0,0,0],[0,1,1],[0,0,0]]
+k = 1
+shortestPath(grid, k)  <span class="comment"># Output: 6</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">6</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">grid = [[0,1,1],[1,1,1],[1,0,0]]
+k = 1
+shortestPath(grid, k)  <span class="comment"># Output: -1</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">-1</pre>
+        </div>
+    </div>
+
+    <div class="section additional-insights">
+        <h2>Additional Insights</h2>
+        <p>
+            This problem is a variant of the classic shortest path problem with an additional dimension: the number of obstacles we can still eliminate. This transforms the problem from a 2D grid problem to a 3D state space problem.
+        </p>
+        <p>
+            One optimization that could be applied is to use A* search instead of BFS. With A*, we would prioritize states that are closer to the destination, potentially finding the solution faster. The heuristic function could be the Manhattan distance to the destination.
+        </p>
+        <p>
+            Another optimization is to recognize that we don't need to eliminate obstacles if doing so doesn't lead to a shorter path. For example, if the direct path has fewer obstacles than k, we can just take that path without considering other paths that might involve eliminating obstacles.
+        </p>
+        <p>
+            It's also worth noting that this problem has a constraint where both the starting point (0,0) and the destination (m-1, n-1) are guaranteed to be empty. This simplifies the problem slightly, as we don't need to handle special cases where the starting or ending positions have obstacles.
+        </p>
+    </div>
+</body>
+</html>
