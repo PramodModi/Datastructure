@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Path in Binary Weighted (0,1) Graph</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .graph-diagram {
+            text-align: center;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shortest Path in Binary Weighted (0,1) Graph</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Shortest Path in Binary Weighted (0,1) Graph</strong></p>
+        <p>
+            Given an undirected graph where every edge has a weight as either 0 or 1. 
+            The task is to find the shortest path from the source vertex to all other vertices in the graph.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example:</strong></p>
+            <p><strong>Input:</strong></p>
+            <p>Source Vertex = 0 and graph with edges represented as (u, v, w):</p>
+            <p>[[0,1,0], [0,7,1], [1,2,1], [1,7,1], [2,3,0], [2,5,0], [2,8,1], [3,4,1], [3,5,1], [4,5,1], [5,6,1], [6,7,1], [7,8,1]]</p>
+            <p><strong>Output:</strong> [0, 0, 1, 1, 2, 1, 2, 1, 2]</p>
+            <p><strong>Explanation:</strong> The distances from vertex 0 to all other vertices [0, 1, 2, 3, 4, 5, 6, 7, 8] respectively.</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find the shortest path from a source vertex to all other vertices in a graph where each edge has a weight of either 0 or 1.
+        </p>
+        <p>
+            Let's understand what makes this problem special:
+        </p>
+        <ul>
+            <li>In a standard unweighted graph (where all edges have weight 1), we can use BFS to find the shortest path.</li>
+            <li>In a weighted graph with arbitrary weights, we typically use Dijkstra's algorithm.</li>
+            <li>However, when edges have only two possible weights (0 and 1), we can use a more efficient approach that combines elements of both BFS and Dijkstra's algorithm.</li>
+        </ul>
+        
+        <div class="graph-diagram">
+            <p>For visualization, let's represent the example graph:</p>
+            <pre>
+        0 ──(0)── 1
+        |        / \
+       (1)     (1) (1)
+        |      /    |
+        7 ──(1)─    2
+        |           |  \
+       (1)         (0) (0) (1)
+        |           |   |   |
+        6 ──(1)──   3 ─(0)─ 5
+                    |       |
+                   (1)     (1)
+                    |       |
+                    4 ──(1)─
+            </pre>
+            <p>(Numbers in parentheses represent edge weights)</p>
+        </div>
+        
+        <p>
+            In this graph, when we start from vertex 0:
+        </p>
+        <ul>
+            <li>Vertex 0 has distance 0 (to itself)</li>
+            <li>Vertex 1 can be reached with distance 0 (edge weight 0)</li>
+            <li>Vertex 2 can be reached with distance 1 (through vertex 1, with path 0-(0)-1-(1)-2)</li>
+            <li>Vertex 3 can be reached with distance 1 (through vertices 1, 2, with path 0-(0)-1-(1)-2-(0)-3)</li>
+            <li>And so on...</li>
+        </ul>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Modified BFS with Deque</h2>
+        <p>
+            For this problem, we need an approach that combines the efficiency of BFS with the ability to handle different edge weights.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We can modify the standard BFS algorithm to efficiently handle binary weights by using a double-ended queue (deque) instead of a regular queue. When we encounter an edge with weight 0, we add its destination to the front of the deque because it doesn't increase the distance. When we encounter an edge with weight 1, we add its destination to the back of the deque because it increases the distance by one unit.</p>
+        </div>
+        
+        <p>This approach is sometimes referred to as "0-1 BFS" and has the following advantages:</p>
+        <ol>
+            <li>It ensures that vertices are processed in order of increasing distance from the source.</li>
+            <li>It's more efficient than Dijkstra's algorithm for this specific case, as it avoids the need for a priority queue.</li>
+            <li>It maintains a time complexity of O(V + E), the same as standard BFS.</li>
+        </ol>
+
+        <div class="comparison">
+            <h3>Comparison with Standard Algorithms:</h3>
+            <table>
+                <tr>
+                    <th>Algorithm</th>
+                    <th>Use Case</th>
+                    <th>Time Complexity</th>
+                </tr>
+                <tr>
+                    <td>BFS</td>
+                    <td>Unweighted graphs</td>
+                    <td>O(V + E)</td>
+                </tr>
+                <tr>
+                    <td>Dijkstra's</td>
+                    <td>Weighted graphs with non-negative weights</td>
+                    <td>O((V + E) log V)</td>
+                </tr>
+                <tr>
+                    <td>0-1 BFS</td>
+                    <td>Graphs with only 0 and 1 weights</td>
+                    <td>O(V + E)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Create an Adjacency List:</strong>
+                    <ul>
+                        <li>Initialize an empty list for each vertex in the graph.</li>
+                        <li>For each edge (u, v, w), add v to the adjacency list of u and u to the adjacency list of v (since the graph is undirected), along with the edge weight w.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Initialize Data Structures:</strong>
+                    <ul>
+                        <li>Create a deque and add the source vertex.</li>
+                        <li>Create a distances array initialized with infinity for all nodes, and set distance[source] = 0.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Modified BFS:</strong>
+                    <ul>
+                        <li>While the deque is not empty:
+                            <ul>
+                                <li>Dequeue a node u from the front of the deque.</li>
+                                <li>For each neighbor v of u with weight w:
+                                    <ul>
+                                        <li>If distance[v] > distance[u] + w:
+                                            <ul>
+                                                <li>Update distance[v] = distance[u] + w.</li>
+                                                <li>If w is 0, add v to the front of the deque.</li>
+                                                <li>If w is 1, add v to the back of the deque.</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return the Distances:</strong>
+                    <ul>
+                        <li>The distances array now contains the shortest distance from the source to all other vertices.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example Graph (Source = 0):</strong></p>
+            <pre>
+Initialize:
+  - Deque: [0]
+  - Distances: [0, inf, inf, inf, inf, inf, inf, inf, inf]
+
+Iteration 1:
+  - Dequeue: 0
+  - Neighbors of 0: (1,0), (7,1)
+  - Process (1,0): 
+    - distance[1] = 0
+    - Edge weight is 0, add 1 to front of deque
+    - Deque: [1, 0]
+  - Process (7,1):
+    - distance[7] = 1
+    - Edge weight is 1, add 7 to back of deque
+    - Deque: [1, 7]
+
+Iteration 2:
+  - Dequeue: 1
+  - Neighbors of 1: (0,0), (2,1), (7,1)
+  - Process (0,0): Already processed
+  - Process (2,1):
+    - distance[2] = 1
+    - Edge weight is 1, add 2 to back of deque
+    - Deque: [7, 2]
+  - Process (7,1):
+    - Current distance[7] = 1, which is not greater than distance[1] + 1 = 1
+    - No update needed
+
+... (continuing iterations) ...
+
+Final distances: [0, 0, 1, 1, 2, 1, 2, 1, 2]
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(V + E), where V is the number of vertices and E is the number of edges. Each vertex is enqueued at most once for each of its possible distances (0 to V-1), and since there are only two possible weights (0 and 1), each vertex can be enqueued at most twice. Each edge is examined at most once.</li>
+                <li><strong>Space Complexity:</strong> O(V) for the deque and distance array.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+from collections import deque
+
+def minDist(V, src, edges):
+    <span class="comment">"""Find the shortest path from source vertex to all other vertices in a binary-weighted graph.
+    
+    Args:
+        V: Number of vertices in the graph
+        src: Source vertex
+        edges: List of edges, where each edge is [u, v, w] connecting vertices u and v with weight w (0 or 1)
+        
+    Returns:
+        Array of shortest distances from source to all vertices
+    """</span>
+    <span class="comment"># Create adjacency list representation of the graph</span>
+    graph = [[] for _ in range(V)]
+    for u, v, w in edges:
+        graph[u].append((v, w))
+        graph[v].append((u, w))  <span class="comment"># Since the graph is undirected</span>
+
+    <span class="comment"># Initialize distances to infinity</span>
+    dist = [float("inf")] * V
+    dist[src] = 0
+    
+    <span class="comment"># Use a deque for BFS</span>
+    q = deque([src])
+    
+    <span class="comment"># Modified BFS</span>
+    while q:
+        v = q.popleft()
+        
+        for nbr, w in graph[v]:
+            <span class="comment"># If we found a shorter path</span>
+            if dist[nbr] > dist[v] + w:
+                dist[nbr] = dist[v] + w
+                
+                <span class="comment"># If weight is 0, add to front (priority)</span>
+                if w == 0:
+                    q.appendleft(nbr)
+                <span class="comment"># If weight is 1, add to back</span>
+                else:
+                    q.append(nbr)
+                    
+    return dist</pre>
+        
+        <div class="example">
+            <p><strong>Example:</strong></p>
+            <pre class="command">V = 9
+src = 0
+edges = [
+    [0, 1, 0], [0, 7, 1], [1, 2, 1], [1, 7, 1],
+    [2, 3, 0], [2, 5, 0], [2, 8, 1], [3, 4, 1], [3, 5, 1],
+    [4, 5, 1], [5, 6, 1], [6, 7, 1], [7, 8, 1]
+]
+print(minDist(V, src, edges))  <span class="comment"># Output: [0, 0, 1, 1, 2, 1, 2, 1, 2]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">[0, 0, 1, 1, 2, 1, 2, 1, 2]</pre>
+        </div>
+    </div>
+
+    <div class="section applications">
+        <h2>Applications and Extensions</h2>
+        <p>
+            The 0-1 BFS algorithm is particularly useful in several practical scenarios:
+        </p>
+        <ol>
+            <li>
+                <strong>Network Routing with Two Types of Links:</strong>
+                <p>In networks where links can be either fast (weight 0) or slow (weight 1), this algorithm finds the path with the minimum number of slow links.</p>
+            </li>
+            <li>
+                <strong>Puzzle Problems:</strong>
+                <p>Many puzzles can be modeled as graphs where some moves have a cost while others are free. For example, in a sliding puzzle where sliding horizontally costs nothing (weight 0) but sliding vertically has a cost (weight 1).</p>
+            </li>
+            <li>
+                <strong>Extension to K-BFS:</strong>
+                <p>This concept can be extended to handle weights from 0 to K (a small constant) by using K+1 different queues or a more complex data structure.</p>
+            </li>
+            <li>
+                <strong>State Space Exploration:</strong>
+                <p>In AI and search problems where state transitions have different priorities or costs that fall into a few discrete categories.</p>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section comparison">
+        <h2>Comparison with Dijkstra's Algorithm</h2>
+        <p>
+            While both 0-1 BFS and Dijkstra's algorithm find the shortest path in weighted graphs, there are key differences:
+        </p>
+        <ul>
+            <li>
+                <strong>Data Structure:</strong>
+                <ul>
+                    <li>Dijkstra's algorithm uses a priority queue to always process the vertex with the smallest distance.</li>
+                    <li>0-1 BFS uses a deque, which is more efficient for binary weights but doesn't work for arbitrary weights.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Time Complexity:</strong>
+                <ul>
+                    <li>Dijkstra's algorithm runs in O((V + E) log V) time.</li>
+                    <li>0-1 BFS runs in O(V + E) time, which is more efficient.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Applicability:</strong>
+                <ul>
+                    <li>Dijkstra's algorithm works for any graph with non-negative weights.</li>
+                    <li>0-1 BFS is specialized for graphs where edge weights are only 0 and 1.</li>
+                </ul>
+            </li>
+        </ul>
+        <p>
+            The 0-1 BFS is essentially an optimization of Dijkstra's algorithm for the special case of binary weights, achieving linear time complexity by exploiting the specific structure of the problem.
+        </p>
+    </div>
+</body>
+</html>

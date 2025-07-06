@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Path in an Unweighted Graph</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .graph-diagram {
+            text-align: center;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shortest Path in an Unweighted Graph</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Shortest Path in an Unweighted Graph</strong></p>
+        <p><a href="https://www.geeksforgeeks.org/shortest-path-unweighted-graph/" target="_blank">https://www.geeksforgeeks.org/shortest-path-unweighted-graph/</a></p>
+        <p>
+            Given an unweighted, undirected graph of V nodes and E edges, a source node S, and a destination node D,
+            we need to find the shortest path from node S to node D in the graph.
+        </p>
+        
+        <div class="graph-diagram">
+            <img src="https://media.geeksforgeeks.org/wp-content/uploads/20240312131230/Shortest-Path-in-an-Unweighted-Graph.png" alt="Unweighted Graph Example">
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> V = 8, E = 10, S = 0, D = 7, edges[][] = {{0, 1}, {1, 2}, {0, 3}, {3, 4}, {4, 7}, {3, 7}, {6, 7}, {4, 5}, {4, 6}, {5, 6}}</p>
+            <p><strong>Output:</strong> 0 3 7</p>
+            <p><strong>Explanation:</strong> The shortest path is 0 -> 3 -> 7.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> V = 8, E = 10, S = 2, D = 6, edges[][] = {{0, 1}, {1, 2}, {0, 3}, {3, 4}, {4, 7}, {3, 7}, {6, 7}, {4, 5}, {4, 6}, {5, 6}}</p>
+            <p><strong>Output:</strong> 2 1 0 3 4 6</p>
+            <p><strong>Explanation:</strong> The shortest path is 2 -> 1 -> 0 -> 3 -> 4 -> 6.</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find the shortest path between two nodes in an unweighted, undirected graph. 
+            Since the graph is unweighted, the shortest path is the one with the fewest number of edges.
+        </p>
+        <p>
+            Let's break down what we're given:
+        </p>
+        <ul>
+            <li>A graph with V vertices (numbered from 0 to V-1)</li>
+            <li>E edges, where each edge connects two vertices</li>
+            <li>A source vertex S and a destination vertex D</li>
+        </ul>
+        
+        <p>
+            We need to find a path from S to D such that:
+        </p>
+        <ul>
+            <li>It uses the minimum number of edges</li>
+            <li>If there are multiple shortest paths, any of them is acceptable</li>
+            <li>If no path exists, we should indicate that</li>
+        </ul>
+        
+        <p>Let's understand the examples:</p>
+        
+        <div class="graph-diagram">
+            <p>For both examples, the graph looks like this:</p>
+            <pre>
+      2
+     /
+0 -- 1    5
+|         |
+|         |
+3 -- 4 -- 6
+|    |    |
+|____|    |
+     7 ___|
+            </pre>
+        </div>
+        
+        <p><strong>Example 1:</strong></p>
+        <p>
+            We need to find the shortest path from node 0 to node 7.
+            Looking at the graph:
+        </p>
+        <ul>
+            <li>Path 0 -> 1 -> 2 -> ... -> 7 would be long</li>
+            <li>Path 0 -> 3 -> 7 uses just 2 edges</li>
+            <li>Path 0 -> 3 -> 4 -> 7 uses 3 edges</li>
+        </ul>
+        <p>
+            The shortest path is 0 -> 3 -> 7 with 2 edges.
+        </p>
+        
+        <p><strong>Example 2:</strong></p>
+        <p>
+            We need to find the shortest path from node 2 to node 6.
+            Looking at the graph:
+        </p>
+        <ul>
+            <li>Path 2 -> 1 -> 0 -> 3 -> 4 -> 6 uses 5 edges</li>
+            <li>Path 2 -> 1 -> 0 -> 3 -> 4 -> 5 -> 6 uses 6 edges</li>
+            <li>Path 2 -> 1 -> 0 -> 3 -> 7 -> 6 uses 5 edges</li>
+        </ul>
+        <p>
+            There are multiple shortest paths with 5 edges. The example shows one of them: 2 -> 1 -> 0 -> 3 -> 4 -> 6.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Breadth-First Search (BFS)</h2>
+        <p>
+            Since we're looking for the shortest path in an unweighted graph, Breadth-First Search (BFS) is the perfect algorithm to use.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> In an unweighted graph, BFS guarantees that the first time a node is discovered during the traversal, the path used to reach it is the shortest possible path from the source.</p>
+        </div>
+        
+        <p>The approach works as follows:</p>
+        <ol>
+            <li>First, we need to represent the graph. An adjacency list is a good choice here.</li>
+            <li>We start a BFS from the source node S.</li>
+            <li>For each node we visit, we mark it as visited and keep track of its parent (the node from which we reached it).</li>
+            <li>When we reach the destination node D, we can reconstruct the path by tracing back through the parent pointers.</li>
+            <li>If we exhaust the BFS without reaching the destination, there is no path from S to D.</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Create an Adjacency List:</strong>
+                    <ul>
+                        <li>Initialize an empty list for each vertex in the graph.</li>
+                        <li>For each edge (u, v), add v to the adjacency list of u and u to the adjacency list of v (since the graph is undirected).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Initialize BFS Data Structures:</strong>
+                    <ul>
+                        <li>Create a queue and enqueue the source node S.</li>
+                        <li>Create a distances array initialized with infinity for all nodes, and set distance[S] = 0.</li>
+                        <li>Create a parent array initialized with -1 for all nodes.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Perform BFS:</strong>
+                    <ul>
+                        <li>While the queue is not empty:
+                            <ul>
+                                <li>Dequeue a node u.</li>
+                                <li>For each neighbor v of u:
+                                    <ul>
+                                        <li>If the distance to v is still infinity (not visited):
+                                            <ul>
+                                                <li>Set parent[v] = u.</li>
+                                                <li>Set distance[v] = distance[u] + 1.</li>
+                                                <li>Enqueue v.</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Reconstruct the Path:</strong>
+                    <ul>
+                        <li>If distance[D] is still infinity, there is no path from S to D.</li>
+                        <li>Otherwise, start from D and follow the parent pointers back to S, collecting the nodes along the way.</li>
+                        <li>Reverse the collected path to get the path from S to D.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1 (S = 0, D = 7):</strong></p>
+            <pre>
+Initialize:
+  - Queue: [0]
+  - Distances: [0, inf, inf, inf, inf, inf, inf, inf]
+  - Parents: [-1, -1, -1, -1, -1, -1, -1, -1]
+
+Iteration 1:
+  - Dequeue: 0
+  - Neighbors of 0: 1, 3
+  - Process 1: 
+    - distance[1] = 1
+    - parent[1] = 0
+    - Queue: [3, 1]
+  - Process 3:
+    - distance[3] = 1
+    - parent[3] = 0
+    - Queue: [1, 3]
+
+Iteration 2:
+  - Dequeue: 1
+  - Neighbors of 1: 0, 2
+  - Process 0: Already visited
+  - Process 2:
+    - distance[2] = 2
+    - parent[2] = 1
+    - Queue: [3, 2]
+
+Iteration 3:
+  - Dequeue: 3
+  - Neighbors of 3: 0, 4, 7
+  - Process 0: Already visited
+  - Process 4:
+    - distance[4] = 2
+    - parent[4] = 3
+    - Queue: [2, 4]
+  - Process 7:
+    - distance[7] = 2
+    - parent[7] = 3
+    - Queue: [2, 4, 7]
+
+We've reached destination D = 7, so we can stop BFS.
+
+Reconstruct Path:
+  - Start at D = 7
+  - parent[7] = 3
+  - parent[3] = 0
+  - Reversed path: [0, 3, 7]
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(V + E), where V is the number of vertices and E is the number of edges. In the worst case, we might need to visit all vertices and edges during the BFS.</li>
+                <li><strong>Space Complexity:</strong> O(V) for the queue, distance array, and parent array.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+from collections import deque
+
+def shortestPath(V, S, D, edges):
+    <span class="comment">"""Find the shortest path from source S to destination D in an unweighted graph.
+    
+    Args:
+        V: Number of vertices in the graph
+        S: Source vertex
+        D: Destination vertex
+        edges: List of edges, where each edge is [u, v] connecting vertices u and v
+        
+    Returns:
+        The shortest path from S to D as a list of vertices, or -1 if no path exists
+    """</span>
+    <span class="comment"># Create adjacency list representation of the graph</span>
+    graph = [[] for _ in range(V)]
+    for edge in edges:
+        graph[edge[0]].append(edge[1])
+        graph[edge[1]].append(edge[0])  <span class="comment"># Since the graph is undirected</span>
+
+    <span class="comment"># Initialize BFS data structures</span>
+    q = deque([S])
+    dist = [float("inf")] * V
+    dist[S] = 0
+    par = [-1] * V  <span class="comment"># Parent array to reconstruct the path</span>
+
+    <span class="comment"># Perform BFS</span>
+    while q:
+        v = q.popleft()
+        for nbr in graph[v]:
+            if dist[nbr] == float("inf"):
+                par[nbr] = v
+                dist[nbr] = dist[v] + 1
+                q.append(nbr)
+
+    <span class="comment"># Check if destination is reachable</span>
+    if dist[D] == float("inf"):
+        return -1
+        
+    <span class="comment"># Reconstruct the path</span>
+    path = []
+    cur_node = D
+    path.append(D)
+    while par[cur_node] != -1:
+        path.append(par[cur_node])
+        cur_node = par[cur_node]
+        
+    <span class="comment"># Return the path in the correct order (from S to D)</span>
+    return list(reversed(path))</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">V = 8
+E = 10
+S = 0
+D = 7
+edges = [[0, 1], [1, 2], [0, 3], [3, 4], [4, 7], [3, 7], [6, 7], [4, 5], [4, 6], [5, 6]]
+print(shortestPath(V, S, D, edges))  <span class="comment"># Output: [0, 3, 7]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">[0, 3, 7]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">V = 8
+E = 10
+S = 2
+D = 6
+edges = [[0, 1], [1, 2], [0, 3], [3, 4], [4, 7], [3, 7], [6, 7], [4, 5], [4, 6], [5, 6]]
+print(shortestPath(V, S, D, edges))  <span class="comment"># Output: [2, 1, 0, 3, 4, 6]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">[2, 1, 0, 3, 4, 6]</pre>
+        </div>
+    </div>
+
+    <div class="section variations">
+        <h2>Variations and Extensions</h2>
+        <ol>
+            <li>
+                <strong>Weighted Graphs:</strong>
+                <p>For weighted graphs, BFS wouldn't find the shortest path. Instead, you would need to use Dijkstra's algorithm or the Bellman-Ford algorithm.</p>
+            </li>
+            <li>
+                <strong>All Shortest Paths:</strong>
+                <p>If you need to find all possible shortest paths (when there are multiple paths with the same minimum length), you would need to modify the BFS to keep track of multiple parent nodes.</p>
+            </li>
+            <li>
+                <strong>Finding Path Length Only:</strong>
+                <p>If you only need the length of the shortest path (not the actual path), you can simplify the code by not tracking parent nodes and just returning dist[D].</p>
+            </li>
+            <li>
+                <strong>Bidirectional BFS:</strong>
+                <p>For very large graphs, a bidirectional BFS (starting from both S and D and meeting in the middle) can be more efficient.</p>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

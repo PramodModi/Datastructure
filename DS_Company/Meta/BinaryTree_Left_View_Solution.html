@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Tree Left Side View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        .tree-diagram {
+            text-align: center;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+    <h1>Binary Tree Left Side View</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Binary Tree Left Side View</strong></p>
+        <p><a href="https://leetcode.com/problems/binary-tree-left-side-view/" target="_blank">https://leetcode.com/problems/binary-tree-left-side-view/</a></p>
+        <p>
+            Given the root of a binary tree, imagine yourself standing on the left side of it, return the values of the
+            nodes you can see ordered from top to bottom.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> root = [1,2,3,null,5,null,4]</p>
+            <p><strong>Output:</strong> [1,2,5]</p>
+            <div class="tree-diagram">
+                  1
+                 / \
+                2   3
+                 \   \
+                  5   4
+            </div>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> root = [1,2,3,4,null,null,null,5]</p>
+            <p><strong>Output:</strong> [1,2,4,5]</p>
+            <div class="tree-diagram">
+                  1
+                 / \
+                2   3
+               /     
+              4       
+             /        
+            5         
+            </div>
+        </div>
+
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> root = [1,null,3]</p>
+            <p><strong>Output:</strong> [1,3]</p>
+            <div class="tree-diagram">
+                1
+                 \
+                  3
+            </div>
+        </div>
+
+        <div class="example">
+            <p><strong>Example 4:</strong></p>
+            <p><strong>Input:</strong> root = []</p>
+            <p><strong>Output:</strong> []</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The number of nodes in the tree is in the range [0, 100].</li>
+            <li>-100 <= Node.val <= 100</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the "left side view" of a binary tree, which consists of the nodes that would be visible if you were looking at the tree from the left side.
+        </p>
+        <p>
+            Key points to understand:
+        </p>
+        <ul>
+            <li>The left side view includes the leftmost node at each level of the tree.</li>
+            <li>If a level has no nodes on the left side (e.g., the leftmost node is NULL), we should include the first visible node from that level.</li>
+            <li>The result should be ordered from top to bottom (i.e., from root to the deepest level).</li>
+            <li>We need to handle edge cases like an empty tree.</li>
+        </ul>
+        
+        <p>Let's analyze the examples:</p>
+        
+        <p><strong>Example 1:</strong> root = [1,2,3,null,5,null,4]</p>
+        <ul>
+            <li>Level 0: The leftmost node is 1, so we include 1 in our result.</li>
+            <li>Level 1: The leftmost node is 2, so we include 2 in our result.</li>
+            <li>Level 2: The leftmost node is 5 (child of 2), so we include 5 in our result.</li>
+            <li>Result: [1, 2, 5]</li>
+        </ul>
+        
+        <p><strong>Example 2:</strong> root = [1,2,3,4,null,null,null,5]</p>
+        <ul>
+            <li>Level 0: The leftmost node is 1, so we include 1 in our result.</li>
+            <li>Level 1: The leftmost node is 2, so we include 2 in our result.</li>
+            <li>Level 2: The leftmost node is 4, so we include 4 in our result.</li>
+            <li>Level 3: The leftmost node is 5, so we include 5 in our result.</li>
+            <li>Result: [1, 2, 4, 5]</li>
+        </ul>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Level Order Traversal</h2>
+        <p>
+            To solve this problem, we can use a level-order traversal (BFS) approach. The key insight is that we need to process the tree level by level, and for each level, we need to keep track of the leftmost node.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> In a level order traversal, the first node we process at each level will be the leftmost node at that level, which is exactly what we need for the left side view.</p>
+        </div>
+        
+        <p>
+            We'll use a queue to perform the level order traversal. For each level:
+        </p>
+        <ol>
+            <li>We'll record the size of the queue at the start of processing that level.</li>
+            <li>We'll process all nodes at that level (the number of nodes we determined in step 1).</li>
+            <li>The first node we process at each level will be the leftmost node, which we'll add to our result.</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>If the root is NULL, return an empty array.</li>
+                        <li>Create an empty array to store the result.</li>
+                        <li>Create a queue and enqueue the root node.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Level Order Traversal:</strong>
+                    <ul>
+                        <li>While the queue is not empty:
+                            <ul>
+                                <li>Get the size of the queue (number of nodes at the current level).</li>
+                                <li>Initialize a variable to track the first node at this level.</li>
+                                <li>For each node at the current level:
+                                    <ul>
+                                        <li>Dequeue a node.</li>
+                                        <li>If this is the first node we're processing at this level, remember it.</li>
+                                        <li>Enqueue the left child if it exists.</li>
+                                        <li>Enqueue the right child if it exists.</li>
+                                    </ul>
+                                </li>
+                                <li>Add the value of the first node at this level to our result.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return the result.</strong>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1:</strong></p>
+            <p>Tree:</p>
+            <div class="tree-diagram">
+                  1
+                 / \
+                2   3
+                 \   \
+                  5   4
+            </div>
+            <pre>
+Initialize: result = [], queue = [1]
+
+Level 0:
+- Queue size: 1
+- First node: 1
+- Process node 1: Add its children to the queue
+- Queue becomes: [2, 3]
+- Add 1 to result: result = [1]
+
+Level 1:
+- Queue size: 2
+- First node: 2
+- Process node 2: Add its children to the queue
+- Queue becomes: [3, 5]
+- Process node 3: Add its children to the queue
+- Queue becomes: [5, 4]
+- Add 2 to result: result = [1, 2]
+
+Level 2:
+- Queue size: 2
+- First node: 5
+- Process node 5: No children
+- Queue becomes: [4]
+- Process node 4: No children
+- Queue becomes: []
+- Add 5 to result: result = [1, 2, 5]
+
+Queue is empty, return result: [1, 2, 5]
+</pre>
+        </div>
+
+        <div class="code">
+            <h3>Code:</h3>
+            <pre>
+from collections import deque
+
+def leftSideView(root):
+    <span class="comment">"""Return the left side view of a binary tree.
+    
+    Args:
+        root: The root of the binary tree
+        
+    Returns:
+        A list of values representing the left side view of the tree
+    """</span>
+    if not root:
+        return []
+        
+    result = []
+    queue = deque([root])
+    
+    while queue:
+        node = None
+        
+        <span class="comment"># Process all nodes at the current level</span>
+        for _ in range(len(queue)):
+            n = queue.popleft()
+            
+            <span class="comment"># If this is the first node at this level, remember it</span>
+            if node is None:
+                node = n
+                
+            <span class="comment"># Add children to the queue</span>
+            if n.left: 
+                queue.append(n.left)
+            if n.right: 
+                queue.append(n.right)
+                
+        <span class="comment"># Add the first node's value to the result</span>
+        result.append(node.val)
+        
+    return result</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the number of nodes in the tree. We visit each node exactly once.</li>
+                <li><strong>Space Complexity:</strong> O(w), where w is the maximum width of the tree. In the worst case (a complete binary tree), this could be up to n/2, which is O(n).</li>
+            </ul>
+        </div>
+
+        <div class="key-insight">
+            <p><strong>Alternative Approach:</strong> This problem can also be solved using DFS (preorder traversal) by keeping track of the current level and adding the first node encountered at each level to the result. However, the BFS approach is more intuitive for this problem.</p>
+        </div>
+    </div>
+
+    <div class="section example-outputs">
+        <h2>Examples and Outputs</h2>
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <div class="tree-diagram">
+                  1
+                 / \
+                2   3
+                 \   \
+                  5   4
+            </div>
+            <pre class="command">root = TreeNode(1, TreeNode(2, None, TreeNode(5)), TreeNode(3, None, TreeNode(4)))
+leftSideView(root)  <span class="comment"># Output: [1, 2, 5]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">[1, 2, 5]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <div class="tree-diagram">
+                  1
+                 / \
+                2   3
+               /     
+              4       
+             /        
+            5         
+            </div>
+            <pre class="command">root = TreeNode(1, TreeNode(2, TreeNode(4, TreeNode(5))), TreeNode(3))
+leftSideView(root)  <span class="comment"># Output: [1, 2, 4, 5]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">[1, 2, 4, 5]</pre>
+        </div>
+    </div>
+</body>
+</html>
