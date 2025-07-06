@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longest Substring with At Most Two Distinct Characters</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Longest Substring with At Most Two Distinct Characters</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Longest Substring with At Most Two Distinct Characters</strong></p>
+        <p><a href="https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/" target="_blank">https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/</a></p>
+        <p>
+            Given a string s, return the length of the longest substring that contains at most two distinct characters.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "eceba"</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong> The substring is "ece" which its length is 3.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = "ccaabbb"</p>
+            <p><strong>Output:</strong> 5</p>
+            <p><strong>Explanation:</strong> The substring is "aabbb" which its length is 5.</p>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= s.length <= 10<sup>5</sup></li>
+            <li>s consists of English letters.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            In this problem, we need to find the length of the longest substring that contains at most two distinct characters.
+        </p>
+        <p>
+            Let's break down the examples to understand the problem better:
+        </p>
+        <ol>
+            <li>
+                <p>For the string "eceba":</p>
+                <ul>
+                    <li>"e" contains 1 distinct character, length 1</li>
+                    <li>"ec" contains 2 distinct characters, length 2</li>
+                    <li>"ece" contains 2 distinct characters, length 3</li>
+                    <li>"eceb" contains 3 distinct characters, which exceeds our limit of 2</li>
+                    <li>"ceb" contains 3 distinct characters, which exceeds our limit of 2</li>
+                    <li>"eb" contains 2 distinct characters, length 2</li>
+                    <li>"eba" contains 3 distinct characters, which exceeds our limit of 2</li>
+                    <li>"ba" contains 2 distinct characters, length 2</li>
+                </ul>
+                <p>The longest substring with at most 2 distinct characters is "ece" with a length of 3.</p>
+            </li>
+            <li>
+                <p>For the string "ccaabbb":</p>
+                <ul>
+                    <li>"c" contains 1 distinct character, length 1</li>
+                    <li>"cc" contains 1 distinct character, length 2</li>
+                    <li>"cca" contains 2 distinct characters, length 3</li>
+                    <li>"ccaa" contains 2 distinct characters, length 4</li>
+                    <li>"ccaab" contains 3 distinct characters, which exceeds our limit of 2</li>
+                    <li>"caab" contains 3 distinct characters, which exceeds our limit of 2</li>
+                    <li>"aab" contains 2 distinct characters, length 3</li>
+                    <li>"aabb" contains 2 distinct characters, length 4</li>
+                    <li>"aabbb" contains 2 distinct characters, length 5</li>
+                </ul>
+                <p>The longest substring with at most 2 distinct characters is "aabbb" with a length of 5.</p>
+            </li>
+        </ol>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Sliding Window</h2>
+        <p>
+            This problem can be efficiently solved using the sliding window technique. The idea is to maintain a window that contains at most two distinct characters and expand or contract this window as needed.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We'll use a sliding window approach with a hash map to keep track of the frequency of each character in the current window. We'll expand the window from the right until we have more than 2 unique characters, then contract it from the left until we have at most 2 unique characters again.</p>
+        </div>
+        
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize variables:</strong>
+                    <ul>
+                        <li>Initialize max_length to 0 to track the maximum length found.</li>
+                        <li>Initialize a hash map (temp) to store the frequency of each character in the current window.</li>
+                        <li>Initialize a counter (unique_chars) to track the number of unique characters in the current window.</li>
+                        <li>Initialize two pointers, left and right, both starting at the beginning of the string.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Expand the window:</strong>
+                    <ul>
+                        <li>Move the right pointer to include more characters in the window.</li>
+                        <li>Update the frequency of the character in the hash map.</li>
+                        <li>If the frequency becomes 1, increment the unique_chars counter.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Contract the window if needed:</strong>
+                    <ul>
+                        <li>While unique_chars > 2, move the left pointer to exclude characters from the window.</li>
+                        <li>Update the frequency of the character in the hash map.</li>
+                        <li>If the frequency becomes 0, decrement the unique_chars counter.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Update the maximum length:</strong>
+                    <ul>
+                        <li>After ensuring that the window has at most 2 distinct characters, update max_length to the maximum of max_length and the current window size (right - left + 1).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Continue expanding:</strong>
+                    <ul>
+                        <li>Move the right pointer to the right and continue the process.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return the result:</strong>
+                    <ul>
+                        <li>Return max_length as the length of the longest substring with at most 2 distinct characters.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization of the Approach for Example 1: s = "eceba"</strong></p>
+            <pre>
+Initialize: max_length = 0, temp = {}, unique_chars = 0, left = 0, right = 0
+
+Iteration 1: right = 0, char = 'e'
+  Add 'e' to the map: {'e': 1}
+  unique_chars = 1 (≤ 2, so no contraction needed)
+  Update max_length = max(0, 1) = 1
+  right = 1
+
+Iteration 2: right = 1, char = 'c'
+  Add 'c' to the map: {'e': 1, 'c': 1}
+  unique_chars = 2 (≤ 2, so no contraction needed)
+  Update max_length = max(1, 2) = 2
+  right = 2
+
+Iteration 3: right = 2, char = 'e'
+  Update 'e' in the map: {'e': 2, 'c': 1}
+  unique_chars still 2 (≤ 2, so no contraction needed)
+  Update max_length = max(2, 3) = 3
+  right = 3
+
+Iteration 4: right = 3, char = 'b'
+  Add 'b' to the map: {'e': 2, 'c': 1, 'b': 1}
+  unique_chars = 3 (> 2, so contraction needed)
+  
+  Contract: left = 0, char = 'e'
+    Update 'e' in the map: {'e': 1, 'c': 1, 'b': 1}
+    unique_chars still 3 (> 2, need more contraction)
+    left = 1
+  
+  Contract: left = 1, char = 'c'
+    Update 'c' in the map: {'e': 1, 'c': 0, 'b': 1}
+    'c' count becomes 0, so unique_chars = 2
+    left = 2
+  
+  unique_chars = 2 (≤ 2, no more contraction needed)
+  Update max_length = max(3, 2) = 3
+  right = 4
+
+Iteration 5: right = 4, char = 'a'
+  Add 'a' to the map: {'e': 1, 'c': 0, 'b': 1, 'a': 1}
+  unique_chars = 3 (> 2, so contraction needed)
+  
+  Contract: left = 2, char = 'e'
+    Update 'e' in the map: {'e': 0, 'c': 0, 'b': 1, 'a': 1}
+    'e' count becomes 0, so unique_chars = 2
+    left = 3
+  
+  unique_chars = 2 (≤ 2, no more contraction needed)
+  Update max_length = max(3, 2) = 3
+  right = 5
+
+Final max_length = 3</pre>
+        </div>
+
+        <div class="code">
+            <h3>Code:</h3>
+            <pre>
+def lengthOfLongestSubstringTwoDistinct(s):
+    <span class="comment">"""Find the length of the longest substring with at most two distinct characters.
+    
+    Args:
+        s: Input string
+        
+    Returns:
+        Length of the longest substring with at most two distinct characters
+    """</span>
+    max_length = 0
+    temp = {}  <span class="comment"># Hash map to store character frequencies</span>
+    unique_chars = 0  <span class="comment"># Count of unique characters in current window</span>
+    left, right = 0, 0  <span class="comment"># Initialize two pointers</span>
+    
+    while right < len(s):
+        <span class="comment"># Add current character to the window</span>
+        c = s[right]
+        temp[c] = temp.get(c, 0) + 1
+        if temp[c] == 1:  <span class="comment"># If this is the first occurrence of this character</span>
+            unique_chars += 1
+        
+        <span class="comment"># If window has more than 2 unique characters, shrink it</span>
+        while unique_chars > 2:
+            c = s[left]
+            if c in temp:
+                temp[c] -= 1
+                if temp[c] == 0:  <span class="comment"># If the character is completely removed</span>
+                    unique_chars -= 1
+            left += 1
+        
+        <span class="comment"># Update the maximum length</span>
+        max_length = max(max_length, right - left + 1)
+        
+        right += 1  <span class="comment"># Expand the window</span>
+    
+    return max_length</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the length of the string. Each character is processed at most twice (once by the right pointer and once by the left pointer).</li>
+                <li><strong>Space Complexity:</strong> O(1), as the hash map will store at most 3 unique characters (we only need to keep track of characters in the current window, which will have at most 3 unique characters right before we start contracting).</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section example-outputs">
+        <h2>Examples and Outputs</h2>
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">s = "eceba"
+lengthOfLongestSubstringTwoDistinct(s)  <span class="comment"># Output: 3</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">3</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">s = "ccaabbb"
+lengthOfLongestSubstringTwoDistinct(s)  <span class="comment"># Output: 5</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">5</pre>
+        </div>
+    </div>
+
+    <div class="section additional-insights">
+        <h2>Additional Insights</h2>
+        <p>
+            This problem is a specific case of a more general problem: "Longest Substring with At Most K Distinct Characters." The solution approach we used can be easily extended to handle any value of K by simply changing the condition in the while loop from <code>unique_chars > 2</code> to <code>unique_chars > K</code>.
+        </p>
+        <p>
+            The sliding window technique is very powerful for string problems where we need to find a substring that satisfies certain conditions. It helps us avoid recalculating the same information repeatedly by maintaining a window of valid characters.
+        </p>
+        <p>
+            An important optimization in our solution is that we don't need to recalculate the number of unique characters in the window from scratch each time. Instead, we incrementally update this count as we add or remove characters from the window.
+        </p>
+    </div>
+</body>
+</html>
