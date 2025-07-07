@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Nesting Depth of the Parentheses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .alternative {
+            background-color: #f6ffed;
+            border-left: 5px solid #52c41a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .highlight-text {
+            font-weight: bold;
+            color: #1890ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Maximum Nesting Depth of the Parentheses</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Maximum Nesting Depth of the Parentheses</strong></p>
+        <p><a href="https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/" target="_blank">LeetCode 1614: https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/</a></p>
+        <p>
+            Given a valid parentheses string s, return the nesting depth of s. The nesting depth is the maximum number of nested parentheses.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "(1+(2*3)+((8)/4))+1"</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong> Digit 8 is inside of 3 nested parentheses in the string.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = "(1)+((2))+(((3)))"</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong> Digit 3 is inside of 3 nested parentheses in the string.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> s = "()(())((()()))"</p>
+            <p><strong>Output:</strong> 3</p>
+        </div>
+
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= s.length <= 100</li>
+            <li>s consists of digits 0-9 and characters '+', '-', '*', '/', '(', and ')'.</li>
+            <li>It is guaranteed that parentheses expression s is a valid parentheses string (VPS).</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find the maximum nesting depth of parentheses in a string. The nesting depth refers to the maximum number of open parentheses at any point while traversing the string from left to right.
+        </p>
+        
+        <p>
+            Let's break down the key concepts:
+        </p>
+        <ul>
+            <li><strong>Nesting Depth:</strong> The number of unclosed parentheses at a given point in the string.</li>
+            <li><strong>Maximum Nesting Depth:</strong> The maximum value of nesting depth across the entire string.</li>
+            <li><strong>Valid Parentheses String (VPS):</strong> A string where all parentheses are properly matched and closed.</li>
+        </ul>
+        
+        <p>
+            Since the input is guaranteed to be a valid parentheses string, we don't need to worry about handling invalid cases like unmatched parentheses.
+        </p>
+        
+        <p>
+            Let's analyze the examples to better understand:
+        </p>
+        
+        <div class="visualization">
+            <p><strong>Example 1: "(1+(2*3)+((8)/4))+1"</strong></p>
+            <pre>
+Character | (  1  +  (  2  *  3  )  +  (  (  8  )  /  4  )  )  +  1
+---------+--------------------------------------------------------------
+Depth    | 1  1  1  2  2  2  2  1  1  2  3  3  2  2  2  1  0  0  0
+            </pre>
+            <p>Maximum depth: 3</p>
+        </div>
+        
+        <div class="visualization">
+            <p><strong>Example 2: "(1)+((2))+(((3)))"</strong></p>
+            <pre>
+Character | (  1  )  +  (  (  2  )  )  +  (  (  (  3  )  )  )
+---------+------------------------------------------------------
+Depth    | 1  1  0  0  1  2  2  1  0  0  1  2  3  3  2  1  0
+            </pre>
+            <p>Maximum depth: 3</p>
+        </div>
+        
+        <p>
+            From these examples, we observe that:
+        </p>
+        <ol>
+            <li>The depth increases by 1 whenever we encounter an opening parenthesis '('.</li>
+            <li>The depth decreases by 1 whenever we encounter a closing parenthesis ')'.</li>
+            <li>The maximum depth represents the maximum level of nesting in the string.</li>
+        </ol>
+        
+        <p>
+            Note that in the given implementation, there's a slight issue: the maximum depth is calculated when encountering closing parentheses, which may miss the actual maximum if it occurs just before the last closing parenthesis. This can be fixed by checking the maximum depth after each opening parenthesis instead.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Stack-Based Counting</h2>
+        <p>
+            To solve this problem, we can use a simple approach that mimics the behavior of a stack to keep track of open parentheses.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> The nesting depth at any point is equal to the number of open parentheses encountered so far minus the number of closed parentheses. In other words, it's the current size of the stack of unclosed parentheses.</p>
+        </div>
+        
+        <p>
+            The approach is as follows:
+        </p>
+        <ol>
+            <li>Maintain a stack to track open parentheses (or simply a counter).</li>
+            <li>Scan through each character in the string:
+                <ul>
+                    <li>If we encounter an opening parenthesis '(', push it onto the stack (or increment the counter).</li>
+                    <li>If we encounter a closing parenthesis ')', pop from the stack (or decrement the counter).</li>
+                    <li>After processing each character, update the maximum depth seen so far.</li>
+                </ul>
+            </li>
+            <li>Return the maximum depth recorded.</li>
+        </ol>
+        
+        <p>
+            Note that we could implement this with an actual stack data structure, but since we only care about the count of open parentheses and not their positions, a simple counter is sufficient.
+        </p>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>Initialize a stack (or counter) to track open parentheses.</li>
+                        <li>Initialize a variable <code>maxDepth</code> to 0 to track the maximum depth seen.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Process Each Character:</strong>
+                    <ul>
+                        <li>For each character in the string:
+                            <ul>
+                                <li>If the character is '(', push it onto the stack (or increment the counter).</li>
+                                <li>Update <code>maxDepth</code> if the current stack size (or counter) is greater.</li>
+                                <li>If the character is ')', pop from the stack (or decrement the counter).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return Result:</strong>
+                    <ul>
+                        <li>Return the maximum depth recorded.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1: "(1+(2*3)+((8)/4))+1"</strong></p>
+            <pre>
+Initialize: stack = [], maxDepth = 0
+
+Character '(': Push to stack, stack = ['('], maxDepth = max(0, 1) = 1
+Character '1': Ignore (not a parenthesis)
+Character '+': Ignore (not a parenthesis)
+Character '(': Push to stack, stack = ['(', '('], maxDepth = max(1, 2) = 2
+Character '2': Ignore (not a parenthesis)
+Character '*': Ignore (not a parenthesis)
+Character '3': Ignore (not a parenthesis)
+Character ')': Pop from stack, stack = ['('], maxDepth = 2
+Character '+': Ignore (not a parenthesis)
+Character '(': Push to stack, stack = ['(', '('], maxDepth = max(2, 2) = 2
+Character '(': Push to stack, stack = ['(', '(', '('], maxDepth = max(2, 3) = 3
+Character '8': Ignore (not a parenthesis)
+Character ')': Pop from stack, stack = ['(', '('], maxDepth = 3
+Character '/': Ignore (not a parenthesis)
+Character '4': Ignore (not a parenthesis)
+Character ')': Pop from stack, stack = ['('], maxDepth = 3
+Character ')': Pop from stack, stack = [], maxDepth = 3
+Character '+': Ignore (not a parenthesis)
+Character '1': Ignore (not a parenthesis)
+
+Return maxDepth = 3
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the length of the input string. We iterate through each character of the string once.</li>
+                <li><strong>Space Complexity:</strong> O(n) in the worst case, where n is the length of the input string. This would happen if the string consists entirely of opening parentheses. However, since the input is guaranteed to be a valid parentheses string, the actual space used will be less.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def maxDepth(s):
+    <span class="comment">"""
+    Find the maximum nesting depth of the parentheses in a valid parentheses string.
+    
+    Args:
+        s: A valid parentheses string
+        
+    Returns:
+        The maximum nesting depth of parentheses
+    """</span>
+    stack = []
+    maxd = 0
+    
+    for c in s:
+        if c == "(":
+            <span class="comment"># Add opening parenthesis to the stack</span>
+            stack.append(c)
+            <span class="comment"># Update maximum depth after pushing (correction from original code)</span>
+            maxd = max(maxd, len(stack))
+        elif c == ")":
+            <span class="comment"># Remove matching closing parenthesis from the stack</span>
+            stack.pop()
+    
+    return maxd</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">s = "(1+(2*3)+((8)/4))+1"
+print(maxDepth(s))  <span class="comment"># Output: 3</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">3</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">s = "(1)+((2))+(((3)))"
+print(maxDepth(s))  <span class="comment"># Output: 3</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">3</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="alternative">
+            <h3>Counter-Based Approach</h3>
+            <p>
+                Instead of using a stack, we can simply use a counter to keep track of the current depth:
+            </p>
+            <pre>
+def maxDepth_counter(s):
+    <span class="comment">"""Find maximum nesting depth using a counter instead of a stack."""</span>
+    current_depth = 0
+    max_depth = 0
+    
+    for c in s:
+        if c == '(':
+            current_depth += 1
+            max_depth = max(max_depth, current_depth)
+        elif c == ')':
+            current_depth -= 1
+    
+    return max_depth</pre>
+            <p><strong>Complexity:</strong> O(n) time, O(1) space</p>
+        </div>
+        
+        <div class="alternative">
+            <h3>Optimized One-Pass Approach</h3>
+            <p>
+                We can further optimize by ignoring all characters that are not parentheses:
+            </p>
+            <pre>
+def maxDepth_optimized(s):
+    <span class="comment">"""Optimized approach that ignores non-parenthesis characters."""</span>
+    current_depth = 0
+    max_depth = 0
+    
+    for c in s:
+        if c == '(':
+            current_depth += 1
+            max_depth = max(max_depth, current_depth)
+        elif c == ')':
+            current_depth -= 1
+        <span class="comment"># Ignore all other characters</span>
+    
+    return max_depth</pre>
+            <p><strong>Complexity:</strong> O(n) time, O(1) space</p>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>Stack-Based</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>Clear representation of nesting structure</td>
+                    <td>Uses more space</td>
+                </tr>
+                <tr>
+                    <td>Counter-Based</td>
+                    <td>O(n)</td>
+                    <td>O(1)</td>
+                    <td>More space-efficient</td>
+                    <td>Less intuitive representation of nesting</td>
+                </tr>
+                <tr>
+                    <td>Optimized One-Pass</td>
+                    <td>O(n)</td>
+                    <td>O(1)</td>
+                    <td>Most space-efficient, clear logic</td>
+                    <td>None significant</td>
+                </tr>
+            </table>
+            <p>
+                The counter-based approach is more efficient in terms of space complexity (O(1) vs O(n) for the stack-based approach). For this specific problem, the counter-based approach is generally preferred due to its simplicity and efficiency.
+            </p>
+        </div>
+    </div>
+
+    <div class="section applications">
+        <h2>Related Problems and Applications</h2>
+        <ol>
+            <li>
+                <strong>Parentheses Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/valid-parentheses/" target="_blank">LeetCode 20: Valid Parentheses</a></li>
+                    <li><a href="https://leetcode.com/problems/minimum-add-to-make-parentheses-valid/" target="_blank">LeetCode 921: Minimum Add to Make Parentheses Valid</a></li>
+                    <li><a href="https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/" target="_blank">LeetCode 1249: Minimum Remove to Make Valid Parentheses</a></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Stack-Based Parsing:</strong>
+                <p>This problem demonstrates a common technique in parsing expressions, especially in compiler design and interpreters.</p>
+            </li>
+            <li>
+                <strong>Real-world Applications:</strong>
+                <ul>
+                    <li>Validating syntax in programming languages</li>
+                    <li>Parsing nested structures in XML or JSON documents</li>
+                    <li>Evaluating mathematical expressions with nested groupings</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

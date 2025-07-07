@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lowest Common Ancestor of a Binary Tree III</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .alternative {
+            background-color: #f6ffed;
+            border-left: 5px solid #52c41a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .tree-diagram {
+            font-family: monospace;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lowest Common Ancestor of a Binary Tree III</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Lowest Common Ancestor of a Binary Tree III</strong></p>
+        <p><a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree-iii/" target="_blank">LeetCode 1650: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree-iii/</a></p>
+        <p>
+            Given two nodes of a binary tree p and q, return their lowest common ancestor (LCA).
+        </p>
+        <p>
+            Each node will have a reference to its parent node. The definition for Node is below:
+        </p>
+        <pre>
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+    public Node parent;
+}</pre>
+        <p>
+            According to the definition of LCA on Wikipedia: "The lowest common ancestor of two nodes p and q in a tree T is the lowest node that has both p and q as descendants (where we allow a node to be a descendant of itself)."
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <div class="tree-diagram">
+                <pre>
+        3
+       / \
+      5   1
+     / \ / \
+    6  2 0  8
+      / \
+     7   4
+                </pre>
+            </div>
+            <p><strong>Input:</strong> root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1</p>
+            <p><strong>Output:</strong> 3</p>
+            <p><strong>Explanation:</strong> The LCA of nodes 5 and 1 is 3.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <div class="tree-diagram">
+                <pre>
+        3
+       / \
+      5   1
+     / \ / \
+    6  2 0  8
+      / \
+     7   4
+                </pre>
+            </div>
+            <p><strong>Input:</strong> root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4</p>
+            <p><strong>Output:</strong> 5</p>
+            <p><strong>Explanation:</strong> The LCA of nodes 5 and 4 is 5 since a node can be a descendant of itself according to the LCA definition.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <div class="tree-diagram">
+                <pre>
+    1
+   /
+  2
+                </pre>
+            </div>
+            <p><strong>Input:</strong> root = [1,2], p = 1, q = 2</p>
+            <p><strong>Output:</strong> 1</p>
+        </div>
+
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The number of nodes in the tree is in the range [2, 10<sup>5</sup>].</li>
+            <li>-10<sup>9</sup> <= Node.val <= 10<sup>9</sup></li>
+            <li>All Node.val are unique.</li>
+            <li>p != q</li>
+            <li>p and q exist in the tree.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem is a variation of the classic Lowest Common Ancestor (LCA) problem, with a key difference: each node has a parent pointer that allows us to navigate upwards in the tree. This significantly changes our approach.
+        </p>
+        
+        <p>
+            Let's clarify what the Lowest Common Ancestor is:
+        </p>
+        <ul>
+            <li>The LCA is the lowest (or deepest) node in the tree that has both p and q as descendants.</li>
+            <li>A node can be a descendant of itself, as stated in the definition.</li>
+        </ul>
+        
+        <p>
+            The special property of this problem is that we have access to:
+        </p>
+        <ol>
+            <li>The nodes p and q directly (not their values)</li>
+            <li>The parent pointer for each node</li>
+        </ol>
+        
+        <p>
+            Importantly, we don't necessarily have access to the root of the tree or any other part of the tree structure except through the parent pointers from p and q.
+        </p>
+        
+        <p>
+            Let's analyze the examples to better understand:
+        </p>
+        
+        <div class="visualization">
+            <p><strong>Example 1: p = 5, q = 1</strong></p>
+            <pre>
+        3
+       / \
+      5   1 ← q
+     / \ / \
+    6  2 0  8
+      / \
+     7   4
+     ↑
+     p
+            </pre>
+            <p>
+                To find the LCA, we need to find the node where the paths from p and q to the root first meet. In this case, node 3 is the LCA because it's the first common node when traversing up from both 5 and 1.
+            </p>
+        </div>
+        
+        <div class="visualization">
+            <p><strong>Example 2: p = 5, q = 4</strong></p>
+            <pre>
+        3
+       / \
+      5 ← p
+     / \ / \
+    6  2 0  8
+      / \
+     7   4 ← q
+            </pre>
+            <p>
+                Here, 5 is the LCA because 4 is a descendant of 5, and a node can be a descendant of itself according to the LCA definition.
+            </p>
+        </div>
+        
+        <p>
+            One intuitive way to think about finding the LCA with parent pointers is to consider how we would manually trace the paths from both nodes to the root, and then identify where these paths first intersect.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Two-Pointer Technique</h2>
+        <p>
+            Since we have parent pointers available, we can solve this problem using an elegant two-pointer technique that's similar to finding the intersection point of two linked lists.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> If we follow the paths from both nodes to the root and then "switch paths" when reaching the root, the pointers will eventually meet at the LCA, regardless of the tree's structure.</p>
+        </div>
+        
+        <p>
+            The approach works as follows:
+        </p>
+        <ol>
+            <li>Initialize two pointers, one starting at node p and another at node q.</li>
+            <li>Move both pointers up the tree (towards the root) by following parent pointers.</li>
+            <li>When a pointer reaches the root (i.e., when parent is null), redirect it to the other node's starting position.</li>
+            <li>Continue moving both pointers until they meet at the same node, which is the LCA.</li>
+        </ol>
+        
+        <p>
+            Why does this work? Let's analyze:
+        </p>
+        <ul>
+            <li>Let's say the distance from p to the LCA is a, and from q to the LCA is b.</li>
+            <li>The distance from the LCA to the root is c.</li>
+            <li>When we "switch paths," both pointers will have traveled a + b + c distance, ensuring they meet at the LCA.</li>
+        </ul>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>Set pointer a = p and pointer b = q.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Traverse and Swap:</strong>
+                    <ul>
+                        <li>While a != b:
+                            <ul>
+                                <li>If a reaches the root (a.parent is null), set a = q.</li>
+                                <li>Otherwise, move a up to its parent.</li>
+                                <li>If b reaches the root (b.parent is null), set b = p.</li>
+                                <li>Otherwise, move b up to its parent.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return LCA:</strong>
+                    <ul>
+                        <li>When a and b meet, that node is the LCA. Return a (or b, since they're equal).</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1: p = 5, q = 1</strong></p>
+            <pre>
+Initialize: a = 5, b = 1
+
+Iteration 1:
+  - a moves to parent: a = 3
+  - b moves to parent: b = 3
+  - a == b, so break the loop
+
+Return: 3 (the LCA)
+</pre>
+            <p><strong>Visualization for Example 2: p = 5, q = 4</strong></p>
+            <pre>
+Initialize: a = 5, b = 4
+
+Iteration 1:
+  - a moves to parent: a = 3
+  - b moves to parent: b = 2
+
+Iteration 2:
+  - a moves to parent: a = null (root's parent), so a = 4
+  - b moves to parent: b = 5
+
+Iteration 3:
+  - a moves to parent: a = 2
+  - b moves to parent: b = 3
+
+Iteration 4:
+  - a moves to parent: a = 5
+  - b moves to parent: b = null (root's parent), so b = 5
+
+Iteration 5:
+  - a = 5, b = 5
+  - a == b, so break the loop
+
+Return: 5 (the LCA)
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(h), where h is the height of the tree. In the worst case, we might need to traverse the entire height of the tree, but we won't visit any node more than twice.</li>
+                <li><strong>Space Complexity:</strong> O(1), as we only use two pointers regardless of the tree size.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+class Node:
+    def __init__(self, val, left=None, right=None, parent=None):
+        self.val = val
+        self.left = left
+        self.right = right
+        self.parent = parent
+
+def lowestCommonAncestor(p, q):
+    <span class="comment">"""
+    Find the lowest common ancestor of two nodes in a binary tree where each node has a parent pointer.
+    
+    Args:
+        p: First node
+        q: Second node
+        
+    Returns:
+        The lowest common ancestor node of p and q
+    """</span>
+    a, b = p, q
+    
+    <span class="comment"># Traverse up the tree and switch paths when reaching the root</span>
+    while a != b:
+        <span class="comment"># Move a up or switch to q if at root</span>
+        a = a.parent if a.parent else q
+        
+        <span class="comment"># Move b up or switch to p if at root</span>
+        b = b.parent if b.parent else p
+    
+    <span class="comment"># When a and b meet, that's the LCA</span>
+    return a</pre>
+        
+        <div class="example">
+            <p><strong>Example Usage:</strong></p>
+            <pre class="command"><span class="comment"># Create the tree from Example 1:
+#        3
+#       / \
+#      5   1
+#     / \ / \
+#    6  2 0  8
+#      / \
+#     7   4</span>
+
+node3 = Node(3)
+node5 = Node(5, parent=node3)
+node1 = Node(1, parent=node3)
+node6 = Node(6, parent=node5)
+node2 = Node(2, parent=node5)
+node0 = Node(0, parent=node1)
+node8 = Node(8, parent=node1)
+node7 = Node(7, parent=node2)
+node4 = Node(4, parent=node2)
+
+node3.left = node5
+node3.right = node1
+node5.left = node6
+node5.right = node2
+node1.left = node0
+node1.right = node8
+node2.left = node7
+node2.right = node4
+
+<span class="comment"># Find LCA of nodes 5 and 1</span>
+lca = lowestCommonAncestor(node5, node1)
+print(lca.val)  <span class="comment"># Output: 3</span>
+
+<span class="comment"># Find LCA of nodes 5 and 4</span>
+lca = lowestCommonAncestor(node5, node4)
+print(lca.val)  <span class="comment"># Output: 5</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">3
+5</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="alternative">
+            <h3>Using a Hash Set</h3>
+            <p>
+                Another way to solve this problem is to use a hash set to track the ancestors:
+            </p>
+            <pre>
+def lowestCommonAncestor_hashset(p, q):
+    <span class="comment">"""Find LCA using a hash set to track ancestors."""</span>
+    ancestors = set()
+    
+    <span class="comment"># Add all ancestors of p to the hash set</span>
+    while p:
+        ancestors.add(p)
+        p = p.parent
+    
+    <span class="comment"># Find the first ancestor of q that's also an ancestor of p</span>
+    while q not in ancestors:
+        q = q.parent
+    
+    return q</pre>
+            <p><strong>Complexity:</strong> O(h) time, O(h) space where h is the height of the tree</p>
+        </div>
+        
+        <div class="alternative">
+            <h3>Finding Tree Heights</h3>
+            <p>
+                We can also find the heights of both nodes from the root, then move the deeper node up until both nodes are at the same level, and finally move both nodes up until they meet:
+            </p>
+            <pre>
+def lowestCommonAncestor_heights(p, q):
+    <span class="comment">"""Find LCA by equalizing heights first."""</span>
+    <span class="comment"># Find depth of p</span>
+    depth_p = 0
+    curr = p
+    while curr:
+        depth_p += 1
+        curr = curr.parent
+    
+    <span class="comment"># Find depth of q</span>
+    depth_q = 0
+    curr = q
+    while curr:
+        depth_q += 1
+        curr = curr.parent
+    
+    <span class="comment"># Move deeper node up to the same level</span>
+    while depth_p > depth_q:
+        p = p.parent
+        depth_p -= 1
+        
+    while depth_q > depth_p:
+        q = q.parent
+        depth_q -= 1
+    
+    <span class="comment"># Move both nodes up until they meet</span>
+    while p != q:
+        p = p.parent
+        q = q.parent
+    
+    return p</pre>
+            <p><strong>Complexity:</strong> O(h) time, O(1) space</p>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>Two-Pointer</td>
+                    <td>O(h)</td>
+                    <td>O(1)</td>
+                    <td>Elegant and concise, constant space</td>
+                    <td>May be less intuitive at first glance</td>
+                </tr>
+                <tr>
+                    <td>Hash Set</td>
+                    <td>O(h)</td>
+                    <td>O(h)</td>
+                    <td>Straightforward to understand</td>
+                    <td>Uses additional space</td>
+                </tr>
+                <tr>
+                    <td>Heights Method</td>
+                    <td>O(h)</td>
+                    <td>O(1)</td>
+                    <td>More intuitive reasoning</td>
+                    <td>More complex implementation</td>
+                </tr>
+            </table>
+            <p>
+                The two-pointer approach is preferred for its elegance and constant space complexity. The hash set approach is more intuitive but uses more space. The heights method is also space-efficient but requires more steps to implement.
+            </p>
+        </div>
+    </div>
+
+    <div class="section related-problems">
+        <h2>Related Problems and Applications</h2>
+        <ol>
+            <li>
+                <strong>Other LCA Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/" target="_blank">LeetCode 236: Lowest Common Ancestor of a Binary Tree</a> (standard version without parent pointers)</li>
+                    <li><a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/" target="_blank">LeetCode 235: Lowest Common Ancestor of a Binary Search Tree</a> (uses BST properties)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Similar Techniques:</strong>
+                <p>The two-pointer technique used here is similar to finding the intersection point of two linked lists (LeetCode 160).</p>
+            </li>
+            <li>
+                <strong>Applications:</strong>
+                <ul>
+                    <li>Determining relationships in hierarchical structures</li>
+                    <li>Network routing algorithms</li>
+                    <li>Finding common ancestors in genealogical trees</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

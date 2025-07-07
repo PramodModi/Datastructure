@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Buildings With an Ocean View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .alternative {
+            background-color: #f6ffed;
+            border-left: 5px solid #52c41a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find Buildings With an Ocean View</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Find Buildings With an Ocean View</strong></p>
+        <p><a href="https://leetcode.com/problems/buildings-with-an-ocean-view/" target="_blank">LeetCode 1762: https://leetcode.com/problems/buildings-with-an-ocean-view/</a></p>
+        <p>
+            Given a list of n buildings in a line, each building's height is given in the heights[] array.
+            Find and return the indices (0-indexed) of buildings with an unobstructed "ocean view," meaning they can see the ocean without taller buildings blocking
+            their view to the right. The task is to return the indices (0-indexed) of the buildings that have an ocean view, sorted in increasing order.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> heights = [4, 2, 3, 1]</p>
+            <p><strong>Output:</strong> [0, 2, 3]</p>
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>Building at index 0 has height 4 - it can see the ocean because there's no taller building to its right.</li>
+                <li>Building at index 1 has height 2 - it can't see the ocean because the building at index 2 (height 3) blocks its view.</li>
+                <li>Building at index 2 has height 3 - it can see the ocean because there's no taller building to its right.</li>
+                <li>Building at index 3 has height 1 - it can see the ocean because it's the rightmost building.</li>
+            </ul>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> heights = [4, 3, 2, 1]</p>
+            <p><strong>Output:</strong> [0, 1, 2, 3]</p>
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>All buildings can see the ocean because they are in decreasing height order.</li>
+            </ul>
+        </div>
+        
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 ≤ heights.length ≤ 10<sup>5</sup></li>
+            <li>1 ≤ heights[i] ≤ 10<sup>9</sup></li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to find all buildings that have an unobstructed view of the ocean. Let's clarify some key points:
+        </p>
+        <ol>
+            <li>The buildings are arranged in a line, with the ocean to the right of the rightmost building.</li>
+            <li>A building has an ocean view if there are no taller buildings to its right.</li>
+            <li>We need to return the indices of these buildings in ascending order.</li>
+        </ol>
+        
+        <p>
+            Let's visualize the examples to understand better:
+        </p>
+        
+        <div class="visualization">
+            <p><strong>Example 1: heights = [4, 2, 3, 1]</strong></p>
+            <pre>
+Heights:   4   2   3   1
+Indices:   0   1   2   3
+                          Ocean →
+            </pre>
+            <ul>
+                <li>Building at index 0 (height 4): No building to its right is taller, so it has an ocean view.</li>
+                <li>Building at index 1 (height 2): Building at index 2 (height 3) is taller and to its right, so it <strong>doesn't</strong> have an ocean view.</li>
+                <li>Building at index 2 (height 3): No building to its right is taller, so it has an ocean view.</li>
+                <li>Building at index 3 (height 1): It's the rightmost building, so it definitely has an ocean view.</li>
+            </ul>
+            <p>So buildings at indices [0, 2, 3] have an ocean view.</p>
+        </div>
+        
+        <div class="visualization">
+            <p><strong>Example 2: heights = [4, 3, 2, 1]</strong></p>
+            <pre>
+Heights:   4   3   2   1
+Indices:   0   1   2   3
+                          Ocean →
+            </pre>
+            <ul>
+                <li>Building at index 0 (height 4): No building to its right is taller, so it has an ocean view.</li>
+                <li>Building at index 1 (height 3): No building to its right is taller, so it has an ocean view.</li>
+                <li>Building at index 2 (height 2): No building to its right is taller, so it has an ocean view.</li>
+                <li>Building at index 3 (height 1): It's the rightmost building, so it definitely has an ocean view.</li>
+            </ul>
+            <p>So buildings at indices [0, 1, 2, 3] have an ocean view.</p>
+        </div>
+        
+        <p>
+            From these examples, we can observe that:
+        </p>
+        <ol>
+            <li>The rightmost building always has an ocean view (since there are no buildings to its right).</li>
+            <li>For other buildings, they have an ocean view if and only if no building to their right is taller.</li>
+            <li>If buildings are in strictly decreasing height order (like in Example 2), all of them have an ocean view.</li>
+        </ol>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Scan from Right to Left with Maximum Height Tracking</h2>
+        <p>
+            To solve this problem efficiently, we can scan the buildings from right to left (from the ocean side) and keep track of the tallest building we've seen so far.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> A building has an ocean view if and only if it is taller than all buildings to its right. By scanning from right to left and keeping track of the maximum height seen so far, we can easily determine which buildings have an ocean view.</p>
+        </div>
+        
+        <p>
+            The approach is as follows:
+        </p>
+        <ol>
+            <li>Initialize an empty result array to store the indices of buildings with an ocean view.</li>
+            <li>Initialize a variable <code>tallestBuilding</code> to 0 to track the tallest building seen so far.</li>
+            <li>Iterate through the buildings from right to left (starting from the ocean side):
+                <ol>
+                    <li>If the current building's height is greater than <code>tallestBuilding</code>, it has an ocean view.</li>
+                    <li>Add the current index to our result array and update <code>tallestBuilding</code> to the current building's height.</li>
+                </ol>
+            </li>
+            <li>Return the result array in ascending order (since we've been adding indices in descending order, we need to reverse the result).</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>Initialize an empty array <code>res</code> to store the indices of buildings with an ocean view.</li>
+                        <li>Initialize <code>tallestBuilding = 0</code> to track the maximum height seen so far.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Scan from Right to Left:</strong>
+                    <ul>
+                        <li>Iterate through the buildings from right to left (from index <code>len(heights)-1</code> down to 0):
+                            <ul>
+                                <li>Get the height of the current building: <code>h = heights[i]</code>.</li>
+                                <li>If <code>h > tallestBuilding</code>, this building has an ocean view:
+                                    <ul>
+                                        <li>Add index <code>i</code> to <code>res</code>.</li>
+                                        <li>Update <code>tallestBuilding = h</code>.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return Result:</strong>
+                    <ul>
+                        <li>Reverse <code>res</code> to get the indices in ascending order.</li>
+                        <li>Return the reversed result.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1: heights = [4, 2, 3, 1]</strong></p>
+            <pre>
+Initialize: res = [], tallestBuilding = 0
+
+Iteration 1 (i = 3):
+  - height = 1
+  - 1 > 0 (tallestBuilding), so add index 3 to res
+  - res = [3]
+  - tallestBuilding = 1
+
+Iteration 2 (i = 2):
+  - height = 3
+  - 3 > 1 (tallestBuilding), so add index 2 to res
+  - res = [3, 2]
+  - tallestBuilding = 3
+
+Iteration 3 (i = 1):
+  - height = 2
+  - 2 < 3 (tallestBuilding), so this building doesn't have an ocean view
+  - res = [3, 2]
+  - tallestBuilding = 3 (unchanged)
+
+Iteration 4 (i = 0):
+  - height = 4
+  - 4 > 3 (tallestBuilding), so add index 0 to res
+  - res = [3, 2, 0]
+  - tallestBuilding = 4
+
+After iterations:
+  - res = [3, 2, 0]
+  - Reverse res to get indices in ascending order: [0, 2, 3]
+
+Return: [0, 2, 3]
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the number of buildings. We iterate through each building once and perform constant time operations for each.</li>
+                <li><strong>Space Complexity:</strong> O(n) in the worst case, where all buildings have an ocean view (e.g., when buildings are in strictly decreasing height order).</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def findOceanViewBuildings(heights):
+    <span class="comment">"""
+    Find buildings with an ocean view.
+    
+    Args:
+        heights: List of integers representing the heights of buildings
+        
+    Returns:
+        List of indices (0-indexed) of buildings with an ocean view, sorted in increasing order
+    """</span>
+    res = []
+    tallestBuilding = 0
+    
+    # Scan from right to left (from the ocean side)
+    for i in range(len(heights) - 1, -1, -1):
+        h = heights[i]
+        
+        # If the current building is taller than all buildings to its right, it has an ocean view
+        if h > tallestBuilding:
+            res.append(i)
+            tallestBuilding = h
+    
+    # Return indices in increasing order
+    return list(reversed(res))</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">heights = [4, 2, 3, 1]
+print(findOceanViewBuildings(heights))  <span class="comment"># Output: [0, 2, 3]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">[0, 2, 3]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">heights = [4, 3, 2, 1]
+print(findOceanViewBuildings(heights))  <span class="comment"># Output: [0, 1, 2, 3]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">[0, 1, 2, 3]</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="alternative">
+            <h3>Left-to-Right Approach with Stack</h3>
+            <p>
+                Another way to solve this problem is to scan from left to right using a stack to keep track of buildings with an ocean view.
+            </p>
+            <pre>
+def findOceanViewBuildings_stack(heights):
+    <span class="comment">"""Alternative solution using stack approach."""</span>
+    stack = []
+    
+    for i, h in enumerate(heights):
+        # Remove buildings from the stack that can't see the ocean due to this taller building
+        while stack and heights[stack[-1]] <= h:
+            stack.pop()
+        
+        # Add the current building to the stack
+        stack.append(i)
+    
+    return stack</pre>
+            <p><strong>Complexity:</strong> O(n) time, O(n) space</p>
+            <p>
+                In this approach:
+            </p>
+            <ol>
+                <li>We use a stack to maintain the indices of buildings that have an ocean view so far.</li>
+                <li>For each building, we remove from the stack any buildings that are shorter (as they won't have an ocean view due to the current building).</li>
+                <li>Finally, we add the current building to the stack.</li>
+            </ol>
+            <p>
+                The stack will eventually contain only buildings with an ocean view, in ascending order by index.
+            </p>
+        </div>
+        
+        <div class="alternative">
+            <h3>Left-to-Right Approach with Result Array</h3>
+            <p>
+                We can also scan from left to right without using a stack:
+            </p>
+            <pre>
+def findOceanViewBuildings_leftToRight(heights):
+    <span class="comment">"""Alternative solution scanning from left to right."""</span>
+    n = len(heights)
+    result = []
+    maxHeight = -1
+    
+    for i in range(n - 1, -1, -1):
+        if heights[i] > maxHeight:
+            result.append(i)
+            maxHeight = heights[i]
+    
+    return sorted(result)</pre>
+            <p><strong>Complexity:</strong> O(n log n) time due to sorting, O(n) space</p>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>Right-to-Left Scan</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>Simple and efficient</td>
+                    <td>Needs to reverse the result</td>
+                </tr>
+                <tr>
+                    <td>Stack Approach</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>Result already in sorted order</td>
+                    <td>Slightly more complex</td>
+                </tr>
+                <tr>
+                    <td>Left-to-Right with Sorting</td>
+                    <td>O(n log n)</td>
+                    <td>O(n)</td>
+                    <td>More intuitive direction</td>
+                    <td>Less efficient due to sorting</td>
+                </tr>
+            </table>
+            <p>
+                The right-to-left scan is generally preferred for its simplicity and linear time complexity. The stack approach is also efficient but may be slightly harder to understand for some. The left-to-right approach with sorting is less efficient due to the sorting step.
+            </p>
+        </div>
+    </div>
+
+    <div class="section applications">
+        <h2>Related Problems and Applications</h2>
+        <ol>
+            <li>
+                <strong>Monotonic Stack Problems:</strong>
+                <p>This problem is a classic application of the monotonic stack pattern, which is useful for solving problems where we need to find the next greater/smaller element.</p>
+            </li>
+            <li>
+                <strong>Similar LeetCode Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/next-greater-element-i/" target="_blank">LeetCode 496: Next Greater Element I</a></li>
+                    <li><a href="https://leetcode.com/problems/daily-temperatures/" target="_blank">LeetCode 739: Daily Temperatures</a></li>
+                    <li><a href="https://leetcode.com/problems/largest-rectangle-in-histogram/" target="_blank">LeetCode 84: Largest Rectangle in Histogram</a></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Real-world Applications:</strong>
+                <p>
+                    This type of problem has applications in:
+                </p>
+                <ul>
+                    <li>Urban planning and real estate value assessment</li>
+                    <li>Visibility analysis in computer graphics</li>
+                    <li>Signal processing where signal strength needs to overcome obstacles</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>
