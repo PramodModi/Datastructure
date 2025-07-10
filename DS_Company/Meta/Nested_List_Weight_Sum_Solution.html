@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested List Weight Sum</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .alternative {
+            background-color: #f6ffed;
+            border-left: 5px solid #52c41a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .nested-example {
+            font-family: monospace;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nested List Weight Sum</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Nested List Weight Sum</strong></p>
+        <p><a href="https://leetcode.com/problems/nested-list-weight-sum/" target="_blank">LeetCode 339: https://leetcode.com/problems/nested-list-weight-sum/</a></p>
+        <p>
+            Given a nested list of integers, return the sum of all integers in the list weighted by their depth.
+            Each element is either an integer, or a list -- whose elements may also be integers or other lists.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> [[1,1],2,[1,1]]</p>
+            <p><strong>Output:</strong> 10</p>
+            <p><strong>Explanation:</strong> Four 1's at depth 2, one 2 at depth 1. 4*1*2 + 1*2*1 = 8 + 2 = 10</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> [1,[4,[6]]]</p>
+            <p><strong>Output:</strong> 27</p>
+            <p><strong>Explanation:</strong> One 1 at depth 1, one 4 at depth 2, and one 6 at depth 3. 1*1 + 4*2 + 6*3 = 1 + 8 + 18 = 27</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem involves calculating a weighted sum of integers in a nested list structure, where the weight of each integer is determined by its depth in the nesting.
+        </p>
+        
+        <p>
+            Key concepts to understand:
+        </p>
+        <ul>
+            <li><strong>Nested Lists:</strong> A list that can contain both integers and other lists.</li>
+            <li><strong>Depth:</strong> The nesting level of an integer. The outermost level has depth 1, the next level has depth 2, and so on.</li>
+            <li><strong>Weighted Sum:</strong> Each integer contributes its value multiplied by its depth to the total sum.</li>
+        </ul>
+        
+        <p>
+            Let's visualize the examples to better understand:
+        </p>
+        
+        <div class="visualization">
+            <p><strong>Example 1: [[1,1],2,[1,1]]</strong></p>
+            <div class="nested-example">
+            Level 1: [  *  , 2,   *  ]  ← Depth 1
+                       ↓       ↓
+            Level 2: [1,1]   [1,1]      ← Depth 2
+            </div>
+            <ul>
+                <li>At depth 1, we have one integer: 2</li>
+                <li>At depth 2, we have four integers: 1, 1, 1, 1</li>
+            </ul>
+            <p>Weighted sum = 1*2 + 2*(1+1+1+1) = 2 + 2*4 = 2 + 8 = 10</p>
+        </div>
+        
+        <div class="visualization">
+            <p><strong>Example 2: [1,[4,[6]]]</strong></p>
+            <div class="nested-example">
+            Level 1: [1,  *  ]           ← Depth 1
+                          ↓
+            Level 2:     [4,  *  ]       ← Depth 2
+                              ↓
+            Level 3:         [6]         ← Depth 3
+            </div>
+            <ul>
+                <li>At depth 1, we have one integer: 1</li>
+                <li>At depth 2, we have one integer: 4</li>
+                <li>At depth 3, we have one integer: 6</li>
+            </ul>
+            <p>Weighted sum = 1*1 + 2*4 + 3*6 = 1 + 8 + 18 = 27</p>
+        </div>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Depth-First Search (DFS)</h2>
+        <p>
+            To solve this problem, we can use a Depth-First Search (DFS) approach to traverse the nested list structure.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> DFS is well-suited for this problem because it naturally tracks the depth as it explores deeper levels of nesting. Each time we encounter a nested list, we increment the depth before processing its elements.</p>
+        </div>
+        
+        <p>
+            The approach is as follows:
+        </p>
+        <ol>
+            <li>Create a DFS function that takes a nested list and the current depth as parameters.</li>
+            <li>Iterate through each item in the nested list:
+                <ul>
+                    <li>If the item is an integer, add depth * item to the running sum.</li>
+                    <li>If the item is a list, recursively call the DFS function with the nested list and an incremented depth.</li>
+                </ul>
+            </li>
+            <li>Return the total weighted sum.</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>Create a helper DFS function that takes a nested list and a depth parameter.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Implement DFS:</strong>
+                    <ul>
+                        <li>Initialize a running sum to 0.</li>
+                        <li>For each item in the nested list:
+                            <ul>
+                                <li>If the item is an integer, add depth * item to the running sum.</li>
+                                <li>If the item is a list, recursively call DFS with the nested list and depth + 1.</li>
+                            </ul>
+                        </li>
+                        <li>Return the running sum.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Start DFS:</strong>
+                    <ul>
+                        <li>Call the DFS function with the input nested list and an initial depth of 1.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization of DFS for Example 2: [1,[4,[6]]]</strong></p>
+            <pre>
+depth_sum([1,[4,[6]]], 1):
+  - Item: 1 (integer)
+    - Add 1*1 = 1 to sum
+    - sum = 1
+  - Item: [4,[6]] (list)
+    - Call dfs([4,[6]], 2)
+      - Item: 4 (integer)
+        - Add 2*4 = 8 to sum
+        - sum = 8
+      - Item: [6] (list)
+        - Call dfs([6], 3)
+          - Item: 6 (integer)
+            - Add 3*6 = 18 to sum
+            - sum = 18
+          - Return 18
+        - Add 18 to sum
+        - sum = 26
+      - Return 26
+    - Add 26 to sum
+    - sum = 27
+  - Return 27
+            </pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the total number of elements (including both integers and nested lists) in the input. We process each element exactly once.</li>
+                <li><strong>Space Complexity:</strong> O(d), where d is the maximum depth of nesting. This space is used by the recursion stack during DFS traversal.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def depth_sum(nested_list):
+    <span class="comment">"""
+    Calculate the sum of all integers in a nested list weighted by their depth.
+    
+    Args:
+        nested_list: A list that can contain integers and other lists
+        
+    Returns:
+        The weighted sum of all integers in the nested list
+    """</span>
+    return dfs(nested_list, 1)
+
+def dfs(nested_list, depth):
+    <span class="comment">"""
+    Helper function to perform depth-first search on the nested list.
+    
+    Args:
+        nested_list: A list that can contain integers and other lists
+        depth: Current depth level
+        
+    Returns:
+        The weighted sum of all integers in the nested list at this level and deeper
+    """</span>
+    total = 0
+    for item in nested_list:
+        if isinstance(item, int):
+            <span class="comment"># If the item is an integer, add depth * item to the total</span>
+            total += depth * item
+        else:
+            <span class="comment"># If the item is a list, recursively process it at a deeper level</span>
+            total += dfs(item, depth + 1)
+    return total</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">nested_list = [[1,1],2,[1,1]]
+print(depth_sum(nested_list))  <span class="comment"># Output: 10</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">10</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">nested_list = [1,[4,[6]]]
+print(depth_sum(nested_list))  <span class="comment"># Output: 27</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">27</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="alternative">
+            <h3>Iterative Approach using BFS</h3>
+            <p>
+                We can also solve this problem iteratively using a Breadth-First Search (BFS) approach:
+            </p>
+            <pre>
+def depth_sum_bfs(nested_list):
+    <span class="comment">"""Calculate the nested list weight sum using BFS."""</span>
+    if not nested_list:
+        return 0
+        
+    total = 0
+    depth = 1
+    queue = [nested_list]  # Start with the entire nested list
+    
+    while queue:
+        size = len(queue)
+        for _ in range(size):
+            current = queue.pop(0)
+            for item in current:
+                if isinstance(item, int):
+                    total += depth * item
+                else:
+                    queue.append(item)
+        depth += 1  # Increase depth after processing each level
+    
+    return total</pre>
+            <p><strong>Complexity:</strong> O(n) time, O(w) space where w is the maximum width of any level in the nested list</p>
+        </div>
+        
+        <div class="alternative">
+            <h3>Flatten the List with Depth Information</h3>
+            <p>
+                Another approach is to first flatten the nested list while keeping track of depth information:
+            </p>
+            <pre>
+def depth_sum_flatten(nested_list):
+    <span class="comment">"""Calculate the nested list weight sum by flattening with depth info."""</span>
+    flattened = []  # Will store (value, depth) pairs
+    
+    def flatten(lst, depth):
+        for item in lst:
+            if isinstance(item, int):
+                flattened.append((item, depth))
+            else:
+                flatten(item, depth + 1)
+    
+    flatten(nested_list, 1)
+    return sum(val * depth for val, depth in flattened)</pre>
+            <p><strong>Complexity:</strong> O(n) time, O(n) space where n is the total number of elements</p>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>Recursive DFS</td>
+                    <td>O(n)</td>
+                    <td>O(d)</td>
+                    <td>Simple and intuitive</td>
+                    <td>Recursive call stack might overflow for very deep nesting</td>
+                </tr>
+                <tr>
+                    <td>Iterative BFS</td>
+                    <td>O(n)</td>
+                    <td>O(w)</td>
+                    <td>Avoids recursion</td>
+                    <td>More complex implementation</td>
+                </tr>
+                <tr>
+                    <td>Flatten with Depth</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>Two-phase approach can be clearer</td>
+                    <td>Uses more memory</td>
+                </tr>
+            </table>
+            <p>
+                The recursive DFS approach is generally preferred for this problem due to its simplicity and natural fit with the nested structure. However, for very deeply nested lists, the iterative approach might be safer to avoid stack overflow.
+            </p>
+        </div>
+    </div>
+
+    <div class="section related-problems">
+        <h2>Related Problems and Applications</h2>
+        <ol>
+            <li>
+                <strong>Nested List Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/nested-list-weight-sum-ii/" target="_blank">LeetCode 364: Nested List Weight Sum II</a> (Weight is multiplied by max_depth - current_depth + 1)</li>
+                    <li><a href="https://leetcode.com/problems/flatten-nested-list-iterator/" target="_blank">LeetCode 341: Flatten Nested List Iterator</a> (Design an iterator that flattens a nested list)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Tree Traversal Problems:</strong>
+                <p>
+                    This problem is similar to tree traversal problems, where the depth of a node matters:
+                </p>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank">LeetCode 104: Maximum Depth of Binary Tree</a></li>
+                    <li><a href="https://leetcode.com/problems/minimum-depth-of-binary-tree/" target="_blank">LeetCode 111: Minimum Depth of Binary Tree</a></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Real-world Applications:</strong>
+                <ul>
+                    <li>Processing nested JSON structures</li>
+                    <li>File system traversal (where file depth matters)</li>
+                    <li>Parsing and evaluating expressions with nested parentheses</li>
+                    <li>HTML/XML DOM traversal where element depth affects styling or processing</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

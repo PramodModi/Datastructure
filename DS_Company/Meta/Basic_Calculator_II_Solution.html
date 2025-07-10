@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator II</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .alternative {
+            background-color: #f6ffed;
+            border-left: 5px solid #52c41a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Basic Calculator II</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Basic Calculator II</strong></p>
+        <p><a href="https://leetcode.com/problems/basic-calculator-ii/" target="_blank">LeetCode 227: https://leetcode.com/problems/basic-calculator-ii/</a></p>
+        <p>
+            Given a string s which represents an expression, evaluate this expression and return its value.
+        </p>
+        <p>
+            The integer division should truncate toward zero.
+        </p>
+        <p>
+            You may assume that the given expression is always valid. All intermediate results will be in the range of [-2<sup>31</sup>, 2<sup>31</sup> - 1].
+        </p>
+        <p>
+            Note: You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as eval().
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> s = "3+2*2"</p>
+            <p><strong>Output:</strong> 7</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> s = " 3/2 "</p>
+            <p><strong>Output:</strong> 1</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <p><strong>Input:</strong> s = " 3+5 / 2 "</p>
+            <p><strong>Output:</strong> 5</p>
+        </div>
+
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>1 <= s.length <= 3 * 10<sup>5</sup></li>
+            <li>s consists of integers and operators ('+', '-', '*', '/') separated by some number of spaces.</li>
+            <li>s represents a valid expression.</li>
+            <li>All the integers in the expression are non-negative integers in the range [0, 2<sup>31</sup> - 1].</li>
+            <li>The answer is guaranteed to fit in a 32-bit integer.</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to evaluate a mathematical expression given as a string. The expression can include the four basic operations (addition, subtraction, multiplication, and division), as well as integers and spaces.
+        </p>
+        
+        <p>
+            Key points to understand:
+        </p>
+        <ul>
+            <li><strong>Operator Precedence:</strong> Multiplication and division have higher precedence than addition and subtraction. This means we need to perform multiplications and divisions before additions and subtractions.</li>
+            <li><strong>Integer Division:</strong> Division should truncate toward zero (e.g., 3/2 = 1, not 1.5).</li>
+            <li><strong>Spaces:</strong> The expression may contain spaces that should be ignored.</li>
+            <li><strong>No Parentheses:</strong> The problem doesn't mention handling parentheses, which simplifies our implementation.</li>
+        </ul>
+        
+        <p>
+            Let's analyze the examples:
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1: "3+2*2"</strong></p>
+            <p>Expression evaluation:</p>
+            <ol>
+                <li>First evaluate 2*2 = 4 (multiplication has higher precedence)</li>
+                <li>Then evaluate 3+4 = 7</li>
+            </ol>
+            <p>Output: 7</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2: " 3/2 "</strong></p>
+            <p>Expression evaluation:</p>
+            <ol>
+                <li>Evaluate 3/2 = 1.5</li>
+                <li>Truncate toward zero: 1</li>
+            </ol>
+            <p>Output: 1</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3: " 3+5 / 2 "</strong></p>
+            <p>Expression evaluation:</p>
+            <ol>
+                <li>First evaluate 5/2 = 2.5, truncate to 2</li>
+                <li>Then evaluate 3+2 = 5</li>
+            </ol>
+            <p>Output: 5</p>
+        </div>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Using Stack with One-Pass</h2>
+        <p>
+            To evaluate the expression with proper operator precedence, we can use a stack-based approach that processes the expression from left to right in one pass.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> We can handle operator precedence by immediately evaluating multiplication and division when encountered, while deferring addition and subtraction by pushing values onto a stack to be summed up at the end.</p>
+        </div>
+        
+        <p>
+            The approach works as follows:
+        </p>
+        <ol>
+            <li>Initialize a stack to store numbers and the results of operations.</li>
+            <li>Keep track of the current operation and current number being parsed.</li>
+            <li>Process the input string character by character:
+                <ul>
+                    <li>If the character is a digit, build up the current number.</li>
+                    <li>If the character is an operator (or end of string), process the previous operation:
+                        <ul>
+                            <li>For '+': push the current number onto the stack.</li>
+                            <li>For '-': push the negative of the current number onto the stack.</li>
+                            <li>For '*': pop the top number from stack, multiply it with the current number, and push the result back.</li>
+                            <li>For '/': pop the top number from stack, divide it by the current number, truncate toward zero, and push the result back.</li>
+                        </ul>
+                    </li>
+                    <li>Update the current operation and reset the current number.</li>
+                </ul>
+            </li>
+            <li>Sum up all numbers in the stack to get the final result.</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>Initialize an empty stack.</li>
+                        <li>Initialize currentNumber = 0 to track the number being parsed.</li>
+                        <li>Initialize currentOperation = '+' (the first number is considered positive).</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Process Input:</strong>
+                    <ul>
+                        <li>For each character in the input string:
+                            <ul>
+                                <li>If the character is a space, skip it.</li>
+                                <li>If the character is a digit, update currentNumber = currentNumber * 10 + int(digit).</li>
+                                <li>If the character is an operator or we've reached the end of the string:
+                                    <ul>
+                                        <li>Apply currentOperation to currentNumber.</li>
+                                        <li>Update currentOperation to the new operator.</li>
+                                        <li>Reset currentNumber to 0.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Calculate Result:</strong>
+                    <ul>
+                        <li>Sum up all values in the stack to get the final result.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1: "3+2*2"</strong></p>
+            <pre>
+Initialize: stack = [], currentNumber = 0, currentOperation = '+'
+
+Processing character '3':
+  - Digit: currentNumber = 3
+
+Processing character '+':
+  - Operator: Apply currentOperation ('+') to currentNumber (3)
+  - stack = [3]
+  - currentOperation = '+'
+  - currentNumber = 0
+
+Processing character '2':
+  - Digit: currentNumber = 2
+
+Processing character '*':
+  - Operator: Apply currentOperation ('+') to currentNumber (2)
+  - stack = [3, 2]
+  - currentOperation = '*'
+  - currentNumber = 0
+
+Processing character '2':
+  - Digit: currentNumber = 2
+
+End of string: Apply currentOperation ('*') to currentNumber (2)
+  - Pop from stack: 2
+  - Calculate: 2 * 2 = 4
+  - stack = [3, 4]
+
+Result: sum(stack) = 3 + 4 = 7
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li>
+                    <strong>Time Complexity:</strong> O(n) where n is the length of the input string. We process each character in the string exactly once.
+                    <ul>
+                        <li>Parsing each character: O(1)</li>
+                        <li>Stack operations (push, pop): O(1)</li>
+                        <li>Final summation of stack: O(m) where m is the size of the stack, which is at most n/2 in the worst case when every other character is an operator.</li>
+                        <li>Overall: O(n)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Space Complexity:</strong> O(n) in the worst case for the stack.
+                    <ul>
+                        <li>In the worst case scenario where the expression consists only of additions and subtractions (like "1+2+3+4+..."), each number will be pushed onto the stack.</li>
+                        <li>The stack size will be proportional to the number of operands in the input, which is at most n/2 (assuming every other character is a digit or operator).</li>
+                        <li>Therefore, the space complexity is O(n).</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+def calculate(s):
+    <span class="comment">"""
+    Evaluate a string expression involving +, -, *, / operators with proper precedence.
+    
+    Args:
+        s: String representing the expression
+        
+    Returns:
+        The value of the expression
+    """</span>
+    if not s:
+        return 0
+    
+    stack = []
+    current_number = 0
+    current_operation = '+'  # Start with addition for the first number
+    operations = {'+', '-', '*', '/'}
+    
+    for i in range(len(s)):
+        char = s[i]
+        
+        # Build up the current number
+        if char.isdigit():
+            current_number = current_number * 10 + int(char)
+        
+        # Process operation when we hit an operator or the end of the string
+        if char in operations or i == len(s) - 1:
+            if current_operation == '+':
+                stack.append(current_number)
+            elif current_operation == '-':
+                stack.append(-current_number)
+            elif current_operation == '*':
+                stack.append(stack.pop() * current_number)
+            elif current_operation == '/':
+                # For division, we need to handle truncation toward zero
+                prev = stack.pop()
+                # Integer division in Python always rounds down, so we need to handle negative numbers separately
+                if prev < 0:
+                    stack.append(-(-prev // current_number))
+                else:
+                    stack.append(prev // current_number)
+            
+            # Update operation and reset number
+            current_operation = char
+            current_number = 0
+    
+    # Sum up all values in the stack
+    return sum(stack)</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command">s = "3+2*2"
+print(calculate(s))  <span class="comment"># Output: 7</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">7</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command">s = " 3/2 "
+print(calculate(s))  <span class="comment"># Output: 1</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">1</pre>
+        </div>
+
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <pre class="command">s = " 3+5 / 2 "
+print(calculate(s))  <span class="comment"># Output: 5</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 3:</strong></p>
+            <pre class="command">5</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="alternative">
+            <h3>Two-Pass Approach</h3>
+            <p>
+                Another way to solve this problem is to use a two-pass approach:
+            </p>
+            <ol>
+                <li>First pass: Scan through the expression, perform all multiplications and divisions, and replace them with their results.</li>
+                <li>Second pass: Perform all additions and subtractions on the simplified expression.</li>
+            </ol>
+            <pre>
+def calculate_two_pass(s):
+    <span class="comment">"""Calculate using a two-pass approach."""</span>
+    # Clean up the string by removing spaces
+    s = s.replace(" ", "")
+    
+    # First pass: handle multiplication and division
+    nums = []
+    ops = []
+    i = 0
+    
+    while i < len(s):
+        if s[i].isdigit():
+            # Parse the number
+            num = 0
+            while i < len(s) and s[i].isdigit():
+                num = num * 10 + int(s[i])
+                i += 1
+            nums.append(num)
+        else:
+            # Process operator
+            ops.append(s[i])
+            i += 1
+    
+    # Apply multiplication and division
+    i = 0
+    while i < len(ops):
+        if ops[i] in ['*', '/']:
+            if ops[i] == '*':
+                nums[i] = nums[i] * nums[i+1]
+            else:  # Division
+                if nums[i] < 0:
+                    nums[i] = -(-nums[i] // nums[i+1])
+                else:
+                    nums[i] = nums[i] // nums[i+1]
+            # Remove the processed number and operator
+            nums.pop(i+1)
+            ops.pop(i)
+        else:
+            i += 1
+    
+    # Second pass: handle addition and subtraction
+    result = nums[0]
+    for i in range(len(ops)):
+        if ops[i] == '+':
+            result += nums[i+1]
+        else:  # Subtraction
+            result -= nums[i+1]
+    
+    return result</pre>
+            <p><strong>Complexity:</strong></p>
+            <ul>
+                <li>
+                    <strong>Time Complexity:</strong> O(n) where n is the length of the input string.
+                    <ul>
+                        <li>First pass to process multiplication and division: O(n)</li>
+                        <li>Second pass to process addition and subtraction: O(n)</li>
+                        <li>Overall: O(n)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Space Complexity:</strong> O(n) for the nums and ops arrays.
+                    <ul>
+                        <li>We store each number and operator separately, which in the worst case is proportional to the length of the input.</li>
+                        <li>This approach uses more space than the one-pass stack-based solution because we explicitly store all numbers and operators.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>One-Pass Stack</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>More efficient, handles operations in one pass</td>
+                    <td>Logic is more complex to understand</td>
+                </tr>
+                <tr>
+                    <td>Two-Pass</td>
+                    <td>O(n)</td>
+                    <td>O(n)</td>
+                    <td>Clearer separation of operations by precedence</td>
+                    <td>Less efficient, requires two passes through data</td>
+                </tr>
+            </table>
+            <p>
+                Both approaches have the same asymptotic time complexity, but the one-pass stack approach is generally more efficient because it processes each character only once. However, the two-pass approach might be easier to understand and extend, especially if the problem requirements change (e.g., if parentheses are added to the expression).
+            </p>
+        </div>
+    </div>
+
+    <div class="section related-problems">
+        <h2>Related Problems and Applications</h2>
+        <ol>
+            <li>
+                <strong>Calculator Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/basic-calculator/" target="_blank">LeetCode 224: Basic Calculator</a> (handles parentheses and +/- operations)</li>
+                    <li><a href="https://leetcode.com/problems/basic-calculator-iii/" target="_blank">LeetCode 772: Basic Calculator III</a> (handles parentheses and all four operations)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Stack Applications:</strong>
+                <p>
+                    This problem demonstrates the use of stacks for parsing and evaluating expressions:
+                </p>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/evaluate-reverse-polish-notation/" target="_blank">LeetCode 150: Evaluate Reverse Polish Notation</a></li>
+                    <li><a href="https://leetcode.com/problems/mini-parser/" target="_blank">LeetCode 385: Mini Parser</a></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Real-world Applications:</strong>
+                <ul>
+                    <li>Parsing and evaluating mathematical expressions in calculators</li>
+                    <li>Formula evaluation in spreadsheet applications</li>
+                    <li>Interpreters and compilers for programming languages</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

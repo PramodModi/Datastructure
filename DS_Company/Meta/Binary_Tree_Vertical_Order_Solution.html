@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Tree Vertical Order Traversal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .alternative {
+            background-color: #f6ffed;
+            border-left: 5px solid #52c41a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .tree-diagram {
+            font-family: monospace;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Binary Tree Vertical Order Traversal</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Binary Tree Vertical Order Traversal</strong></p>
+        <p><a href="https://leetcode.com/problems/binary-tree-vertical-order-traversal/" target="_blank">LeetCode 314: https://leetcode.com/problems/binary-tree-vertical-order-traversal/</a></p>
+        <p>
+            Given a binary tree, return the vertical order traversal of its nodes' values. (i.e., from top to bottom, column by column).
+        </p>
+        <p>
+            If two nodes are in the same row and column, the order should be from left to right.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <div class="tree-diagram">
+                <pre>
+    3
+   / \
+  9  20
+    /  \
+   15   7
+                </pre>
+            </div>
+            <p><strong>Input:</strong> root = [3,9,20,null,null,15,7]</p>
+            <p><strong>Output:</strong> [[9],[3,15],[20],[7]]</p>
+            <p><strong>Explanation:</strong> From left to right, the columns are: 
+                <br>Column -1: Only node 9
+                <br>Column 0: Nodes 3 and 15
+                <br>Column 1: Only node 20
+                <br>Column 2: Only node 7
+            </p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <div class="tree-diagram">
+                <pre>
+    3
+   / \
+  9   8
+ / \  / \
+4  0 1   7
+                </pre>
+            </div>
+            <p><strong>Input:</strong> root = [3,9,8,4,0,1,7]</p>
+            <p><strong>Output:</strong> [[4],[9],[3,0,1],[8],[7]]</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 3:</strong></p>
+            <div class="tree-diagram">
+                <pre>
+      1
+     / \
+    2   3
+   /   / \
+  4   9  11
+   \
+    5
+     \
+      6
+                </pre>
+            </div>
+            <p><strong>Input:</strong> root = [1,2,3,4,10,9,11,null,5,null,null,null,null,null,null,null,6]</p>
+            <p><strong>Output:</strong> [[4],[2,5],[1,10,9,6],[3],[11]]</p>
+        </div>
+
+        <p><strong>Constraints:</strong></p>
+        <ul>
+            <li>The number of nodes in the tree is in the range [0, 100].</li>
+            <li>-100 <= Node.val <= 100</li>
+        </ul>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to perform a vertical order traversal of a binary tree. Let's break down what this means:
+        </p>
+        
+        <ol>
+            <li><strong>Vertical Order:</strong> We need to group the nodes by their horizontal position (column).</li>
+            <li><strong>Column Assignment:</strong>
+                <ul>
+                    <li>The root node is at column 0.</li>
+                    <li>For any node, its left child is at column - 1 and its right child is at column + 1.</li>
+                </ul>
+            </li>
+            <li><strong>Order Within Column:</strong> If two nodes are in the same column:
+                <ul>
+                    <li>Nodes higher in the tree (with smaller depth) come first.</li>
+                    <li>If nodes are at the same depth, the one that's leftmost in the tree comes first.</li>
+                </ul>
+            </li>
+        </ol>
+        
+        <p>
+            Let's visualize this with Example 1:
+        </p>
+        
+        <div class="visualization">
+            <p><strong>Tree with Column Indices:</strong></p>
+            <pre>
+      3 (column 0)
+     / \
+    /   \
+(col -1) 9  20 (column 1)
+         /  \
+        /    \
+(col 0) 15    7 (column 2)
+            </pre>
+            <ul>
+                <li>Column -1: Node 9</li>
+                <li>Column 0: Nodes 3 and 15</li>
+                <li>Column 1: Node 20</li>
+                <li>Column 2: Node 7</li>
+            </ul>
+            <p>When we group them by column and maintain the order, we get: [[9], [3,15], [20], [7]]</p>
+        </div>
+        
+        <p>
+            The key insight is that we need to perform a breadth-first search (BFS) of the tree to ensure that nodes are processed level by level (top to bottom). This guarantees that within each column, nodes are ordered by their depth.
+        </p>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: BFS with Column Tracking</h2>
+        <p>
+            To solve this problem, we'll use a Breadth-First Search (BFS) approach with column tracking.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> BFS naturally processes nodes level by level, ensuring that nodes at the same depth are processed from left to right. By tracking the column index of each node during BFS, we can easily group nodes by their column.</p>
+        </div>
+        
+        <p>
+            The approach is as follows:
+        </p>
+        <ol>
+            <li>Use a queue to perform BFS, storing each node along with its column index.</li>
+            <li>Use a hash map to group nodes by their column index.</li>
+            <li>Traverse the tree level by level, updating the column index for each node's children.</li>
+            <li>After the BFS is complete, sort the columns by their indices and return the grouped nodes.</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize:</strong>
+                    <ul>
+                        <li>If the root is null, return an empty list.</li>
+                        <li>Create a queue for BFS and add the root node with column index 0.</li>
+                        <li>Create a hash map to store column index to list of node values.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>BFS Traversal:</strong>
+                    <ul>
+                        <li>While the queue is not empty:
+                            <ul>
+                                <li>For each node in the current level:
+                                    <ul>
+                                        <li>Dequeue the node and its column index.</li>
+                                        <li>Add the node's value to the corresponding column in the hash map.</li>
+                                        <li>If the node has a left child, enqueue it with column index - 1.</li>
+                                        <li>If the node has a right child, enqueue it with column index + 1.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return Result:</strong>
+                    <ul>
+                        <li>Sort the column indices.</li>
+                        <li>Return the lists of node values for each column in sorted order.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example 1:</strong></p>
+            <pre>
+Tree:
+      3
+     / \
+    9  20
+      /  \
+     15   7
+
+BFS Traversal:
+Level 0:
+  Process (3, col=0): Add 3 to column 0
+  Enqueue (9, col=-1) and (20, col=1)
+  
+Level 1:
+  Process (9, col=-1): Add 9 to column -1
+  Process (20, col=1): Add 20 to column 1
+  Enqueue (15, col=0) and (7, col=2)
+  
+Level 2:
+  Process (15, col=0): Add 15 to column 0
+  Process (7, col=2): Add 7 to column 2
+
+Columns after BFS:
+  Column -1: [9]
+  Column 0: [3, 15]
+  Column 1: [20]
+  Column 2: [7]
+
+Sorted by column indices: [[-1, [9]], [0, [3, 15]], [1, [20]], [2, [7]]]
+Return: [[9], [3, 15], [20], [7]]
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li>
+                    <strong>Time Complexity:</strong> O(n log n) where n is the number of nodes in the tree.
+                    <ul>
+                        <li>BFS traversal: O(n) - We visit each node exactly once.</li>
+                        <li>Sorting the columns by index: O(k log k) where k is the number of distinct columns.</li>
+                        <li>In the worst case, k can be O(n) (e.g., in a skewed tree), so sorting could take O(n log n).</li>
+                        <li>Overall: O(n) + O(n log n) = O(n log n)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Space Complexity:</strong> O(n)
+                    <ul>
+                        <li>Queue for BFS: O(w) where w is the maximum width of the tree. In the worst case, w can be O(n/2) ≈ O(n).</li>
+                        <li>Hash map for storing columns: O(n) - We store each node exactly once.</li>
+                        <li>Output result: O(n)</li>
+                        <li>Overall: O(n)</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+from collections import deque
+
+class Node:
+    def __init__(self, val, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def verticalOrder(root):
+    <span class="comment">"""
+    Perform vertical order traversal of a binary tree.
+    
+    Args:
+        root: Root node of the binary tree
+        
+    Returns:
+        List of lists where each inner list contains node values in a vertical column
+    """</span>
+    <span class="comment"># Handle empty tree</span>
+    if not root:
+        return []
+    
+    <span class="comment"># Initialize queue with root node and its column index (0)</span>
+    q = deque([(root, 0)])
+    
+    <span class="comment"># Dictionary to store column index -> list of node values</span>
+    columns = {}
+    
+    <span class="comment"># Perform BFS</span>
+    while q:
+        <span class="comment"># Process all nodes at current level</span>
+        for _ in range(len(q)):
+            node, col = q.popleft()
+            
+            <span class="comment"># Add node value to corresponding column</span>
+            if col not in columns:
+                columns[col] = [node.val]
+            else:
+                columns[col].append(node.val)
+            
+            <span class="comment"># Add children to queue with updated column indices</span>
+            if node.left:
+                q.append((node.left, col - 1))
+            if node.right:
+                q.append((node.right, col + 1))
+    
+    <span class="comment"># Return columns in order of increasing column index</span>
+    return [columns[col] for col in sorted(columns.keys())]</pre>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <pre class="command"><span class="comment"># Create the tree:
+#     3
+#    / \
+#   9  20
+#     /  \
+#    15   7</span>
+root = Node(3, Node(9), Node(20, Node(15), Node(7)))
+print(verticalOrder(root))  <span class="comment"># Output: [[9], [3, 15], [20], [7]]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 1:</strong></p>
+            <pre class="command">[[9], [3, 15], [20], [7]]</pre>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <pre class="command"><span class="comment"># Create the tree:
+#     3
+#    / \
+#   9   8
+#  / \ / \
+# 4  0 1  7</span>
+root = Node(3, Node(9, Node(4), Node(0)), Node(8, Node(1), Node(7)))
+print(verticalOrder(root))  <span class="comment"># Output: [[4], [9], [3, 0, 1], [8], [7]]</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output for Example 2:</strong></p>
+            <pre class="command">[[4], [9], [3, 0, 1], [8], [7]]</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="alternative">
+            <h3>DFS with Column Tracking</h3>
+            <p>
+                While BFS is the most straightforward approach for this problem (since it naturally preserves the level order), we could also use DFS with additional information:
+            </p>
+            <pre>
+def verticalOrder_dfs(root):
+    <span class="comment">"""Vertical order traversal using DFS with row tracking."""</span>
+    if not root:
+        return []
+    
+    <span class="comment"># Dictionary to store (column, row) -> node value</span>
+    <span class="comment"># We need row information to maintain top-to-bottom order</span>
+    nodes = {}
+    
+    def dfs(node, row, col):
+        if not node:
+            return
+        
+        <span class="comment"># Store node with both column and row information</span>
+        if col not in nodes:
+            nodes[col] = []
+        nodes[col].append((row, node.val))
+        
+        <span class="comment"># Process children</span>
+        dfs(node.left, row + 1, col - 1)
+        dfs(node.right, row + 1, col + 1)
+    
+    <span class="comment"># Perform DFS</span>
+    dfs(root, 0, 0)
+    
+    <span class="comment"># Sort columns and nodes within columns</span>
+    result = []
+    for col in sorted(nodes.keys()):
+        <span class="comment"># Sort nodes in this column by row (and implicitly by position in tree due to DFS order)</span>
+        column_values = [val for _, val in sorted(nodes[col], key=lambda x: x[0])]
+        result.append(column_values)
+    
+    return result</pre>
+            <p><strong>Complexity:</strong></p>
+            <ul>
+                <li>
+                    <strong>Time Complexity:</strong> O(n log n)
+                    <ul>
+                        <li>DFS traversal: O(n)</li>
+                        <li>Sorting columns: O(k log k) where k is the number of distinct columns</li>
+                        <li>Sorting nodes within each column: O(n log n) in the worst case</li>
+                        <li>Overall: O(n log n)</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Space Complexity:</strong> O(n)
+                    <ul>
+                        <li>Recursion stack: O(h) where h is the height of the tree, which can be O(n) in the worst case</li>
+                        <li>Storage for nodes: O(n)</li>
+                        <li>Overall: O(n)</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>
+                This DFS approach requires extra bookkeeping to maintain the order within each column, making it more complex than the BFS approach.
+            </p>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>BFS with Column Tracking</td>
+                    <td>O(n log n)</td>
+                    <td>O(n)</td>
+                    <td>Naturally maintains level order, simpler implementation</td>
+                    <td>Requires queue data structure</td>
+                </tr>
+                <tr>
+                    <td>DFS with Column and Row Tracking</td>
+                    <td>O(n log n)</td>
+                    <td>O(n)</td>
+                    <td>Can be more intuitive for tree traversal</td>
+                    <td>More complex, requires additional sorting by row</td>
+                </tr>
+            </table>
+            <p>
+                The BFS approach is generally preferred for this problem because:
+            </p>
+            <ul>
+                <li>It naturally processes nodes level by level, which matches the "top-to-bottom" requirement.</li>
+                <li>Within each level, it processes nodes from left to right, which matches the requirement for nodes in the same row and column.</li>
+                <li>It has a simpler implementation without needing to track row information.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section related-problems">
+        <h2>Related Problems and Applications</h2>
+        <ol>
+            <li>
+                <strong>Tree Traversal Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/binary-tree-level-order-traversal/" target="_blank">LeetCode 102: Binary Tree Level Order Traversal</a></li>
+                    <li><a href="https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/" target="_blank">LeetCode 103: Binary Tree Zigzag Level Order Traversal</a></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Related Vertical/Diagonal Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/binary-tree-vertical-order-traversal-ii/" target="_blank">LeetCode 987: Vertical Order Traversal of a Binary Tree</a> (with stricter ordering requirements)</li>
+                    <li><a href="https://leetcode.com/problems/diagonal-traverse/" target="_blank">LeetCode 498: Diagonal Traverse</a> (similar concept applied to a matrix)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Applications:</strong>
+                <ul>
+                    <li>Visualizing tree structures in a vertical layout</li>
+                    <li>Organizing hierarchical data by columns</li>
+                    <li>Creating tree views in user interfaces where vertical alignment is important</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Tic-Tac-Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .alternative {
+            background-color: #f6ffed;
+            border-left: 5px solid #52c41a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            width: 150px;
+            margin: 20px auto;
+        }
+        .cell {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Design Tic-Tac-Toe</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Design Tic-Tac-Toe</strong></p>
+        <p><a href="https://leetcode.com/problems/design-tic-tac-toe/" target="_blank">LeetCode 348: https://leetcode.com/problems/design-tic-tac-toe/</a></p>
+        <p>
+            Design a Tic-tac-toe game that is played between two players on an n x n grid.
+        </p>
+        <p>You may assume the following rules:</p>
+        <ul>
+            <li>A move is guaranteed to be valid and is placed on an empty block.</li>
+            <li>Once a winning condition is reached, no more moves are allowed.</li>
+            <li>A player who succeeds in placing n of their marks in a horizontal, vertical, or diagonal row wins the game.</li>
+        </ul>
+        
+        <div class="example">
+            <p><strong>Example:</strong></p>
+            <pre class="command">
+TicTacToe ticTacToe = new TicTacToe(3);
+
+// Player 1 makes a move at position (0, 0)
+ticTacToe.move(0, 0, 1); // return 0 (no one wins)
+
+// Player 2 makes a move at position (1, 1)
+ticTacToe.move(1, 1, 2); // return 0 (no one wins)
+
+// Player 1 makes a move at position (1, 0)
+ticTacToe.move(1, 0, 1); // return 0 (no one wins)
+
+// Player 2 makes a move at position (2, 2)
+ticTacToe.move(2, 2, 2); // return 0 (no one wins)
+
+// Player 1 makes a move at position (2, 0)
+ticTacToe.move(2, 0, 1); // return 1 (player 1 wins)
+</pre>
+            <div class="visualization">
+                <p>Visual progression of the game:</p>
+                <pre>
+Move 1 (Player 1):     Move 2 (Player 2):     Move 3 (Player 1):     Move 4 (Player 2):     Move 5 (Player 1):
+  X |   |             X |   |             X |   |             X |   |             X |   |  
+ ---+---+---         ---+---+---         ---+---+---         ---+---+---         ---+---+---
+    |   |               | O |             X | O |             X | O |             X | O |  
+ ---+---+---         ---+---+---         ---+---+---         ---+---+---         ---+---+---
+    |   |               |   |               |   |               |   | O           X |   | O
+                                                                                 (Player 1 wins)
+</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to design a Tic-Tac-Toe game for an n×n board (not just the traditional 3×3) with an efficient way to check for a win after each move.
+        </p>
+        
+        <p>
+            Key aspects to understand:
+        </p>
+        <ul>
+            <li><strong>Game Rules:</strong>
+                <ul>
+                    <li>Two players take turns making moves on the board.</li>
+                    <li>A player wins by placing n marks in a row (horizontally, vertically, or diagonally).</li>
+                </ul>
+            </li>
+            <li><strong>Design Requirements:</strong>
+                <ul>
+                    <li>We need to design a data structure to represent the board.</li>
+                    <li>After each move, we need to efficiently check if a player has won.</li>
+                    <li>The game ends immediately when a player wins.</li>
+                </ul>
+            </li>
+        </ul>
+        
+        <p>
+            The naive approach would be to create an n×n matrix to represent the board and check all rows, columns, and diagonals after each move. However, this would be inefficient with an O(n) time complexity for each move.
+        </p>
+        
+        <div class="key-insight">
+            <p><strong>Key Insight:</strong> Instead of checking the entire board after each move, we only need to check if the current move leads to a win. Moreover, we can use counters to keep track of the number of marks in each row, column, and diagonal, eliminating the need for an actual board representation.</p>
+        </div>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Using Counters Instead of Board</h2>
+        <p>
+            The approach is to use counters to track the number of marks each player has in each row, column, and the two diagonals.
+        </p>
+        
+        <p>
+            When a player makes a move at position (row, col):
+        </p>
+        <ol>
+            <li>Increment the counter for that player's marks in the corresponding row.</li>
+            <li>Increment the counter for that player's marks in the corresponding column.</li>
+            <li>If the position is on the main diagonal (where row = col), increment the counter for that player's marks on the main diagonal.</li>
+            <li>If the position is on the anti-diagonal (where row + col = n - 1), increment the counter for that player's marks on the anti-diagonal.</li>
+            <li>After each increment, check if the counter has reached n. If so, the player wins.</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Initialize the Game:</strong>
+                    <ul>
+                        <li>Create a counter for each player to track their marks in each row, column, and diagonal.</li>
+                        <li>For an n×n board, we need n rows, n columns, and 2 diagonals, so 2n+2 counters for each player.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Process Each Move:</strong>
+                    <ul>
+                        <li>Update the counters for the player's move.</li>
+                        <li>Check if any counter has reached n, indicating a win.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization of the Counter Approach:</strong></p>
+            <pre>
+For a 3×3 board, our counter array for each player looks like:
+[Row0, Row1, Row2, Col0, Col1, Col2, MainDiag, AntiDiag]
+
+Example from the problem:
+- Move 1: Player 1 at (0,0)
+  - Update counters for Player 1: [1, 0, 0, 1, 0, 0, 1, 0]
+  
+- Move 2: Player 2 at (1,1)
+  - Update counters for Player 2: [0, 1, 0, 0, 1, 0, 1, 1]
+  
+- Move 3: Player 1 at (1,0)
+  - Update counters for Player 1: [1, 1, 0, 2, 0, 0, 1, 0]
+  
+- Move 4: Player 2 at (2,2)
+  - Update counters for Player 2: [0, 1, 1, 0, 1, 1, 2, 1]
+  
+- Move 5: Player 1 at (2,0)
+  - Update counters for Player 1: [1, 1, 1, 3, 0, 0, 1, 0]
+  - Player 1 has 3 marks in Col0, which equals n, so Player 1 wins!
+</pre>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li>
+                    <strong>Time Complexity:</strong> O(1) per move
+                    <ul>
+                        <li>Each move operation takes constant time regardless of the board size.</li>
+                        <li>We're only updating a few counters and checking if they equal n.</li>
+                        <li>This is much better than the O(n) time that would be required if we checked the entire board after each move.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Space Complexity:</strong> O(n)
+                    <ul>
+                        <li>We store 2n+2 counters for each of the two players, resulting in 2*(2n+2) = 4n+4 total counters.</li>
+                        <li>This is O(n) space, which is more efficient than storing the entire board which would be O(n²).</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+class TicTacToe:
+    def __init__(self, n):
+        <span class="comment">"""
+        Initialize your Tic-Tac-Toe board with size n x n.
+        
+        Args:
+            n: The size of the board (n x n)
+        """</span>
+        self.board_size = n
+        <span class="comment"># Initialize counters for each player
+        # Each player has counters for:
+        # - n rows (indices 0 to n-1)
+        # - n columns (indices n to 2n-1)
+        # - main diagonal (index 2n)
+        # - anti-diagonal (index 2n+1)</span>
+        self.counter = [[0] * (2*n+2) for _ in range(2)]
+    
+    def move(self, row, col, player):
+        <span class="comment">"""
+        Makes a move on behalf of a player and checks if they won.
+        
+        Args:
+            row: The row where the move is made (0-indexed)
+            col: The column where the move is made (0-indexed)
+            player: The player making the move (1 or 2)
+            
+        Returns:
+            int: 0 if no one wins, or the player ID (1 or 2) if they won
+        """</span>
+        <span class="comment"># Convert player ID to 0-indexed for our arrays</span>
+        player_index = player - 1
+        
+        <span class="comment"># Define indices for our counter arrays</span>
+        diagonal1_index = 2 * self.board_size       <span class="comment"># Main diagonal (top-left to bottom-right)</span>
+        diagonal2_index = 2 * self.board_size + 1   <span class="comment"># Anti-diagonal (top-right to bottom-left)</span>
+        col_index = col + self.board_size           <span class="comment"># Column indices start after row indices</span>
+        
+        <span class="comment"># Increment counters for this move</span>
+        self.counter[player_index][row] += 1        <span class="comment"># Increment row counter</span>
+        self.counter[player_index][col_index] += 1  <span class="comment"># Increment column counter</span>
+        
+        <span class="comment"># Check if move is on main diagonal (row == col)</span>
+        if row == col:
+            self.counter[player_index][diagonal1_index] += 1
+        
+        <span class="comment"># Check if move is on anti-diagonal (row + col == n-1)</span>
+        if row + col == self.board_size - 1:
+            self.counter[player_index][diagonal2_index] += 1
+        
+        <span class="comment"># Check if this move resulted in a win</span>
+        if (self.counter[player_index][row] == self.board_size or 
+            self.counter[player_index][col_index] == self.board_size or 
+            self.counter[player_index][diagonal1_index] == self.board_size or 
+            self.counter[player_index][diagonal2_index] == self.board_size):
+            return player
+        
+        <span class="comment"># No winner yet</span>
+        return 0</pre>
+        
+        <div class="example">
+            <p><strong>Example Usage:</strong></p>
+            <pre class="command">t = TicTacToe(3)
+print(t.move(0, 0, 1))  <span class="comment"># Player 1 moves to top-left corner, return 0 (no winner)</span>
+print(t.move(1, 1, 2))  <span class="comment"># Player 2 moves to center, return 0 (no winner)</span>
+print(t.move(1, 0, 1))  <span class="comment"># Player 1 moves to middle-left, return 0 (no winner)</span>
+print(t.move(2, 2, 2))  <span class="comment"># Player 2 moves to bottom-right corner, return 0 (no winner)</span>
+print(t.move(2, 0, 1))  <span class="comment"># Player 1 moves to bottom-left, creating a column of X's, return 1 (Player 1 wins)</span></pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Output:</strong></p>
+            <pre class="command">0
+0
+0
+0
+1</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="alternative">
+            <h3>Traditional Board Representation</h3>
+            <p>
+                A more straightforward approach is to actually represent the n×n board and check for a win after each move:
+            </p>
+            <pre>
+class TicTacToe_Traditional:
+    def __init__(self, n):
+        <span class="comment">"""Initialize with a traditional n x n board representation."""</span>
+        self.n = n
+        self.board = [[0] * n for _ in range(n)]
+        
+    def move(self, row, col, player):
+        <span class="comment">"""Make a move and check for a win by examining the board."""</span>
+        <span class="comment"># Place the player's mark on the board</span>
+        self.board[row][col] = player
+        
+        <span class="comment"># Check row</span>
+        if all(self.board[row][c] == player for c in range(self.n)):
+            return player
+            
+        <span class="comment"># Check column</span>
+        if all(self.board[r][col] == player for r in range(self.n)):
+            return player
+            
+        <span class="comment"># Check main diagonal</span>
+        if row == col and all(self.board[i][i] == player for i in range(self.n)):
+            return player
+            
+        <span class="comment"># Check anti-diagonal</span>
+        if row + col == self.n - 1 and all(self.board[i][self.n - 1 - i] == player for i in range(self.n)):
+            return player
+            
+        <span class="comment"># No winner</span>
+        return 0</pre>
+            <p><strong>Complexity:</strong></p>
+            <ul>
+                <li>
+                    <strong>Time Complexity:</strong> O(n) per move
+                    <ul>
+                        <li>Each move requires checking a full row, column, and potentially diagonals, each of which takes O(n) time.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Space Complexity:</strong> O(n²)
+                    <ul>
+                        <li>Storing the entire n×n board requires O(n²) space.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity (per move)</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>Counter-Based</td>
+                    <td>O(1)</td>
+                    <td>O(n)</td>
+                    <td>More efficient, especially for large boards</td>
+                    <td>Less intuitive, harder to visualize the board</td>
+                </tr>
+                <tr>
+                    <td>Traditional Board</td>
+                    <td>O(n)</td>
+                    <td>O(n²)</td>
+                    <td>More intuitive, easier to debug and extend</td>
+                    <td>Less efficient for both time and space</td>
+                </tr>
+            </table>
+            <p>
+                The counter-based approach is significantly more efficient, especially for larger board sizes. This is important in a system where many games might be played simultaneously or where move operations need to be very fast.
+            </p>
+            <p>
+                However, if additional features are needed (like printing the board state, allowing moves to be undone, or checking for draws), the traditional board representation might be more versatile despite its lower efficiency.
+            </p>
+        </div>
+    </div>
+
+    <div class="section related-problems">
+        <h2>Related Problems and Applications</h2>
+        <ol>
+            <li>
+                <strong>Game Design Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/design-snake-game/" target="_blank">LeetCode 353: Design Snake Game</a></li>
+                    <li><a href="https://leetcode.com/problems/lru-cache/" target="_blank">LeetCode 146: LRU Cache</a> (similar design concept of optimizing operations)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Matrix Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/valid-sudoku/" target="_blank">LeetCode 36: Valid Sudoku</a></li>
+                    <li><a href="https://leetcode.com/problems/game-of-life/" target="_blank">LeetCode 289: Game of Life</a></li>
+                </ul>
+            </li>
+            <li>
+                <strong>Real-world Applications:</strong>
+                <ul>
+                    <li>Game development</li>
+                    <li>Algorithm optimization techniques (trading space for time)</li>
+                    <li>Grid-based simulations and analyses</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>

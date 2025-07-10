@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert into a Sorted Circular Linked List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .problem {
+            background-color: #f0f8ff;
+            border-left: 5px solid #4682b4;
+        }
+        .understanding {
+            background-color: #f0fff0;
+            border-left: 5px solid #2e8b57;
+        }
+        .approach {
+            background-color: #fff0f5;
+            border-left: 5px solid #db7093;
+        }
+        .steps {
+            background-color: #fff8dc;
+            border-left: 5px solid #daa520;
+        }
+        .code {
+            background-color: #f8f8ff;
+            border-left: 5px solid #6a5acd;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre .comment {
+            color: #6a9955;
+            font-style: italic;
+        }
+        pre.command {
+            background-color: #1e1e1e;
+            color: #66d9ef;
+            font-weight: 500;
+        }
+        pre.command .comment {
+            color: #7c7c7c;
+            font-style: italic;
+        }
+        h2 {
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        .output {
+            background-color: #e6f7ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 3px solid #1890ff;
+        }
+        .key-insight {
+            background-color: #fffbe6;
+            border-left: 5px solid #faad14;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .visualization {
+            background-color: #f9f0ff;
+            border-left: 5px solid #722ed1;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .complexity {
+            background-color: #f0f0f0;
+            border-left: 5px solid #708090;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .comparison {
+            background-color: #fff5e6;
+            border-left: 5px solid #fa8c16;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .alternative {
+            background-color: #f6ffed;
+            border-left: 5px solid #52c41a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .circular-list {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .circular-list .node {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1890ff;
+            color: white;
+            line-height: 40px;
+            margin: 0 10px;
+            font-weight: bold;
+        }
+        .circular-list .arrow {
+            display: inline-block;
+            font-size: 24px;
+            margin: 0 2px;
+            color: #1890ff;
+        }
+        .circular-list .return-arrow {
+            display: block;
+            font-size: 24px;
+            margin: 5px auto;
+            color: #1890ff;
+        }
+        .edge-case {
+            background-color: #ffe6e6;
+            border-left: 5px solid #ff4d4f;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Insert into a Sorted Circular Linked List</h1>
+
+    <div class="section problem">
+        <h2>Problem</h2>
+        <p><strong>Problem Description: Insert into a Sorted Circular Linked List</strong></p>
+        <p><a href="https://leetcode.com/problems/insert-into-a-sorted-circular-linked-list/" target="_blank">LeetCode 708: https://leetcode.com/problems/insert-into-a-sorted-circular-linked-list/</a></p>
+        <p>
+            Given a sorted circular linked list, your task is to insert a new node in this circular list so that it remains a sorted circular linked list.
+        </p>
+        
+        <div class="example">
+            <p><strong>Example 1:</strong></p>
+            <p><strong>Input:</strong> head = 1 → 2 → 4, data = 2</p>
+            <p><strong>Output:</strong> 1 → 2 → 2 → 4</p>
+            <p><strong>Explanation:</strong> We can add 2 after the second node.</p>
+        </div>
+        
+        <div class="example">
+            <p><strong>Example 2:</strong></p>
+            <p><strong>Input:</strong> head = 1 → 4 → 7 → 9, data = 5</p>
+            <p><strong>Output:</strong> 1 → 4 → 5 → 7 → 9</p>
+            <p><strong>Explanation:</strong> We can add 5 after the second node.</p>
+        </div>
+    </div>
+
+    <div class="section understanding">
+        <h2>Understanding</h2>
+        <p>
+            This problem asks us to insert a new node into a sorted circular linked list while maintaining the sorted order. Let's first understand what makes a circular linked list different from a regular linked list:
+        </p>
+        
+        <ul>
+            <li><strong>Circular Linked List:</strong> In a circular linked list, the last node points back to the first node, creating a cycle. There is no null pointer at the end of the list.</li>
+            <li><strong>Sorted:</strong> The nodes are arranged in ascending order of their values.</li>
+        </ul>
+        
+        <div class="circular-list">
+            <div class="node">1</div>
+            <span class="arrow">→</span>
+            <div class="node">4</div>
+            <span class="arrow">→</span>
+            <div class="node">7</div>
+            <span class="arrow">→</span>
+            <div class="node">9</div>
+            <span class="arrow">→</span>
+            <span class="return-arrow">↩ (back to 1)</span>
+        </div>
+        
+        <p>
+            The goal is to insert a new node with a given value such that the list remains sorted. This involves finding the correct position for the new node and updating the pointers to include it in the circular list.
+        </p>
+        
+        <p>
+            There are several cases to consider when inserting a node into a sorted circular linked list:
+        </p>
+        
+        <ol>
+            <li><strong>Empty List:</strong> If the list is empty, create a new node that points to itself.</li>
+            <li><strong>Insert Between Nodes:</strong> Find two adjacent nodes where the new value fits between them.</li>
+            <li><strong>Insert at Boundary:</strong> The new value might need to be inserted at the "boundary" of the list, which means after the largest node and before the smallest node.</li>
+        </ol>
+        
+        <div class="key-insight">
+            <p>The tricky part of this problem is handling the circular nature of the list, especially when inserting at the boundary where the largest value connects back to the smallest value.</p>
+        </div>
+    </div>
+
+    <div class="section approach">
+        <h2>Approach: Iterate and Insert</h2>
+        <p>
+            To insert a node into a sorted circular linked list, we'll use a straightforward approach that traverses the list to find the correct insertion point.
+        </p>
+        
+        <p>
+            The approach is as follows:
+        </p>
+        <ol>
+            <li>Handle the case of an empty list by creating a node that points to itself.</li>
+            <li>Traverse the list using two pointers: <code>prev</code> (previous node) and <code>cur</code> (current node).</li>
+            <li>Find the correct position to insert the new node, which will be either:
+                <ul>
+                    <li>Between two nodes where <code>prev.val ≤ newValue ≤ cur.val</code> (normal case)</li>
+                    <li>At the "boundary" where <code>prev.val > cur.val</code> (largest to smallest transition) and either:
+                        <ul>
+                            <li><code>newValue ≥ prev.val</code> (new value is greater than or equal to the largest value)</li>
+                            <li><code>newValue ≤ cur.val</code> (new value is less than or equal to the smallest value)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>Insert the new node between <code>prev</code> and <code>cur</code>.</li>
+        </ol>
+
+        <div class="steps">
+            <h3>Steps:</h3>
+            <ol>
+                <li>
+                    <strong>Handle Empty List:</strong>
+                    <ul>
+                        <li>If <code>head</code> is <code>None</code>, create a new node that points to itself and return it.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Initialize Pointers:</strong>
+                    <ul>
+                        <li>Set <code>prev = head</code> and <code>cur = head.next</code>.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Find Insertion Point:</strong>
+                    <ul>
+                        <li>Traverse the list with <code>prev</code> and <code>cur</code> until one of the following conditions is met:
+                            <ul>
+                                <li>Normal case: <code>prev.val ≤ data ≤ cur.val</code></li>
+                                <li>Boundary case: <code>prev.val > cur.val</code> and either <code>data ≥ prev.val</code> or <code>data ≤ cur.val</code></li>
+                                <li>We've traversed the entire list (i.e., <code>cur == head</code>)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Insert the New Node:</strong>
+                    <ul>
+                        <li>Create a new node with the given data.</li>
+                        <li>Insert the new node between <code>prev</code> and <code>cur</code>:
+                            <ul>
+                                <li><code>prev.next = newNode</code></li>
+                                <li><code>newNode.next = cur</code></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Return the Head:</strong>
+                    <ul>
+                        <li>Return the head of the list. The head does not change unless we started with an empty list.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="visualization">
+            <p><strong>Visualization for Example: Insert 5 into 1 → 4 → 7 → 9</strong></p>
+            <p>Initial list:</p>
+            <div class="circular-list">
+                <div class="node">1</div>
+                <span class="arrow">→</span>
+                <div class="node">4</div>
+                <span class="arrow">→</span>
+                <div class="node">7</div>
+                <span class="arrow">→</span>
+                <div class="node">9</div>
+                <span class="arrow">→</span>
+                <span class="return-arrow">↩ (back to 1)</span>
+            </div>
+            
+            <p>Steps:</p>
+            <ol>
+                <li><code>head</code> is not <code>None</code>, so we proceed with the iteration.</li>
+                <li>Initialize <code>prev = 1</code> and <code>cur = 4</code>.</li>
+                <li>Check if <code>prev.val ≤ data ≤ cur.val</code>: <code>1 ≤ 5 ≤ 4</code> is false.</li>
+                <li>Move forward: <code>prev = 4</code>, <code>cur = 7</code>.</li>
+                <li>Check if <code>prev.val ≤ data ≤ cur.val</code>: <code>4 ≤ 5 ≤ 7</code> is true.</li>
+                <li>Create a new node with value 5.</li>
+                <li>Insert it between <code>prev</code> (4) and <code>cur</code> (7).</li>
+            </ol>
+            
+            <p>Resulting list:</p>
+            <div class="circular-list">
+                <div class="node">1</div>
+                <span class="arrow">→</span>
+                <div class="node">4</div>
+                <span class="arrow">→</span>
+                <div class="node">5</div>
+                <span class="arrow">→</span>
+                <div class="node">7</div>
+                <span class="arrow">→</span>
+                <div class="node">9</div>
+                <span class="arrow">→</span>
+                <span class="return-arrow">↩ (back to 1)</span>
+            </div>
+        </div>
+
+        <div class="edge-case">
+            <h3>Edge Cases:</h3>
+            <ol>
+                <li>
+                    <strong>Empty List:</strong>
+                    <p>Create a new node that points to itself.</p>
+                </li>
+                <li>
+                    <strong>Insert at Boundary (Maximum to Minimum Transition):</strong>
+                    <p>Consider the list 3 → 7 → 9 → 11 and we want to insert 1:</p>
+                    <ul>
+                        <li>The boundary is where 11 connects back to 3.</li>
+                        <li>Since 1 < 3, we'd insert it between 11 and 3.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Insert at Boundary (Maximum to Minimum Transition):</strong>
+                    <p>Consider the list 3 → 7 → 9 → 11 and we want to insert 12:</p>
+                    <ul>
+                        <li>The boundary is where 11 connects back to 3.</li>
+                        <li>Since 12 > 11, we'd insert it between 11 and 3.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>All Nodes Have the Same Value:</strong>
+                    <p>In a circular list where all nodes have the same value, any position is valid for insertion.</p>
+                </li>
+            </ol>
+        </div>
+
+        <div class="complexity">
+            <h3>Complexity Analysis:</h3>
+            <ul>
+                <li><strong>Time Complexity:</strong> O(n), where n is the number of nodes in the linked list. In the worst case, we need to traverse the entire list to find the insertion point.</li>
+                <li><strong>Space Complexity:</strong> O(1), as we only use a constant amount of extra space regardless of the input size.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section code">
+        <h2>Code</h2>
+        <pre>
+class Node:
+    def __init__(self, val, next = None):
+        self.val = val
+        self.next = next
+
+def sortedInsert(head, data):
+    <span class="comment">"""
+    Insert a new node with given data into a sorted circular linked list.
+    
+    Args:
+        head: Head node of the sorted circular linked list
+        data: Value to be inserted
+        
+    Returns:
+        Head node of the updated circular linked list
+    """</span>
+    # Create the new node
+    new_node = Node(data)
+    
+    # Case 1: Empty list
+    if head is None:
+        new_node.next = new_node  # Point to itself to form a circle
+        return new_node
+    
+    # Initialize pointers
+    prev = head
+    cur = head.next
+    
+    # Case 2: Insert at the appropriate position
+    while cur != head:
+        # Normal case: Insert between two nodes where prev.val ≤ data ≤ cur.val
+        # Boundary case: Insert at the transition from max to min where either
+        # data ≥ prev.val (larger than max) or data ≤ cur.val (smaller than min)
+        if (prev.val <= data <= cur.val) or (prev.val > cur.val and (data >= prev.val or data <= cur.val)):
+            break
+        
+        prev = cur
+        cur = cur.next
+    
+    # Insert the new node between prev and cur
+    prev.next = new_node
+    new_node.next = cur
+    
+    return head
+
+def printList(head):
+    <span class="comment">"""
+    Print all values in a circular linked list.
+    
+    Args:
+        head: Head node of the circular linked list
+    """</span>
+    if head is None:
+        return
+        
+    # Print the head value
+    print(head.val)
+    
+    # Print the rest of the list
+    cur = head.next
+    while cur != head:
+        print(cur.val)
+        cur = cur.next</pre>
+        
+        <div class="example">
+            <p><strong>Example Usage:</strong></p>
+            <pre class="command"><span class="comment"># Create a circular linked list: 3 → 7 → 9 → 11 → (back to 3)</span>
+head = Node(3)
+head.next = Node(7, Node(9, Node(11, head)))
+
+<span class="comment"># Print the original list</span>
+print("Original List:")
+printList(head)
+
+<span class="comment"># Insert 8 into the list</span>
+sortedInsert(head, 8)
+print("\nAfter Inserting 8:")
+printList(head)
+
+<span class="comment"># Insert 1 into the list (boundary case - smallest value)</span>
+sortedInsert(head, 1)
+print("\nAfter Inserting 1:")
+printList(head)
+
+<span class="comment"># Insert 15 into the list (boundary case - largest value)</span>
+sortedInsert(head, 15)
+print("\nAfter Inserting 15:")
+printList(head)</pre>
+        </div>
+        
+        <div class="output">
+            <p><strong>Expected Output:</strong></p>
+            <pre class="command">Original List:
+3
+7
+9
+11
+
+After Inserting 8:
+3
+7
+8
+9
+11
+
+After Inserting 1:
+3
+7
+8
+9
+11
+1
+
+After Inserting 15:
+3
+7
+8
+9
+11
+15
+1</pre>
+        </div>
+    </div>
+
+    <div class="section alternative-approaches">
+        <h2>Alternative Approaches</h2>
+        
+        <div class="alternative">
+            <h3>Special Case for Boundary Insertion</h3>
+            <p>
+                Another way to handle the problem is to treat the boundary insertion as a special case:
+            </p>
+            <pre>
+def sortedInsert_alternative(head, data):
+    <span class="comment">"""Alternative implementation with explicit boundary case handling."""</span>
+    new_node = Node(data)
+    
+    # Case 1: Empty list
+    if head is None:
+        new_node.next = new_node
+        return new_node
+    
+    # Case 2: Insert at head (smallest value or equal to head)
+    if data <= head.val:
+        # Find the last node
+        temp = head
+        while temp.next != head:
+            temp = temp.next
+        
+        # Insert at beginning
+        temp.next = new_node
+        new_node.next = head
+        
+        # Return new head if the new node is smaller
+        if data < head.val:
+            return new_node
+        else:
+            return head
+    
+    # Case 3: Insert in the middle or end
+    current = head
+    while current.next != head and current.next.val < data:
+        current = current.next
+    
+    # Insert after current
+    new_node.next = current.next
+    current.next = new_node
+    
+    return head</pre>
+            <p><strong>Complexity:</strong> O(n) time, O(1) space</p>
+        </div>
+        
+        <div class="comparison">
+            <h3>Comparison of Approaches:</h3>
+            <table>
+                <tr>
+                    <th>Approach</th>
+                    <th>Time Complexity</th>
+                    <th>Space Complexity</th>
+                    <th>Pros</th>
+                    <th>Cons</th>
+                </tr>
+                <tr>
+                    <td>Iterate and Insert</td>
+                    <td>O(n)</td>
+                    <td>O(1)</td>
+                    <td>Simpler implementation, unified condition</td>
+                    <td>Condition might be harder to understand</td>
+                </tr>
+                <tr>
+                    <td>Special Case Handling</td>
+                    <td>O(n)</td>
+                    <td>O(1)</td>
+                    <td>Clearer separation of cases</td>
+                    <td>More code, might need multiple traversals</td>
+                </tr>
+            </table>
+            <p>
+                Both approaches correctly solve the problem with the same time and space complexity. The choice between them depends on code readability preferences and the specific requirements of the problem.
+            </p>
+        </div>
+    </div>
+
+    <div class="section related-problems">
+        <h2>Related Problems and Applications</h2>
+        <ol>
+            <li>
+                <strong>Linked List Problems:</strong>
+                <ul>
+                    <li><a href="https://leetcode.com/problems/linked-list-cycle/" target="_blank">LeetCode 141: Linked List Cycle</a> (Detecting cycles in linked lists)</li>
+                    <li><a href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank">LeetCode 142: Linked List Cycle II</a> (Finding the start of a cycle)</li>
+                    <li><a href="https://leetcode.com/problems/design-circular-queue/" target="_blank">LeetCode 622: Design Circular Queue</a> (Implementation using linked list)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Applications of Circular Linked Lists:</strong>
+                <ul>
+                    <li>Round-robin scheduling algorithms in operating systems</li>
+                    <li>Implementing circular buffers/queues</li>
+                    <li>Browser tab navigation (going back to the first tab after the last one)</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Extensions:</strong>
+                <p>This problem can be extended to:
+                </p>
+                <ul>
+                    <li>Inserting into a sorted doubly circular linked list</li>
+                    <li>Removing nodes from a circular linked list</li>
+                    <li>Merging two sorted circular linked lists</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</body>
+</html>
